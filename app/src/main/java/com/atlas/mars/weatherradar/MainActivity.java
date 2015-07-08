@@ -10,11 +10,16 @@ import android.view.View;
 
 import com.atlas.mars.weatherradar.fragments.BoridpolRadar;
 import com.atlas.mars.weatherradar.fragments.InfraRed;
+import com.atlas.mars.weatherradar.fragments.Visible;
 
 
 public class MainActivity extends FragmentActivity implements Communicator{
     ViewPager pager;
     PagerAdapter pagerAdapter;
+    BoridpolRadar boridpolRadar;
+    InfraRed infraRed;
+    Visible visible;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,16 +42,16 @@ public class MainActivity extends FragmentActivity implements Communicator{
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
         }
-
+        if (id == R.id.action_reload) {
+            boridpolRadar.reloadImg();
+            infraRed.reloadImg();
+            visible.reloadImg();
+            return true;
+        }
         return super.onOptionsItemSelected(item);
     }
 
@@ -54,11 +59,14 @@ public class MainActivity extends FragmentActivity implements Communicator{
     public void initView(View v, int position) {
         switch (position){
             case 0:
-                new BoridpolRadar(v, this);
+                boridpolRadar = new BoridpolRadar(v, this);
                 break;
             case 1:
-                new InfraRed(v);
-
+                infraRed =new InfraRed(v, this);
+                break;
+            case 2:
+               visible =  new Visible(v, this);
+                break;
         }
     }
 }

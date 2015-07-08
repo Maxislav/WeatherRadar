@@ -1,8 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <item name="black" type="color">#ff000000</item>
+    <item name="white" type="color">#ffffffff</item>
     <color name="color_preloader_start">#0072dfe7</color>
     <color name="color_preloader_center">#7e72dfe7</color>
     <color name="color_preloader_end">#ff56a9c7</color>
+
+    <item name="titleColor" type="color">#fff4f4ff</item>
+
+    <item name="menuPressStart" type="color">#ffdcdce7</item>
+    <item name="menuPressEnd" type="color">#ffd0d0db</item>
 
 </resources>

@@ -1,8 +1,24 @@
 <resources>
 
     <!-- Base application theme. -->
+
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <!-- Customize your theme here. -->
+        <item name="android:itemBackground">@drawable/menu</item>
+        <item name="android:itemTextAppearance">@style/itemTextStyle.AppTheme</item>
     </style>
+
+    <style name="MyAppTheme" parent="AppTheme">
+        <item name="android:windowBackground">@color/black</item>
+    </style>
+
+
+
+
+    <style name="itemTextStyle.AppTheme" parent="@android:style/TextAppearance.Widget.IconMenu.Item">
+        <item name="android:textColor">@drawable/color_item_popup</item>
+    </style>
+
+
+
 
 </resources>

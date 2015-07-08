@@ -40,12 +40,12 @@ public class PageFragment extends Fragment {
                 //communicator.initViewHome(view, inflater);
                 break;
             case 1:
-                view = inflater.inflate(R.layout.fragment_1, null);
+                view = inflater.inflate(R.layout.fragment_0, null);
                // communicator.initView(view, pageNumber);
                 //communicator.initViewHome(view, inflater);
                 break;
             case 2:
-                view = inflater.inflate(R.layout.fragment_1, null);
+                view = inflater.inflate(R.layout.fragment_0, null);
                 //communicator.initViewHome(view, inflater);
                 break;
 
