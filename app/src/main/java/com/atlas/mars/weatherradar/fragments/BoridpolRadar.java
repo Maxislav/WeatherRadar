@@ -4,19 +4,23 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.atlas.mars.weatherradar.Density;
 import com.atlas.mars.weatherradar.LogTags;
+import com.atlas.mars.weatherradar.MainActivity;
 import com.atlas.mars.weatherradar.R;
 import com.atlas.mars.weatherradar.loader.Loader;
 
@@ -28,18 +32,29 @@ import java.io.InputStream;
 public class BoridpolRadar {
     private View view;
     private ImageView imageView;
+    private FrameLayout mainLayout;
     private static Activity activity;
     public String imageUrl;
     public TextView title;
+    FrameLayout containerImg;
     public BoridpolRadar(View view, Activity activity){
         this.activity = activity;
         this.view = view;
         imageView = (ImageView)view.findViewById(R.id.image);
-     //   FrameLayout.LayoutParams parms = new FrameLayout.LayoutParams(Density.widthPixels,Density.heightPixels);
-        FrameLayout.LayoutParams parms = new FrameLayout.LayoutParams(Density.heightPixels,Density.widthPixels);
-        parms.gravity = Gravity.CENTER_HORIZONTAL | Gravity.CENTER_VERTICAL;
+        containerImg = (FrameLayout)view.findViewById(R.id.containerImg);
+        //FrameLayout.LayoutParams parms = new FrameLayout.LayoutParams(Density.widthPixels,Density.heightPixels);
+        LinearLayout.LayoutParams parms = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,(int)(Density.widthPixels*1.366));
+        containerImg.setLayoutParams(parms);
+        //parms.gravity = Gravity.CENTER_HORIZONTAL | Gravity.BOTTOM;
+       // imageView.setLayoutParams(parms);
         title = (TextView) view.findViewById(R.id.title);
-        imageView.setLayoutParams(parms);
+        //parms = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT ,(int)(Density.heightPixels - Density.widthPixels*1.366));
+       // parms = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT ,100);
+       // title.setLayoutParams(parms);
+
+       // mainLayout = (FrameLayout)view.findViewById(R.id.main);
+       // mainLayout.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+
         setImageUrl();
         setTitle();
         loadImg();
@@ -104,7 +119,7 @@ public class BoridpolRadar {
 
         protected void onPreExecute() {
             super.onPreExecute();
-            loader = new Loader(activity, view.findViewById(R.id.main));
+            loader = new Loader(activity, containerImg);
             loader.show();
 
         }
@@ -113,15 +128,21 @@ public class BoridpolRadar {
         protected Bitmap doInBackground(String... params) {
            // String imageUrl = "http://meteoinfo.by/radar/UKBB/UKBB_latest.png";
             Bitmap mIcon11 = null;
+            Bitmap modyfy = null;
             try {
+                Matrix matrix = new Matrix();
+
+                matrix.postRotate(90);
                 InputStream in = new java.net.URL(imageUrl).openStream();
                 mIcon11 = BitmapFactory.decodeStream(in);
+
+                modyfy = Bitmap.createBitmap(mIcon11, 0, 0,  mIcon11.getWidth(),  mIcon11.getHeight(), matrix, true);
             } catch (Exception e) {
                 toastShow("Error Load img");
                 Log.e(LogTags.TAG, e.getMessage());
                 e.printStackTrace();
             }
-            return mIcon11;
+            return modyfy;
         }
 
         @Override
@@ -133,11 +154,6 @@ public class BoridpolRadar {
     }
 
     private void toastShow(String txt){
-        Context context = activity.getApplicationContext();
-        CharSequence text = txt;
-        int duration = Toast.LENGTH_SHORT;
-        Toast toast = Toast.makeText(context, text, duration);
-        toast.setGravity(Gravity.CENTER, 0, 0);
-        toast.show();
+        ((MainActivity)activity).toastShow(txt);
     }
 }
