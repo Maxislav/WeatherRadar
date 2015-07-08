@@ -12,9 +12,4 @@
         android:layout_gravity="center_horizontal|center_vertical"
         android:layout_height="match_parent"
         android:layout_width="match_parent" />
-    <ProgressBar
-        android:layout_gravity="center_horizontal|center_vertical"
-        android:indeterminateDrawable="@drawable/loader_0"
-        android:layout_width="100dp"
-        android:layout_height="100dp" />
 </FrameLayout>

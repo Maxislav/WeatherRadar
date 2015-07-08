@@ -52,7 +52,7 @@ public class BoridpolRadar {
 
         protected void onPreExecute() {
             super.onPreExecute();
-            loader = new Loader(activity, activity.findViewById(R.id.main));
+            loader = new Loader(activity, view.findViewById(R.id.main));
             loader.show();
 
         }

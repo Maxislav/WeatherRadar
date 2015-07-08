@@ -23,7 +23,11 @@ public class Loader {
     private void  inflate(){
         LayoutInflater inflater = activity.getLayoutInflater();
         view = inflater.inflate(R.layout.loader, null, false);
-        ((ViewGroup) main).addView(view);
+      //  ProgressBar progressBar = (ProgressBar)view.findViewById(R.id.progressBar);
+
+      //  progressBar.setProgress(100);
+      //Animation anim = new ProgressBarAnimation(progressBar, progressBar.getMax(), 0);
+                ((ViewGroup) main).addView(view);
     }
 
     public void show(){
