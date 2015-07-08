@@ -6,6 +6,9 @@
     <color name="color_preloader_start">#0072dfe7</color>
     <color name="color_preloader_center">#7e72dfe7</color>
     <color name="color_preloader_end">#ff56a9c7</color>
+    <color name="color_edit_text">#8c1083ff</color>
+
+    <color name="background_edit_text">#ff3e4245</color>
 
     <item name="titleColor" type="color">#fff4f4ff</item>
 

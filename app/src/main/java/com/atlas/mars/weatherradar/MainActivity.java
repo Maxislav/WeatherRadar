@@ -1,6 +1,7 @@
 package com.atlas.mars.weatherradar;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.PagerAdapter;
@@ -47,6 +48,9 @@ public class MainActivity extends FragmentActivity implements Communicator{
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.action_settings) {
+            Intent intent = new Intent(this, ActivitySetting.class);
+            startActivityForResult(intent,0);
+
             return true;
         }
         if (id == R.id.action_reload) {
@@ -55,6 +59,7 @@ public class MainActivity extends FragmentActivity implements Communicator{
             visible.reloadImg();
             return true;
         }
+
         return super.onOptionsItemSelected(item);
     }
 

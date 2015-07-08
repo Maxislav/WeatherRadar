@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <selector>
+            <item  android:state_pressed="true">
+                <inset xmlns:android="http://schemas.android.com/apk/res/android"
+                    android:insetLeft="5dp"
+                    android:insetRight="5dp"
+                    android:insetTop="5dp"
+                    android:insetBottom="5dp">
+                    <bitmap
+                        xmlns:android="http://schemas.android.com/apk/res/android"
+                        android:gravity="fill"
+                        android:src="@drawable/reload_press">
+                    </bitmap>
+                </inset>
+            </item>
+            <item>
+            <inset xmlns:android="http://schemas.android.com/apk/res/android"
+                android:insetLeft="5dp"
+                android:insetRight="5dp"
+                android:insetTop="5dp"
+                android:insetBottom="5dp">
+                <bitmap
+                    xmlns:android="http://schemas.android.com/apk/res/android"
+                    android:gravity="fill"
+                    android:src="@drawable/reload">
+                </bitmap>
+            </inset>
+            </item>
+        </selector>
+    </item>
+
+</layer-list>

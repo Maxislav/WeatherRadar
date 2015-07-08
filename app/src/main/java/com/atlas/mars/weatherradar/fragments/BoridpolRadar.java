@@ -10,9 +10,11 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -29,36 +31,45 @@ import java.io.InputStream;
 /**
  * Created by mars on 7/8/15.
  */
-public class BoridpolRadar {
+public class BoridpolRadar implements View.OnClickListener{
     private View view;
     private ImageView imageView;
-    private FrameLayout mainLayout;
+    private LinearLayout mainLayout;
     private static Activity activity;
     public String imageUrl;
     public TextView title;
+    ImageButton buttonReload;
     FrameLayout containerImg;
     public BoridpolRadar(View view, Activity activity){
         this.activity = activity;
         this.view = view;
         imageView = (ImageView)view.findViewById(R.id.image);
         containerImg = (FrameLayout)view.findViewById(R.id.containerImg);
-        //FrameLayout.LayoutParams parms = new FrameLayout.LayoutParams(Density.widthPixels,Density.heightPixels);
-        LinearLayout.LayoutParams parms = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,(int)(Density.widthPixels*1.366));
+        buttonReload = (ImageButton)view.findViewById(R.id.buttonReload);
+        buttonReload.setOnClickListener(this);
+        mainLayout = (LinearLayout)view.findViewById(R.id.main);
+        LinearLayout.LayoutParams parms = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,(int)(Density.widthPixels*1.34));
         containerImg.setLayoutParams(parms);
-        //parms.gravity = Gravity.CENTER_HORIZONTAL | Gravity.BOTTOM;
-       // imageView.setLayoutParams(parms);
+        final int heightButton = (int)(Density.heightPixels - (Density.widthPixels*1.34));
+        final double g= (float)Density.heightPixels - (float)Density.widthPixels * 1.34;
+        Log.d(LogTags.TAG, "heightButton "+ Density.heightPixels +" : " + heightButton + " : " +g +" :" +mainLayout.getHeight());
         title = (TextView) view.findViewById(R.id.title);
-        //parms = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT ,(int)(Density.heightPixels - Density.widthPixels*1.366));
-       // parms = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT ,100);
-       // title.setLayoutParams(parms);
-
-       // mainLayout = (FrameLayout)view.findViewById(R.id.main);
-       // mainLayout.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-
+        setSisze();
         setImageUrl();
         setTitle();
         loadImg();
     }
+
+    private void setSisze(){
+        ViewTreeObserver observer= ((FrameLayout)buttonReload.getParent()).getViewTreeObserver();
+        observer.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                buttonReload.setLayoutParams(new  FrameLayout.LayoutParams (buttonReload.getHeight(),buttonReload.getHeight() ));
+            }
+        });
+    }
+
 
     public void setImageUrl(){
         imageUrl = "http://meteoinfo.by/radar/UKBB/UKBB_latest.png";
@@ -111,6 +122,14 @@ public class BoridpolRadar {
 
     }
 
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.buttonReload:
+                reloadImg();
+               break;
+        }
+    }
 
 
     private class LoadImage extends AsyncTask<String, Void, Bitmap>{
