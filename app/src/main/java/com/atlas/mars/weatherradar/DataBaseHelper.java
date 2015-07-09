@@ -45,6 +45,18 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(SQL_CREATE_TABLE_SETTING);
+        ContentValues cv = new ContentValues();
+        for(int i = 0; i<3; i++){
+            cv.put(KEY, "url"+(i+1) );
+            cv.put(VALUE,  "url"+(i+1) );
+            db.insert(TABLE_SETTING, null, cv);
+        }
+        for(int i = 0; i<3; i++){
+            cv.put(KEY, "title"+(i+1) );
+            cv.put(VALUE,  "title"+(i+1) );
+            db.insert(TABLE_SETTING, null, cv);
+        }
+
     }
 
     @Override

@@ -29,12 +29,10 @@ public class MainActivity extends FragmentActivity implements Communicator{
         setContentView(R.layout.activity_main);
         new Density(this);
         db = new DataBaseHelper(this);
-
         pager = (ViewPager) findViewById(R.id.pager);
         pagerAdapter = new MyFragmentPagerAdapter(getSupportFragmentManager());
         pager.setAdapter(pagerAdapter);
         pager.setOffscreenPageLimit(3);
-
     }
 
 
