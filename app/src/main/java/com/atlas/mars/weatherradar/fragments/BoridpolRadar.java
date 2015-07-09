@@ -1,13 +1,11 @@
 package com.atlas.mars.weatherradar.fragments;
 
 import android.app.Activity;
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.os.AsyncTask;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -18,8 +16,8 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import com.atlas.mars.weatherradar.DataBaseHelper;
 import com.atlas.mars.weatherradar.Density;
 import com.atlas.mars.weatherradar.LogTags;
 import com.atlas.mars.weatherradar.MainActivity;
@@ -27,6 +25,7 @@ import com.atlas.mars.weatherradar.R;
 import com.atlas.mars.weatherradar.loader.Loader;
 
 import java.io.InputStream;
+import java.util.HashMap;
 
 /**
  * Created by mars on 7/8/15.
@@ -40,9 +39,13 @@ public class BoridpolRadar implements View.OnClickListener{
     public TextView title;
     ImageButton buttonReload;
     FrameLayout containerImg;
-    public BoridpolRadar(View view, Activity activity){
+    static HashMap<String, String> mapSetting;
+    int position;
+
+    public BoridpolRadar(View view, Activity activity, int position){
         this.activity = activity;
         this.view = view;
+        this.position = position;
         imageView = (ImageView)view.findViewById(R.id.image);
         containerImg = (FrameLayout)view.findViewById(R.id.containerImg);
         buttonReload = (ImageButton)view.findViewById(R.id.buttonReload);
@@ -52,8 +55,11 @@ public class BoridpolRadar implements View.OnClickListener{
         containerImg.setLayoutParams(parms);
         final int heightButton = (int)(Density.heightPixels - (Density.widthPixels*1.34));
         final double g= (float)Density.heightPixels - (float)Density.widthPixels * 1.34;
-        Log.d(LogTags.TAG, "heightButton "+ Density.heightPixels +" : " + heightButton + " : " +g +" :" +mainLayout.getHeight());
         title = (TextView) view.findViewById(R.id.title);
+        mapSetting = DataBaseHelper.mapSetting;
+
+
+
         setSisze();
         setImageUrl();
         setTitle();
@@ -71,27 +77,48 @@ public class BoridpolRadar implements View.OnClickListener{
     }
 
 
-    public void setImageUrl(){
-        imageUrl = "http://meteoinfo.by/radar/UKBB/UKBB_latest.png";
-    }
+
     public void setTitle(){
-        title.setText("Borispol");
+        if(mapSetting.get("title1")==null){
+            title.setText("Title1");
+        }else{
+            title.setText(mapSetting.get("title1"));
+        }
+    }
+
+    public void setImageUrl(){
+        String key = "url"+(position+1);
+        if(mapSetting.get(key)==null){
+            imageUrl = null;
+        }else{
+            imageUrl = mapSetting.get(key);
+        }
     }
 
     private void loadImg(){
-        LoadImage li = new LoadImage();
-        li.execute();
+        if(imageUrl == null || imageUrl.isEmpty()){
+            toastShow("No url detect. Set url" + (position+1));
+        }else{
+            LoadImage li = new LoadImage();
+            li.execute();
+        }
+
+
+
     }
 
     public void reloadImg(){
-        LoadImage li = new LoadImage();
-        li.execute();
+       setImageUrl();
+       loadImg();
     }
 
     private void setBitmap(Bitmap bitmap){
         if(bitmap!=null){
             imageShow(imageView);
             imageView.setImageBitmap(bitmap);
+
+        }else{
+            toastShow("Error load IMG on page№ " +(position+1));
         }
     }
 
@@ -157,7 +184,7 @@ public class BoridpolRadar implements View.OnClickListener{
 
                 modyfy = Bitmap.createBitmap(mIcon11, 0, 0,  mIcon11.getWidth(),  mIcon11.getHeight(), matrix, true);
             } catch (Exception e) {
-                toastShow("Error Load img");
+               // toastShow("Error Load img");
                 Log.e(LogTags.TAG, e.getMessage());
                 e.printStackTrace();
             }

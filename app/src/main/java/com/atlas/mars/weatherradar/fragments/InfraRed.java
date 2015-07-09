@@ -8,17 +8,20 @@ import android.view.View;
  */
 public class InfraRed extends BoridpolRadar {
 
-    public InfraRed(View view, Activity activity) {
-        super(view, activity);
+    public InfraRed(View view, Activity activity, int position) {
+        super(view, activity, position);
     }
 
-    @Override
+   /* @Override
     public void setImageUrl(){
         imageUrl = "http://www.sat24.com/image2.ashx?region=eu&ir=true";
-    }
+    }*/
     @Override
     public void setTitle(){
-        title.setText("Infrared");
+        if(mapSetting.get("title2")==null){
+            title.setText("Infrared");
+        }else{
+            title.setText(mapSetting.get("title2"));
+        }
     }
-
 }

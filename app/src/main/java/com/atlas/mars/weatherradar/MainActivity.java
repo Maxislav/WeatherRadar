@@ -1,12 +1,10 @@
 package com.atlas.mars.weatherradar;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -23,17 +21,20 @@ public class MainActivity extends FragmentActivity implements Communicator{
     BoridpolRadar boridpolRadar;
     InfraRed infraRed;
     Visible visible;
-
+    DataBaseHelper db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         new Density(this);
+        db = new DataBaseHelper(this);
+
         pager = (ViewPager) findViewById(R.id.pager);
         pagerAdapter = new MyFragmentPagerAdapter(getSupportFragmentManager());
         pager.setAdapter(pagerAdapter);
         pager.setOffscreenPageLimit(3);
+
     }
 
 
@@ -50,39 +51,47 @@ public class MainActivity extends FragmentActivity implements Communicator{
         if (id == R.id.action_settings) {
             Intent intent = new Intent(this, ActivitySetting.class);
             startActivityForResult(intent,0);
-
             return true;
         }
         if (id == R.id.action_reload) {
-            boridpolRadar.reloadImg();
-            infraRed.reloadImg();
-            visible.reloadImg();
+            reloadAll();
             return true;
         }
 
         return super.onOptionsItemSelected(item);
     }
 
+    private void reloadAll(){
+        boridpolRadar.reloadImg();
+        infraRed.reloadImg();
+        visible.reloadImg();
+    }
+
     @Override
     public void initView(View v, int position) {
         switch (position){
             case 0:
-                boridpolRadar = new BoridpolRadar(v, this);
+                boridpolRadar = new BoridpolRadar(v, this, position);
                 break;
             case 1:
-                infraRed =new InfraRed(v, this);
+                infraRed = new InfraRed(v, this, position);
                 break;
             case 2:
-               visible =  new Visible(v, this);
+               visible =  new Visible(v, this, position);
                 break;
         }
     }
     public void toastShow(String txt){
-        Context context = getApplicationContext();
-        CharSequence text = txt;
-        int duration = Toast.LENGTH_SHORT;
-        Toast toast = Toast.makeText(context, text, duration);
-        toast.setGravity(Gravity.CENTER, 0, 0);
-        toast.show();
+        Toast.makeText(getApplicationContext(), txt, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == 0) {
+            if (resultCode == RESULT_OK) {
+                //Todo нажато сохранение
+                reloadAll();
+            }
+        }
     }
 }

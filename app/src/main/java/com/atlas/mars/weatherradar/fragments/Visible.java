@@ -8,16 +8,20 @@ import android.view.View;
  */
 public class Visible extends BoridpolRadar {
 
-    public Visible(View view, Activity activity) {
-        super(view, activity);
+    public Visible(View view, Activity activity, int position) {
+        super(view, activity, position);
     }
 
-    @Override
+   /* @Override
     public void setImageUrl(){
         imageUrl = "http://www.sat24.com/image2.ashx?region=eu";
-    }
+    }*/
     @Override
     public void setTitle(){
-        title.setText("Visible");
+        if(mapSetting.get("title3")==null){
+            title.setText("Visible");
+        }else{
+            title.setText(mapSetting.get("title3"));
+        }
     }
 }
