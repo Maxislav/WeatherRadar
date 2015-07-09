@@ -1,4 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<bitmap xmlns:android="http://schemas.android.com/apk/res/android"
-    android:src="@drawable/tiles"
-    android:tileMode="repeat" />
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <inset>
+            <shape  android:shape="rectangle" >
+                <corners android:radius="5dp"></corners>
+                <solid android:color="@color/white"></solid>
+                <stroke android:width="1dp" android:color="#4fa5d5"/>
+            </shape>
+        </inset>
+    </item>
+    <item>
+           <inset
+               android:insetLeft="5dp"
+               android:insetRight="5dp"
+               android:insetTop="5dp"
+               android:insetBottom="5dp">
+               <bitmap xmlns:android="http://schemas.android.com/apk/res/android"
+                   android:src="@drawable/tiles"
+                   android:tileMode="repeat" />
+           </inset>
+    </item>
+</layer-list>
