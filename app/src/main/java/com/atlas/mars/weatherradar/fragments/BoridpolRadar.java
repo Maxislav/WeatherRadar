@@ -6,15 +6,19 @@ import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
+import android.widget.AdapterView;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.PopupMenu;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import com.atlas.mars.weatherradar.DataBaseHelper;
@@ -30,7 +34,7 @@ import java.util.HashMap;
 /**
  * Created by mars on 7/8/15.
  */
-public class BoridpolRadar implements View.OnClickListener{
+public class BoridpolRadar implements View.OnClickListener, PopupMenu.OnMenuItemClickListener {
     private View view;
     private ImageView imageView;
     private LinearLayout mainLayout;
@@ -38,6 +42,7 @@ public class BoridpolRadar implements View.OnClickListener{
     public String imageUrl;
     public TextView title;
     ImageButton buttonReload;
+    ImageButton buttonMenu;
     FrameLayout containerImg;
     static HashMap<String, String> mapSetting;
     int position;
@@ -49,6 +54,8 @@ public class BoridpolRadar implements View.OnClickListener{
         imageView = (ImageView)view.findViewById(R.id.image);
         containerImg = (FrameLayout)view.findViewById(R.id.containerImg);
         buttonReload = (ImageButton)view.findViewById(R.id.buttonReload);
+        buttonMenu = (ImageButton)view.findViewById(R.id.buttonMenu);
+        buttonMenu.setOnClickListener(this);
         buttonReload.setOnClickListener(this);
         mainLayout = (LinearLayout)view.findViewById(R.id.main);
         LinearLayout.LayoutParams parms = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,(int)(Density.widthPixels*1.34));
@@ -72,6 +79,7 @@ public class BoridpolRadar implements View.OnClickListener{
             @Override
             public void onGlobalLayout() {
                 buttonReload.setLayoutParams(new  FrameLayout.LayoutParams (buttonReload.getHeight(),buttonReload.getHeight() ));
+               // buttonMenu.setLayoutParams(new  FrameLayout.LayoutParams ((int)(buttonMenu.getHeight()/2),buttonMenu.getHeight() ));
             }
         });
     }
@@ -155,7 +163,21 @@ public class BoridpolRadar implements View.OnClickListener{
             case R.id.buttonReload:
                 reloadImg();
                break;
+            case R.id.buttonMenu:
+                PopupMenu popupMenu = new PopupMenu(activity, v);
+                popupMenu.inflate(R.menu.menu_main);
+                popupMenu.setOnMenuItemClickListener(this);
+                popupMenu.show();
+                break;
         }
+    }
+
+
+
+    @Override
+    public boolean onMenuItemClick(MenuItem item) {
+        activity.onOptionsItemSelected(item);
+        return false;
     }
 
 

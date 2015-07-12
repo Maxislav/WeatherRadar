@@ -26,7 +26,7 @@
                     android:insetTop="5dp">
                     <bitmap xmlns:android="http://schemas.android.com/apk/res/android"
                         android:gravity="fill"
-                        android:src="@drawable/reload"></bitmap>
+                        android:src="@drawable/menu_ico"></bitmap>
                 </inset>
             </item>
         </selector>
