@@ -1,27 +1,48 @@
 package com.atlas.mars.weatherradar;
 
+import android.app.AlarmManager;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import com.atlas.mars.weatherradar.alarm.SampleBootReceiver;
 import com.atlas.mars.weatherradar.fragments.BoridpolRadar;
 import com.atlas.mars.weatherradar.fragments.InfraRed;
 import com.atlas.mars.weatherradar.fragments.Visible;
 
 
 public class MainActivity extends FragmentActivity implements Communicator{
+    public  final static String LOCATION = "LOCATION";
+    final String LOG_TAG = "MainActivityLogs";
+
     ViewPager pager;
     PagerAdapter pagerAdapter;
     BoridpolRadar boridpolRadar;
     InfraRed infraRed;
     Visible visible;
     DataBaseHelper db;
+
+    NotificationManager nm;
+    AlarmManager am;
+    Intent intent1;
+    Intent intent2;
+    PendingIntent pIntent1;
+    PendingIntent pIntent2;
+
+    static MyReceiver myReceiver;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,8 +54,29 @@ public class MainActivity extends FragmentActivity implements Communicator{
         pagerAdapter = new MyFragmentPagerAdapter(getSupportFragmentManager());
         pager.setAdapter(pagerAdapter);
         pager.setOffscreenPageLimit(3);
-    }
 
+
+        am = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        intent1 = createIntent("action 1", "extra 1");
+        pIntent1 = PendingIntent.getBroadcast(this, 0, intent1, PendingIntent.FLAG_CANCEL_CURRENT );
+        am.cancel(pIntent1);
+        am.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 5000, pIntent1);
+
+    }
+    Intent createIntent(String action, String extra) {
+       /* SampleBootReceiver sm = new SampleBootReceiver();
+        sm.setMainActivity(this);*/
+
+
+        Intent intent = new Intent(this, SampleBootReceiver.class);
+        intent.setAction(action);
+        intent.putExtra("extra", extra);
+        return intent;
+    }
+    void compare() {
+        Log.d(LOG_TAG, "intent1 = intent2: " + intent1.filterEquals(intent2));
+        Log.d(LOG_TAG, "pIntent1 = pIntent2: " + pIntent1.equals(pIntent2));
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -91,5 +133,39 @@ public class MainActivity extends FragmentActivity implements Communicator{
                 reloadAll();
             }
         }
+    }
+
+    private class MyReceiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context arg0, Intent arg1) {
+
+            String distance = Integer.toString(arg1.getExtras().getInt("distance"));
+            toastShow(distance);
+
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+      //  startService(new Intent(this, MyService.class));
+        onCreateMyReceiver();
+    }
+
+    @Override
+    protected void onPause() {
+        unregisterReceiver(myReceiver);
+        super.onPause();
+    }
+
+    private void onCreateMyReceiver(){
+       /* if(myReceiver!=null){
+            unregisterReceiver(myReceiver);
+        }*/
+        myReceiver = new MyReceiver();
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(MainActivity.LOCATION);
+        registerReceiver(myReceiver, intentFilter);
     }
 }
