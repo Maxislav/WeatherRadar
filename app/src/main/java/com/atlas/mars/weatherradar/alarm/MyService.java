@@ -6,6 +6,8 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.IBinder;
 import android.os.Vibrator;
@@ -35,6 +37,7 @@ public class MyService extends Service {
     NotificationManager nm;
     Notification notification;
     Intent intent;
+
     @Override
     public IBinder onBind(Intent intent) {
         return null;
@@ -47,6 +50,7 @@ public class MyService extends Service {
         super.onCreate();
 
     }
+
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         this.intent = intent;
@@ -67,30 +71,31 @@ public class MyService extends Service {
         updIntent.setAction(MainActivity.LOCATION);
         updIntent.putExtra("distance", 5);
         sendBroadcast(updIntent);*/
-
-        myAsynkTask = new MyAsynkTask();
-        myAsynkTask.execute();
-
+        if (isNetworkAvailable()) {
+            myAsynkTask = new MyAsynkTask();
+            myAsynkTask.execute();
+        }
     }
 
-    void onStop(){
+    void onStop() {
         this.stopSelf();
     }
 
-    void onNotification(HashMap <String, Integer> map){
-        String message = "Distance: "+map.get("dist")+ " Intensity: "+ map.get("intensity");
+    void onNotification(HashMap<String, Integer> map) {
+        String message = "Distance: " + map.get("dist") + " Intensity: " + map.get("intensity");
 
-        Notification notification  = new Notification.Builder(this).setContentTitle("Rain alarm")
+        Notification notification = new Notification.Builder(this).setContentTitle("Rain alarm")
                 .setContentText(message)
-                .setSmallIcon(R.drawable.logo)
+                .setSmallIcon(R.drawable.notification_ico)
+
                 .build();
         notification.flags = Notification.DEFAULT_LIGHTS | Notification.FLAG_AUTO_CANCEL;
 
       /*  Vibrator v = (Vibrator)getSystemService(Context.VIBRATOR_SERVICE);
         // Vibrate for 500 milliseconds
         v.vibrate(500);*/
-        Vibrator vibrator = (Vibrator)getSystemService(Context.VIBRATOR_SERVICE);
-        long[] pattern = { 0, 700, 600, 700, 700};
+        Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+        long[] pattern = {0, 700, 600, 700, 700};
         vibrator.vibrate(pattern, -1);
 
         Intent notificationIntent = new Intent(this, MainActivity.class);
@@ -106,15 +111,15 @@ public class MyService extends Service {
     }
 
 
-    void onCallback(HashMap <String, Integer> map){
-        if(map.get("dist")<40){
+    void onCallback(HashMap<String, Integer> map) {
+        if (map.get("dist") < 40) {
             onNotification(map);
         }
         //onNotification(map);
         onStop();
     }
 
-    private  class MyAsynkTask extends AsyncTask<String, Void, HashMap<String, Integer>>{
+    private class MyAsynkTask extends AsyncTask<String, Void, HashMap<String, Integer>> {
 
         @Override
         protected HashMap<String, Integer> doInBackground(String... params) {
@@ -131,7 +136,7 @@ public class MyService extends Service {
                 Scanner inStream = new Scanner(urlConnection.getInputStream());
                 while (inStream.hasNextLine()) {
                     sb.append(inStream.nextLine());
-                   // response += (inStream.nextLine());
+                    // response += (inStream.nextLine());
                 }
             } catch (IOException e) {
                 Log.e(TAG, e.toString(), e);
@@ -143,8 +148,7 @@ public class MyService extends Service {
             }
 
 
-
-            if(0<sb.length()){
+            if (0 < sb.length()) {
                 String json = sb.toString();
                 try {
                     // [{"color":"4793F8","colorRgb":"71 147 248","intensity":6,"dist":75,"xy":"153 164"},{"color":"9BE1FF","colorRgb":"155 225 255","intensity":5,"dist":75,"xy":"159 159"},{"color":"0C59FF","colorRgb":"12 89 255","intensity":7,"dist":78,"xy":"151 161"},{"color":"FF8C9B","colorRgb":"255 140 155","intensity":9,"dist":80,"xy":"151 158"},{"color":"9BEA8F","colorRgb":"155 234 143","intensity":2,"dist":108,"xy":"122 140"}]
@@ -152,7 +156,7 @@ public class MyService extends Service {
                     for (JsonNode jsonNode : root) {
                         int dist = jsonNode.path("dist").asInt();
                         int intensity = jsonNode.path("intensity").asInt();
-                        if(_intensity<intensity){
+                        if (_intensity < intensity) {
                             _intensity = intensity;
                             map.put("dist", dist);
                             map.put("intensity", intensity);
@@ -167,10 +171,20 @@ public class MyService extends Service {
 
             return map;
         }
+
         @Override
         protected void onPostExecute(HashMap result) {
             //Log.d(TAG, result);
             onCallback(result);
         }
+
+
+    }
+
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 }

@@ -170,7 +170,7 @@ public class MainActivity extends FragmentActivity implements Communicator{
         if(extras != null){
             toastShow(extras.getString("item_id"));
             if(extras.getString("item_id").equals("1001")){
-                reloadAll();
+                boridpolRadar.reloadImg();
             }
 
           //  Log.i( "dd","Extra:" + extras.getString("item_id") );
