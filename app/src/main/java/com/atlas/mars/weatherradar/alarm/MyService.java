@@ -123,7 +123,7 @@ public class MyService extends Service {
 
         @Override
         protected HashMap<String, Integer> doInBackground(String... params) {
-            int _intensity = 0;
+            int _intensity = 0, _dist = 0;
             HashMap<String, Integer> map = new HashMap<>();
             URL url = null;
             InputStream in = null;
@@ -156,7 +156,7 @@ public class MyService extends Service {
                     for (JsonNode jsonNode : root) {
                         int dist = jsonNode.path("dist").asInt();
                         int intensity = jsonNode.path("intensity").asInt();
-                        if (_intensity < intensity) {
+                        if (_intensity < intensity && dist<40) {
                             _intensity = intensity;
                             map.put("dist", dist);
                             map.put("intensity", intensity);
