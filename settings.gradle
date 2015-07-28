@@ -1,1 +1,1 @@
-include ':app', ':hlap'
+include ':app'

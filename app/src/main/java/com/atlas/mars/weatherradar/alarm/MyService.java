@@ -2,12 +2,16 @@ package com.atlas.mars.weatherradar.alarm;
 
 import android.app.Notification;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.IBinder;
+import android.os.Vibrator;
 import android.util.Log;
 
+import com.atlas.mars.weatherradar.MainActivity;
 import com.atlas.mars.weatherradar.R;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -30,6 +34,7 @@ public class MyService extends Service {
     HttpURLConnection urlConnection;
     NotificationManager nm;
     Notification notification;
+    Intent intent;
     @Override
     public IBinder onBind(Intent intent) {
         return null;
@@ -44,6 +49,7 @@ public class MyService extends Service {
     }
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        this.intent = intent;
         Log.d(TAG, "onStartCommand");
         someTask();
         return super.onStartCommand(intent, flags, startId);
@@ -79,15 +85,32 @@ public class MyService extends Service {
                 .setSmallIcon(R.drawable.logo)
                 .build();
         notification.flags = Notification.DEFAULT_LIGHTS | Notification.FLAG_AUTO_CANCEL;
+
+      /*  Vibrator v = (Vibrator)getSystemService(Context.VIBRATOR_SERVICE);
+        // Vibrate for 500 milliseconds
+        v.vibrate(500);*/
+        Vibrator vibrator = (Vibrator)getSystemService(Context.VIBRATOR_SERVICE);
+        long[] pattern = { 0, 700, 600, 700, 700};
+        vibrator.vibrate(pattern, -1);
+
+        Intent notificationIntent = new Intent(this, MainActivity.class);
+        notificationIntent.putExtra("item_id", "1001");
+
+        notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        PendingIntent intent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
+        notification.contentIntent = intent;
+
+
         nm.notify(1, notification);
 
     }
 
 
     void onCallback(HashMap <String, Integer> map){
-        if(map.get("dist")<50){
+        if(map.get("dist")<40){
             onNotification(map);
         }
+        //onNotification(map);
         onStop();
     }
 

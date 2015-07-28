@@ -48,6 +48,9 @@ public class MainActivity extends FragmentActivity implements Communicator{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+
+
         new Density(this);
         db = new DataBaseHelper(this);
         pager = (ViewPager) findViewById(R.id.pager);
@@ -125,6 +128,8 @@ public class MainActivity extends FragmentActivity implements Communicator{
         Toast.makeText(getApplicationContext(), txt, Toast.LENGTH_SHORT).show();
     }
 
+
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == 0) {
@@ -151,6 +156,25 @@ public class MainActivity extends FragmentActivity implements Communicator{
         super.onResume();
       //  startService(new Intent(this, MyService.class));
         onCreateMyReceiver();
+
+        Bundle extras = getIntent().getExtras();
+        if(extras != null){
+            toastShow(extras.getString("item_id"));
+            Log.i( "dd","Extra:" + extras.getString("item_id") );
+        }
+    }
+
+    @Override
+    public void onNewIntent(Intent intent) {
+        Bundle extras = intent.getExtras();
+        if(extras != null){
+            toastShow(extras.getString("item_id"));
+            if(extras.getString("item_id").equals("1001")){
+                reloadAll();
+            }
+
+          //  Log.i( "dd","Extra:" + extras.getString("item_id") );
+        }
     }
 
     @Override
