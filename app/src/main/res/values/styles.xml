@@ -7,6 +7,11 @@
         <item name="android:itemTextAppearance">@style/itemTextStyle.AppTheme</item>
     </style>
 
+    <style name="date_picker" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="android:textColor">@color/color_edit_text</item>
+        <item name="android:textColorPrimary">@color/color_edit_text</item>
+    </style>
+
     <style name="MyAppTheme" parent="AppTheme">
         <item name="android:windowBackground">@color/black</item>
         <item name="android:textColor">@color/white</item>

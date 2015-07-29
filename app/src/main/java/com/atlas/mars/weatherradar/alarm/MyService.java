@@ -13,6 +13,7 @@ import android.os.IBinder;
 import android.os.Vibrator;
 import android.util.Log;
 
+import com.atlas.mars.weatherradar.DataBaseHelper;
 import com.atlas.mars.weatherradar.MainActivity;
 import com.atlas.mars.weatherradar.R;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -23,6 +24,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Scanner;
 
@@ -37,6 +39,8 @@ public class MyService extends Service {
     NotificationManager nm;
     Notification notification;
     Intent intent;
+    DataBaseHelper db;
+    HashMap<String,String> mapSetting;
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -47,6 +51,8 @@ public class MyService extends Service {
     public void onCreate() {
         Log.d(TAG, "onCreate");
         nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        db = new DataBaseHelper(this);
+        mapSetting = db.mapSetting;
         super.onCreate();
 
     }
@@ -96,7 +102,8 @@ public class MyService extends Service {
         v.vibrate(500);*/
         Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
         long[] pattern = {0, 700, 600, 700, 700};
-        vibrator.vibrate(pattern, -1);
+        //todo раскоментировать для вибрации
+      //  vibrator.vibrate(pattern, -1);
 
         Intent notificationIntent = new Intent(this, MainActivity.class);
         notificationIntent.putExtra("item_id", "1001");
@@ -107,7 +114,24 @@ public class MyService extends Service {
 
 
         nm.notify(1, notification);
+        timeStampDateBase();
 
+    }
+
+    void  timeStampDateBase(){
+        // 1) create a java calendar instance
+        Calendar calendar = Calendar.getInstance();
+
+// 2) get a java.util.Date from the calendar instance.
+//    this date will represent the current instant, or "now".
+        java.util.Date now = calendar.getTime();
+
+// 3) a java current time (now) instance
+        java.sql.Timestamp currentTimestamp = new java.sql.Timestamp(now.getTime());
+        String timeStamp = currentTimestamp.toString();
+        Log.d(TAG, timeStamp);
+        mapSetting.put(DataBaseHelper.TIME_NOTIFY, timeStamp);
+        db.saveSetting();
     }
 
 
@@ -115,7 +139,7 @@ public class MyService extends Service {
         if (map.get("dist")!=null &&  map.get("dist") < 40) {
             onNotification(map);
         }
-        //onNotification(map);
+        onNotification(map);
         onStop();
     }
 

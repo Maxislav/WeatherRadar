@@ -21,6 +21,25 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     private static final String KEY = "key";
     private static final String VALUE = "value";
 
+    public  static final String URL1 = "url1";
+    public  static final String URL2 = "url2";
+    public  static final String URL3 = "url3";
+
+    public  static final String TITLE1 = "title1";
+    public  static final String TITLE2 = "title2";
+    public  static final String TITLE3 = "title3";
+
+    public  static final String IS_VIBRATION = "isVibration"; // 0 || 1
+    public  static final String TIME_REPEAT = "timeRepeat"; // long
+    public  static final String TIME_NOTIFY = "timeNotify"; // 2015-07-29 19:12:40.878
+
+    public  static final String TIME_FROM_HOUR = "timeFromHour";
+    public  static final String TIME_FROM_MINUTE = "timeFromMinute";
+    public  static final String TIME_TO_HOUR = "timeToHour";
+    public  static final String TIME_TO_MINUTE = "timeToMinute";
+
+
+
 
 
 

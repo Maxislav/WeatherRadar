@@ -4,11 +4,17 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.TextView;
+import android.widget.TimePicker;
+
+import com.atlas.mars.weatherradar.timepisker.TimePickerColor;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -16,23 +22,71 @@ import java.util.HashMap;
 /**
  * Created by Администратор on 7/8/15.
  */
-public class ActivitySetting extends AppCompatActivity {
-
+public class ActivitySetting extends AppCompatActivity implements TimePicker.OnTimeChangedListener {
+    final String TAG = "ActivitySettingLog";
     DataBaseHelper db;
     HashMap <String, String> mapSetting;
     MyJQuery jQuery;
     ArrayList<View> arrayEditText;
+    TimePicker timePickerFrom, timePickerTo;
+    TextView textViewFrom, textViewTo;
+    int fromHour = 8, fromMin = 0, toHour = 22, toMin=0;
+    EditText timeRepeat;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
+        fromHour = 8;
+        fromMin = 0; toHour = 22;
+        toMin=0;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_setting);
         db = new DataBaseHelper(this);
-        mapSetting = db.mapSetting;
+        mapSetting = DataBaseHelper.mapSetting;
         jQuery = new MyJQuery();
         LinearLayout linearLayout = (LinearLayout)findViewById(R.id.globalLayout);
-        arrayEditText = jQuery.findViewByTagClass(linearLayout, EditText.class);
+        arrayEditText = jQuery.findViewByTagClass((ViewGroup)linearLayout.findViewById(R.id.urlMaps), EditText.class);
+         timePickerFrom =(TimePicker)findViewById(R.id.timePickerFrom);
+        timePickerTo =(TimePicker)findViewById(R.id.timePickerTo);
+        timeRepeat = (EditText)findViewById(R.id.timeRepeat);
+        timePickerFrom.setIs24HourView(true);
+        timePickerTo.setIs24HourView(true);
+        new TimePickerColor(this, timePickerFrom);
+        new TimePickerColor(this, timePickerTo);
+
+        timePickerFrom.setOnTimeChangedListener(this);
+        timePickerTo.setOnTimeChangedListener(this);
+
+        textViewFrom = (TextView)findViewById(R.id.textViewFrom);
+        textViewTo = (TextView)findViewById(R.id.textViewTo);
+
+        setTimeFromTo();
         inflateSetting();
     }
+    void  setTimeFromTo(){
+
+        if(mapSetting.get(DataBaseHelper.TIME_FROM_HOUR)!=null){
+            fromHour = Integer.parseInt(mapSetting.get(DataBaseHelper.TIME_FROM_HOUR));
+        }
+        if(mapSetting.get(DataBaseHelper.TIME_FROM_MINUTE)!=null){
+            fromMin = Integer.parseInt(mapSetting.get(DataBaseHelper.TIME_FROM_MINUTE));
+        }
+        if(mapSetting.get(DataBaseHelper.TIME_TO_HOUR)!=null){
+            toHour = Integer.parseInt(mapSetting.get(DataBaseHelper.TIME_TO_HOUR));
+        }
+        if(mapSetting.get(DataBaseHelper.TIME_TO_MINUTE)!=null){
+            toMin = Integer.parseInt(mapSetting.get(DataBaseHelper.TIME_TO_MINUTE));
+        }
+
+        timePickerFrom.setCurrentHour(fromHour);
+        timePickerFrom.setCurrentMinute(fromMin);
+        timePickerTo.setCurrentHour(toHour);
+        timePickerTo.setCurrentMinute(toMin);
+        textViewFrom.setText("" + fromHour + ":" + getMinuts(fromMin));
+        textViewTo.setText(""+toHour+":"+getMinuts(toMin));
+
+    }
+
+
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -54,30 +108,33 @@ public class ActivitySetting extends AppCompatActivity {
 
     private void inflateSetting(){
 
-        if(mapSetting.get("title1")!=null){
-            ((EditText)arrayEditText.get(0)).setText(mapSetting.get("title1"));
+        if(mapSetting.get(DataBaseHelper.TITLE1)!=null){
+            ((EditText)arrayEditText.get(0)).setText(mapSetting.get(DataBaseHelper.TITLE1));
         }
 
-        if(mapSetting.get("title2")!=null){
-            ((EditText)arrayEditText.get(2)).setText(mapSetting.get("title2"));
+        if(mapSetting.get(DataBaseHelper.TITLE2)!=null){
+            ((EditText)arrayEditText.get(2)).setText(mapSetting.get(DataBaseHelper.TITLE2));
         }
 
-        if(mapSetting.get("title3")!=null){
-            ((EditText)arrayEditText.get(4)).setText(mapSetting.get("title3"));
-        }
-
-
-        if(mapSetting.get("url1")!=null){
-            ((EditText)arrayEditText.get(1)).setText(mapSetting.get("url1"));
-        }
-        if(mapSetting.get("url1")!=null){
-            ((EditText)arrayEditText.get(3)).setText(mapSetting.get("url2"));
-        }
-        if(mapSetting.get("url3")!=null){
-            ((EditText)arrayEditText.get(5)).setText(mapSetting.get("url3"));
+        if(mapSetting.get(DataBaseHelper.TITLE3)!=null){
+            ((EditText)arrayEditText.get(4)).setText(mapSetting.get(DataBaseHelper.TITLE3));
         }
 
 
+        if(mapSetting.get(DataBaseHelper.URL1)!=null){
+            ((EditText)arrayEditText.get(1)).setText(mapSetting.get(DataBaseHelper.URL1));
+        }
+        if(mapSetting.get(DataBaseHelper.URL1)!=null){
+            ((EditText)arrayEditText.get(3)).setText(mapSetting.get(DataBaseHelper.URL2));
+        }
+        if(mapSetting.get(DataBaseHelper.URL3)!=null){
+            ((EditText)arrayEditText.get(5)).setText(mapSetting.get(DataBaseHelper.URL3));
+        }
+        if(mapSetting.get(DataBaseHelper.TIME_REPEAT)!=null){
+            timeRepeat.setText(mapSetting.get(DataBaseHelper.TIME_REPEAT));
+        }else {
+            timeRepeat.setText("2");
+        }
 
 
     }
@@ -98,17 +155,59 @@ public class ActivitySetting extends AppCompatActivity {
         String url1 = ((EditText)arrayEditText.get(1)).getText().toString();
         String url2 = ((EditText)arrayEditText.get(3)).getText().toString();
         String url3 = ((EditText)arrayEditText.get(5)).getText().toString();
-        mapSetting.put("title1", title1);
-        mapSetting.put("title2", title2);
-        mapSetting.put("title3", title3);
+
+        mapSetting.put(DataBaseHelper.TITLE1, title1);
+        mapSetting.put(DataBaseHelper.TITLE2, title2);
+        mapSetting.put(DataBaseHelper.TITLE3, title3);
 
 
-        mapSetting.put("url1", url1);
-        mapSetting.put("url2", url2);
-        mapSetting.put("url3", url3);
+        mapSetting.put(DataBaseHelper.URL1, url1);
+        mapSetting.put(DataBaseHelper.URL2, url2);
+        mapSetting.put(DataBaseHelper.URL3, url3);
+
+        mapSetting.put(DataBaseHelper.TIME_FROM_HOUR, ""+fromHour);
+        mapSetting.put(DataBaseHelper.TIME_FROM_MINUTE, ""+fromMin);
+        mapSetting.put(DataBaseHelper.TIME_TO_HOUR, ""+toHour);
+
+        mapSetting.put(DataBaseHelper.TIME_TO_MINUTE, ""+toMin);
+        mapSetting.put(DataBaseHelper.TIME_REPEAT, timeRepeat.getText().toString());
         db.saveSetting();
 
 
     }
+    boolean isInitTimeFrom = false, isInitTimeTo = false;
+    @Override
+    public void onTimeChanged(TimePicker view, int hourOfDay, int minute) {
 
+        switch (view.getId()){
+            case R.id.timePickerFrom:
+
+                if(isInitTimeFrom){
+                    textViewFrom.setText(""+hourOfDay+":"+getMinuts(minute));
+                    fromMin = minute;
+                    fromHour = hourOfDay;
+                }
+                isInitTimeFrom = true;
+
+                break;
+            case R.id.timePickerTo:
+
+                if(isInitTimeTo){
+                    textViewTo.setText(""+hourOfDay+":"+getMinuts(minute));
+                    toMin = minute;
+                    toHour = hourOfDay;
+                }
+                isInitTimeTo = true;
+
+                break;
+        }
+
+        Log.d(TAG,""+hourOfDay+":"+minute);
+    }
+    String getMinuts(int minute){
+        if(minute<10){
+            return "0"+minute;
+        }
+        return ""+minute;
+    }
 }
