@@ -140,13 +140,16 @@ public class MainActivity extends FragmentActivity implements Communicator{
         }
     }
 
+    /**
+     * событие из сервиса
+     */
     private class MyReceiver extends BroadcastReceiver {
 
         @Override
         public void onReceive(Context arg0, Intent arg1) {
 
             String distance = arg1.getExtras().getString("distance");
-            toastShow(distance);
+           // toastShow(distance);
 
         }
     }
