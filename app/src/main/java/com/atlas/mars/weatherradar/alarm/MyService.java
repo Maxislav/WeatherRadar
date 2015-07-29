@@ -73,10 +73,12 @@ public class MyService extends Service {
 
     void someTask() {
         //todo не удалять. Задача для активити
-        /*Intent updIntent = new Intent();
+        Intent updIntent = new Intent();
         updIntent.setAction(MainActivity.LOCATION);
-        updIntent.putExtra("distance", 5);
-        sendBroadcast(updIntent);*/
+        updIntent.putExtra("distance", "Wake Up");
+        sendBroadcast(updIntent);
+
+
         if (isNetworkAvailable()) {
             myAsynkTask = new MyAsynkTask();
             myAsynkTask.execute();
@@ -139,7 +141,7 @@ public class MyService extends Service {
         if (map.get("dist")!=null &&  map.get("dist") < 40) {
             onNotification(map);
         }
-        onNotification(map);
+       // onNotification(map);
         onStop();
     }
 

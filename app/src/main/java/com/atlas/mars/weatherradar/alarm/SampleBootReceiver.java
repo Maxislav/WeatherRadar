@@ -8,14 +8,64 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
+import com.atlas.mars.weatherradar.DataBaseHelper;
+
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
+
 /**
  * Created by Администратор on 7/26/15.
  */
 public class SampleBootReceiver extends BroadcastReceiver {
-    final String LOG_TAG = "BootReceiverLogs";
+    final String TAG = "BootReceiverLogs";
     NotificationManager nm;
+    DataBaseHelper db;
+    PendingIntent pendingIntent;
+    HashMap<String, String> mapSetting;
+    final String NEW_FORMAT = "yyyy-MM-dd HH:mm:ss.SSS";
     @Override
     public void onReceive(Context context, Intent intent) {
+
+        db = new DataBaseHelper(context);
+        mapSetting = DataBaseHelper.mapSetting;
+
+        int timeRepet = mapSetting.get(DataBaseHelper.TIME_REPEAT)!=null ? Integer.parseInt(mapSetting.get(DataBaseHelper.TIME_REPEAT)):2;
+        long timeRepeatMilSec = 3600*1000*timeRepet;
+        String timeNotify = mapSetting.get(DataBaseHelper.TIME_NOTIFY)!=null ? mapSetting.get(DataBaseHelper.TIME_NOTIFY) : null;
+
+        DateFormat formatter = new SimpleDateFormat(NEW_FORMAT);
+        Date dateNotify = null;
+        try {
+            if(timeNotify!=null){
+                dateNotify = formatter.parse(timeNotify);
+            }
+        } catch (ParseException e) {
+            Log.e(TAG,e.toString(),e);
+            e.printStackTrace();
+        }
+        //Log.d(TAG, Long.toString(dateNotify.getTime()));
+
+        Date dateCurrent = new Date();
+        long dif = 0;
+        if(dateNotify!=null){
+            dif = System.currentTimeMillis() - dateNotify.getTime();
+        }
+
+        long startAlarm;
+        if(dif == 0){
+            startAlarm = System.currentTimeMillis()+10*60*1000;
+        }else if(dif<timeRepeatMilSec){
+            startAlarm = System.currentTimeMillis()+(timeRepeatMilSec-dif);
+        }else{
+            startAlarm = System.currentTimeMillis()+10*60*1000;
+        }
+
+        Log.d(TAG, Long.toString(dif));
+
+
         nm = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
       /*  Notification notification;
@@ -38,10 +88,27 @@ public class SampleBootReceiver extends BroadcastReceiver {
 
 
 
+
         AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
-        am.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 10*60*1000, pendingIntent);
-        Log.d(LOG_TAG, "onReceive");
+        pendingIntent = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+      // am.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 10*60*1000, pendingIntent);
+       am.set(AlarmManager.RTC_WAKEUP, startAlarm, pendingIntent);
+       // am.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis()+5*1000, -1, pendingIntent);
+       // am.setRepeating(AlarmManager.RTC_WAKEUP, startAlarm, -1, pendingIntent);
+        Log.d(TAG, "onReceive");
         context.startService(new Intent(context, MyService.class));
     }
+
+    public void CancelAlarm(Context context) {
+
+        Intent intent = new Intent(context, SampleBootReceiver.class);
+
+        //PendingIntent sender = PendingIntent.getBroadcast(context, 0, intent, 0);
+
+        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+
+        alarmManager.cancel(pendingIntent); // Отменяем будильник, связанный с интентом данного класса
+
+    }
+
 }

@@ -145,7 +145,7 @@ public class MainActivity extends FragmentActivity implements Communicator{
         @Override
         public void onReceive(Context arg0, Intent arg1) {
 
-            String distance = Integer.toString(arg1.getExtras().getInt("distance"));
+            String distance = arg1.getExtras().getString("distance");
             toastShow(distance);
 
         }
