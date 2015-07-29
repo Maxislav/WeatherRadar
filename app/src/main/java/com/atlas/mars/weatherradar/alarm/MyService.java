@@ -105,7 +105,7 @@ public class MyService extends Service {
         Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
         long[] pattern = {0, 700, 600, 700, 700};
         //todo раскоментировать для вибрации
-      //  vibrator.vibrate(pattern, -1);
+          vibrator.vibrate(pattern, -1);
 
         Intent notificationIntent = new Intent(this, MainActivity.class);
         notificationIntent.putExtra("item_id", "1001");

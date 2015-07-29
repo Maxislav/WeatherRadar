@@ -40,7 +40,7 @@ public class MainActivity extends FragmentActivity implements Communicator{
     Intent intent2;
     PendingIntent pIntent1;
     PendingIntent pIntent2;
-
+    long startAlarm;
     static MyReceiver myReceiver;
 
 
@@ -53,6 +53,7 @@ public class MainActivity extends FragmentActivity implements Communicator{
 
         new Density(this);
         db = new DataBaseHelper(this);
+        startAlarm = db.getStartTime();
         pager = (ViewPager) findViewById(R.id.pager);
         pagerAdapter = new MyFragmentPagerAdapter(getSupportFragmentManager());
         pager.setAdapter(pagerAdapter);
@@ -63,7 +64,10 @@ public class MainActivity extends FragmentActivity implements Communicator{
         intent1 = createIntent("action 1", "extra 1");
         pIntent1 = PendingIntent.getBroadcast(this, 0, intent1, PendingIntent.FLAG_CANCEL_CURRENT );
         am.cancel(pIntent1);
-        am.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 5000, pIntent1);
+
+        am.set(AlarmManager.RTC_WAKEUP, startAlarm, pIntent1);
+
+        //am.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 5000, pIntent1);
 
     }
     Intent createIntent(String action, String extra) {

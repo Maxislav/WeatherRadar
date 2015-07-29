@@ -24,14 +24,12 @@ public class SampleBootReceiver extends BroadcastReceiver {
     NotificationManager nm;
     DataBaseHelper db;
     PendingIntent pendingIntent;
-    HashMap<String, String> mapSetting;
+
     final String NEW_FORMAT = "yyyy-MM-dd HH:mm:ss.SSS";
     @Override
     public void onReceive(Context context, Intent intent) {
-
         db = new DataBaseHelper(context);
-        mapSetting = DataBaseHelper.mapSetting;
-
+      /*  mapSetting = DataBaseHelper.mapSetting;
         int timeRepet = mapSetting.get(DataBaseHelper.TIME_REPEAT)!=null ? Integer.parseInt(mapSetting.get(DataBaseHelper.TIME_REPEAT)):2;
         long timeRepeatMilSec = 3600*1000*timeRepet;
         String timeNotify = mapSetting.get(DataBaseHelper.TIME_NOTIFY)!=null ? mapSetting.get(DataBaseHelper.TIME_NOTIFY) : null;
@@ -46,24 +44,26 @@ public class SampleBootReceiver extends BroadcastReceiver {
             Log.e(TAG,e.toString(),e);
             e.printStackTrace();
         }
-        //Log.d(TAG, Long.toString(dateNotify.getTime()));
-
-        Date dateCurrent = new Date();
         long dif = 0;
         if(dateNotify!=null){
             dif = System.currentTimeMillis() - dateNotify.getTime();
         }
 
-        long startAlarm;
+        //long startAlarm;
         if(dif == 0){
             startAlarm = System.currentTimeMillis()+10*60*1000;
         }else if(dif<timeRepeatMilSec){
             startAlarm = System.currentTimeMillis()+(timeRepeatMilSec-dif);
         }else{
             startAlarm = System.currentTimeMillis()+10*60*1000;
-        }
+        }*/
 
-        Log.d(TAG, Long.toString(dif));
+
+        long startAlarm;
+        startAlarm = db.getStartTime();
+
+
+
 
 
         nm = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);

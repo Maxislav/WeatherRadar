@@ -5,7 +5,12 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -13,6 +18,7 @@ import java.util.Map;
  * Created by mars on 7/9/15.
  */
 public class DataBaseHelper extends SQLiteOpenHelper {
+    final String TAG = "DataBaseHelperLogs";
     SQLiteDatabase sdb;
     private static final int DATABASE_VERSION = 2;
     private static final String DATABASE_NAME = "weather";
@@ -37,6 +43,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     public  static final String TIME_FROM_MINUTE = "timeFromMinute";
     public  static final String TIME_TO_HOUR = "timeToHour";
     public  static final String TIME_TO_MINUTE = "timeToMinute";
+    final String NEW_FORMAT = "yyyy-MM-dd HH:mm:ss.SSS";
 
 
 
@@ -127,5 +134,35 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         }
         cursor.close();
         sdb.close();
+    }
+    public  Long getStartTime(){
+        int timeRepet = mapSetting.get(TIME_REPEAT)!=null ? Integer.parseInt(mapSetting.get(TIME_REPEAT)):2;
+        long timeRepeatMilSec = 3600*1000*timeRepet;
+        String timeNotify = mapSetting.get(TIME_NOTIFY)!=null ? mapSetting.get(TIME_NOTIFY) : null;
+
+        DateFormat formatter = new SimpleDateFormat(NEW_FORMAT);
+        Date dateNotify = null;
+        try {
+            if(timeNotify!=null){
+                dateNotify = formatter.parse(timeNotify);
+            }
+        } catch (ParseException e) {
+            Log.e(TAG, e.toString(), e);
+            e.printStackTrace();
+        }
+        long dif = 0;
+        if(dateNotify!=null){
+            dif = System.currentTimeMillis() - dateNotify.getTime();
+        }
+
+        long startAlarm;
+        if(dif == 0){
+            startAlarm = System.currentTimeMillis()+10*60*1000;
+        }else if(dif<timeRepeatMilSec){
+            startAlarm = System.currentTimeMillis()+(timeRepeatMilSec-dif);
+        }else{
+            startAlarm = System.currentTimeMillis()+10*60*1000;
+        }
+        return startAlarm;
     }
 }
