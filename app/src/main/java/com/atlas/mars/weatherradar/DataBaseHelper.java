@@ -10,7 +10,9 @@ import android.util.Log;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -136,9 +138,28 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         cursor.close();
         sdb.close();
     }
+    Calendar fromNotSleep, toNotSleep;
     public  Long getStartTime(){
-        int timeRepet = mapSetting.get(TIME_REPEAT)!=null ? Integer.parseInt(mapSetting.get(TIME_REPEAT)):2;
-        long timeRepeatMilSec = 3600*1000*timeRepet;
+
+        Calendar c = new GregorianCalendar();
+        fromNotSleep = new GregorianCalendar(c.get(Calendar.YEAR),c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH));
+        toNotSleep = new GregorianCalendar(c.get(Calendar.YEAR),c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH));
+
+
+        fromNotSleep.add(Calendar.HOUR_OF_DAY, Integer.parseInt(mapSetting.get(TIME_FROM_HOUR)!=null? mapSetting.get(TIME_FROM_HOUR):"0"));
+        fromNotSleep.add(Calendar.MINUTE, Integer.parseInt(mapSetting.get(TIME_FROM_MINUTE)!=null? mapSetting.get(TIME_FROM_MINUTE):"0"));
+
+        toNotSleep.add(Calendar.HOUR_OF_DAY, Integer.parseInt(mapSetting.get(TIME_TO_HOUR)!=null? mapSetting.get(TIME_TO_HOUR):"0"));
+        toNotSleep.add(Calendar.MINUTE, Integer.parseInt(mapSetting.get(TIME_TO_MINUTE)!=null? mapSetting.get(TIME_TO_MINUTE):"0"));
+
+        Log.d(TAG, "" +fromNotSleep.getTimeInMillis());
+
+
+        //Date fromNotSleep = new Date(d.getYear() )
+
+
+        int timeRepeat = mapSetting.get(TIME_REPEAT)!=null ? Integer.parseInt(mapSetting.get(TIME_REPEAT)):2;
+        long timeRepeatLong = 3600*1000*timeRepeat;
         String timeNotify = mapSetting.get(TIME_NOTIFY)!=null ? mapSetting.get(TIME_NOTIFY) : null;
 
         DateFormat formatter = new SimpleDateFormat(NEW_FORMAT);
@@ -159,11 +180,21 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         long startAlarm;
         if(dif == 0){
             startAlarm = System.currentTimeMillis()+10*60*1000;
-        }else if(dif<timeRepeatMilSec){
-            startAlarm = System.currentTimeMillis()+(timeRepeatMilSec-dif);
+        }else if(dif<timeRepeatLong){
+            startAlarm = System.currentTimeMillis()+(timeRepeatLong-dif);
         }else{
             startAlarm = System.currentTimeMillis()+10*60*1000;
         }
+
+        if(startAlarm<fromNotSleep.getTimeInMillis()){
+            startAlarm = fromNotSleep.getTimeInMillis();
+        }
+
+        if(toNotSleep.getTimeInMillis()<startAlarm){
+            fromNotSleep.add(Calendar.DAY_OF_YEAR, 1);
+            startAlarm = fromNotSleep.getTimeInMillis()+60*1000;
+        }
+
         return startAlarm;
     }
 }
