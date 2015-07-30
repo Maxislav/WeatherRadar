@@ -22,6 +22,8 @@ import com.atlas.mars.weatherradar.fragments.BoridpolRadar;
 import com.atlas.mars.weatherradar.fragments.InfraRed;
 import com.atlas.mars.weatherradar.fragments.Visible;
 
+import java.util.HashMap;
+
 
 public class MainActivity extends FragmentActivity implements Communicator{
     public  final static String LOCATION = "LOCATION";
@@ -42,34 +44,54 @@ public class MainActivity extends FragmentActivity implements Communicator{
     PendingIntent pIntent2;
     long startAlarm;
     static MyReceiver myReceiver;
+    HashMap<String, String> mapSetting;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-
-
         new Density(this);
         db = new DataBaseHelper(this);
         startAlarm = db.getStartTime();
+        mapSetting = DataBaseHelper.mapSetting;
+
         pager = (ViewPager) findViewById(R.id.pager);
         pagerAdapter = new MyFragmentPagerAdapter(getSupportFragmentManager());
         pager.setAdapter(pagerAdapter);
         pager.setOffscreenPageLimit(3);
 
 
+        if(mapSetting.get(DataBaseHelper.IS_ALARM)!=null && mapSetting.get(DataBaseHelper.IS_ALARM).equals(1)){
+            alarmOn();
+        }
+
+       /* am = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        intent1 = createIntent("action 1", "extra 1");
+        pIntent1 = PendingIntent.getBroadcast(this, 0, intent1, PendingIntent.FLAG_CANCEL_CURRENT );
+        am.cancel(pIntent1);
+        am.set(AlarmManager.RTC_WAKEUP, startAlarm, pIntent1);
+*/
+        //am.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 5000, pIntent1);
+
+    }
+
+    void alarmOn(){
         am = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         intent1 = createIntent("action 1", "extra 1");
         pIntent1 = PendingIntent.getBroadcast(this, 0, intent1, PendingIntent.FLAG_CANCEL_CURRENT );
         am.cancel(pIntent1);
-
         am.set(AlarmManager.RTC_WAKEUP, startAlarm, pIntent1);
+    }
 
-        //am.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 5000, pIntent1);
+    void alarmCancel(){
+        if(pIntent1!=null && am!=null){
+            pIntent1 = PendingIntent.getBroadcast(this, 0, intent1, PendingIntent.FLAG_CANCEL_CURRENT );
+            am.cancel(pIntent1);
+        }
 
     }
+
     Intent createIntent(String action, String extra) {
        /* SampleBootReceiver sm = new SampleBootReceiver();
         sm.setMainActivity(this);*/
@@ -135,11 +157,17 @@ public class MainActivity extends FragmentActivity implements Communicator{
 
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
         if (requestCode == 0) {
             if (resultCode == RESULT_OK) {
                 //Todo нажато сохранение
                 reloadAll();
+                Bundle extras = intent.getExtras();
+                if(extras.getBoolean(DataBaseHelper.IS_ALARM)){
+                    alarmOn();
+                }else {
+                    alarmCancel();
+                }
             }
         }
     }

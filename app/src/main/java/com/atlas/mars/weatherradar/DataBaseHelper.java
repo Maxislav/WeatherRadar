@@ -36,6 +36,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     public  static final String TITLE3 = "title3";
 
     public  static final String IS_VIBRATION = "isVibration"; // 0 || 1
+    public  static final String IS_ALARM = "isAlarm"; // 0 || 1
     public  static final String TIME_REPEAT = "timeRepeat"; // long
     public  static final String TIME_NOTIFY = "timeNotify"; // 2015-07-29 19:12:40.878
 

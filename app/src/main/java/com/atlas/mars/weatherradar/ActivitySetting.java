@@ -9,6 +9,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -31,6 +32,7 @@ public class ActivitySetting extends AppCompatActivity implements TimePicker.OnT
     TimePicker timePickerFrom, timePickerTo;
     TextView textViewFrom, textViewTo;
     int fromHour = 8, fromMin = 0, toHour = 22, toMin=0;
+    CheckBox isAlarm;
     EditText timeRepeat;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -47,6 +49,7 @@ public class ActivitySetting extends AppCompatActivity implements TimePicker.OnT
          timePickerFrom =(TimePicker)findViewById(R.id.timePickerFrom);
         timePickerTo =(TimePicker)findViewById(R.id.timePickerTo);
         timeRepeat = (EditText)findViewById(R.id.timeRepeat);
+        isAlarm = (CheckBox)findViewById(R.id.isAlarm);
         timePickerFrom.setIs24HourView(true);
         timePickerTo.setIs24HourView(true);
         new TimePickerColor(this, timePickerFrom);
@@ -135,6 +138,9 @@ public class ActivitySetting extends AppCompatActivity implements TimePicker.OnT
         }else {
             timeRepeat.setText("2");
         }
+        if(mapSetting.get(DataBaseHelper.IS_ALARM)!=null &&  mapSetting.get(DataBaseHelper.IS_ALARM).equals("1")){
+            isAlarm.setChecked(true);
+        }
 
 
     }
@@ -143,6 +149,7 @@ public class ActivitySetting extends AppCompatActivity implements TimePicker.OnT
     private  void  saveAndClose(){
         saveSetting();
         Intent answerIntent = new Intent();
+        answerIntent.putExtra(DataBaseHelper.IS_ALARM, isAlarm.isChecked());
         setResult(RESULT_OK, answerIntent);
         finish();
     }
@@ -171,6 +178,14 @@ public class ActivitySetting extends AppCompatActivity implements TimePicker.OnT
 
         mapSetting.put(DataBaseHelper.TIME_TO_MINUTE, ""+toMin);
         mapSetting.put(DataBaseHelper.TIME_REPEAT, timeRepeat.getText().toString());
+
+        if(isAlarm.isChecked()){
+            mapSetting.put(DataBaseHelper.IS_ALARM, "1");
+        }else {
+            mapSetting.put(DataBaseHelper.IS_ALARM, "0");
+        }
+
+
         db.saveSetting();
 
 
