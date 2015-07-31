@@ -101,7 +101,7 @@ public class MyService extends Service {
             Log.d(TAG, "Blocked notify");
             return;
         }
-        Log.d(TAG, db.getTimeNotify().toString());
+       // Log.d(TAG, db.getTimeNotify().toString());
 
         String message = "Distance: " + map.get("dist") + " Intensity: " + map.get("intensity");
 
