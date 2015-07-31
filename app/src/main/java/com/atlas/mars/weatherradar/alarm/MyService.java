@@ -25,6 +25,7 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Scanner;
 
@@ -40,6 +41,7 @@ public class MyService extends Service {
     Notification notification;
     Intent intent;
     DataBaseHelper db;
+    int alarmMinDist = 40;
     HashMap<String, String> mapSetting;
 
     @Override
@@ -53,6 +55,10 @@ public class MyService extends Service {
         nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         db = new DataBaseHelper(this);
         mapSetting = db.mapSetting;
+
+        if(mapSetting.get(DataBaseHelper.RADIUS_ALARM)!=null){
+            alarmMinDist = Integer.parseInt(mapSetting.get(DataBaseHelper.RADIUS_ALARM));
+        }
         super.onCreate();
 
     }
@@ -91,9 +97,11 @@ public class MyService extends Service {
 
     void onNotification(HashMap<String, Integer> map) {
 
-        if (System.currentTimeMillis() < db.getStartTime()) {
+        if (!db.permitNotify()) {
+            Log.d(TAG, "Blocked notify");
             return;
         }
+        Log.d(TAG, db.getTimeNotify().toString());
 
         String message = "Distance: " + map.get("dist") + " Intensity: " + map.get("intensity");
 
@@ -117,6 +125,7 @@ public class MyService extends Service {
         notification.contentIntent = intent;
         nm.notify(1, notification);
         timeStampDateBase();
+        Log.d(TAG, "onNotification " + (new Date(System.currentTimeMillis())));
 
     }
 
@@ -138,9 +147,10 @@ public class MyService extends Service {
 
 
     void onCallback(HashMap<String, Integer> map) {
-        if (map.get("dist") != null && map.get("dist") < 40) {
+        if (map.get("dist") != null && map.get("dist") < alarmMinDist) {
             onNotification(map);
         }
+        Log.d(TAG, "onCallback " + (new Date(System.currentTimeMillis())));
         // onNotification(map);
         onStop();
     }
@@ -183,7 +193,7 @@ public class MyService extends Service {
                     for (JsonNode jsonNode : root) {
                         int dist = jsonNode.path("dist").asInt();
                         int intensity = jsonNode.path("intensity").asInt();
-                        if (_intensity < intensity && dist < 40) {
+                        if (_intensity < intensity && dist < alarmMinDist) {
                             _intensity = intensity;
                             map.put("dist", dist);
                             map.put("intensity", intensity);
@@ -191,6 +201,7 @@ public class MyService extends Service {
                     }
 
                 } catch (IOException e) {
+                    Log.e(TAG, e.toString(), e);
                     e.printStackTrace();
                 }
             }

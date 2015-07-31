@@ -62,7 +62,7 @@ public class MainActivity extends FragmentActivity implements Communicator{
         pager.setOffscreenPageLimit(3);
 
 
-        if(mapSetting.get(DataBaseHelper.IS_ALARM)!=null && mapSetting.get(DataBaseHelper.IS_ALARM).equals(1)){
+        if(mapSetting.get(DataBaseHelper.IS_ALARM)!=null && mapSetting.get(DataBaseHelper.IS_ALARM).equals("1")){
             alarmOn();
         }
 
@@ -81,7 +81,8 @@ public class MainActivity extends FragmentActivity implements Communicator{
         intent1 = createIntent("action 1", "extra 1");
         pIntent1 = PendingIntent.getBroadcast(this, 0, intent1, PendingIntent.FLAG_CANCEL_CURRENT );
         am.cancel(pIntent1);
-        am.set(AlarmManager.RTC_WAKEUP, startAlarm, pIntent1);
+        //am.set(AlarmManager.RTC_WAKEUP, startAlarm, pIntent1);
+        am.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis()+5*1000, pIntent1);
     }
 
     void alarmCancel(){

@@ -33,7 +33,7 @@ public class ActivitySetting extends AppCompatActivity implements TimePicker.OnT
     TextView textViewFrom, textViewTo;
     int fromHour = 8, fromMin = 0, toHour = 22, toMin=0;
     CheckBox isAlarm;
-    EditText timeRepeat;
+    EditText timeRepeat, edTextRadius;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         fromHour = 8;
@@ -49,6 +49,7 @@ public class ActivitySetting extends AppCompatActivity implements TimePicker.OnT
          timePickerFrom =(TimePicker)findViewById(R.id.timePickerFrom);
         timePickerTo =(TimePicker)findViewById(R.id.timePickerTo);
         timeRepeat = (EditText)findViewById(R.id.timeRepeat);
+        edTextRadius = (EditText)findViewById(R.id.edTextRadius);
         isAlarm = (CheckBox)findViewById(R.id.isAlarm);
         timePickerFrom.setIs24HourView(true);
         timePickerTo.setIs24HourView(true);
@@ -142,6 +143,10 @@ public class ActivitySetting extends AppCompatActivity implements TimePicker.OnT
             isAlarm.setChecked(true);
         }
 
+        if(mapSetting.get(DataBaseHelper.RADIUS_ALARM)!=null && !mapSetting.get(DataBaseHelper.RADIUS_ALARM).isEmpty() ){
+            edTextRadius.setText(mapSetting.get(DataBaseHelper.RADIUS_ALARM));
+        }
+
 
     }
 
@@ -184,8 +189,11 @@ public class ActivitySetting extends AppCompatActivity implements TimePicker.OnT
         }else {
             mapSetting.put(DataBaseHelper.IS_ALARM, "0");
         }
-
-
+        if(!edTextRadius.getText().toString().isEmpty()){
+            mapSetting.put(DataBaseHelper.RADIUS_ALARM, edTextRadius.getText().toString());
+        }else {
+            mapSetting.put(DataBaseHelper.RADIUS_ALARM, "40");
+        }
         db.saveSetting();
 
 

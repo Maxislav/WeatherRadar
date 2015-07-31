@@ -38,6 +38,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     public  static final String TITLE3 = "title3";
 
     public  static final String IS_VIBRATION = "isVibration"; // 0 || 1
+    public  static final String RADIUS_ALARM = "radiusAlarm"; // 0 || 1
     public  static final String IS_ALARM = "isAlarm"; // 0 || 1
     public  static final String TIME_REPEAT = "timeRepeat"; // long
     public  static final String TIME_NOTIFY = "timeNotify"; // 2015-07-29 19:12:40.878
@@ -196,5 +197,37 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         }
 
         return startAlarm;
+    }
+
+    public Long getTimeNotify(){
+        DateFormat formatter = new SimpleDateFormat(NEW_FORMAT);
+        String timeNotify = mapSetting.get(TIME_NOTIFY)!=null ? mapSetting.get(TIME_NOTIFY) : null;
+        Date dateNotify = null;
+        try {
+            if(timeNotify!=null){
+                dateNotify = formatter.parse(timeNotify);
+            }
+        } catch (ParseException e) {
+            Log.e(TAG, e.toString(), e);
+            e.printStackTrace();
+        }
+        if(dateNotify!=null){
+            return dateNotify.getTime();
+        }else{
+            return  null;
+        }
+
+    }
+
+    public boolean permitNotify(){
+
+        int timeRepeat = mapSetting.get(TIME_REPEAT)!=null ? Integer.parseInt(mapSetting.get(TIME_REPEAT)):2;
+        long timeRepeatLong = 3600*1000*timeRepeat;
+       /* if(System.currentTimeMillis()<getTimeNotify()+timeRepeatLong){
+            return false;
+        }else{
+            return true;
+        }*/
+        return  (System.currentTimeMillis()<getTimeNotify()+timeRepeatLong) ? false : true;
     }
 }
