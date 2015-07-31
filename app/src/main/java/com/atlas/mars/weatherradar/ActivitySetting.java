@@ -1,6 +1,8 @@
 package com.atlas.mars.weatherradar;
 
+import android.app.Activity;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -9,21 +11,28 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.LinearLayout;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
+import com.atlas.mars.weatherradar.loader.Loader;
 import com.atlas.mars.weatherradar.timepisker.TimePickerColor;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Scanner;
 
 /**
  * Created by Администратор on 7/8/15.
  */
-public class ActivitySetting extends AppCompatActivity implements TimePicker.OnTimeChangedListener {
+public class ActivitySetting extends AppCompatActivity implements TimePicker.OnTimeChangedListener, View.OnClickListener {
     final String TAG = "ActivitySettingLog";
     DataBaseHelper db;
     HashMap <String, String> mapSetting;
@@ -34,6 +43,8 @@ public class ActivitySetting extends AppCompatActivity implements TimePicker.OnT
     int fromHour = 8, fromMin = 0, toHour = 22, toMin=0;
     CheckBox isAlarm;
     EditText timeRepeat, edTextRadius;
+    Button btnLoadSetting;
+    FrameLayout globalLayout;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         fromHour = 8;
@@ -44,15 +55,19 @@ public class ActivitySetting extends AppCompatActivity implements TimePicker.OnT
         db = new DataBaseHelper(this);
         mapSetting = DataBaseHelper.mapSetting;
         jQuery = new MyJQuery();
-        LinearLayout linearLayout = (LinearLayout)findViewById(R.id.globalLayout);
-        arrayEditText = jQuery.findViewByTagClass((ViewGroup)linearLayout.findViewById(R.id.urlMaps), EditText.class);
-         timePickerFrom =(TimePicker)findViewById(R.id.timePickerFrom);
+        globalLayout = (FrameLayout)findViewById(R.id.globalLayout);
+        arrayEditText = jQuery.findViewByTagClass((ViewGroup)globalLayout.findViewById(R.id.urlMaps), EditText.class);
+        timePickerFrom =(TimePicker)findViewById(R.id.timePickerFrom);
         timePickerTo =(TimePicker)findViewById(R.id.timePickerTo);
         timeRepeat = (EditText)findViewById(R.id.timeRepeat);
         edTextRadius = (EditText)findViewById(R.id.edTextRadius);
+        btnLoadSetting = (Button)findViewById(R.id.btnLoadSetting);
+        btnLoadSetting.setOnClickListener(this);
+
         isAlarm = (CheckBox)findViewById(R.id.isAlarm);
         timePickerFrom.setIs24HourView(true);
         timePickerTo.setIs24HourView(true);
+
         new TimePickerColor(this, timePickerFrom);
         new TimePickerColor(this, timePickerTo);
 
@@ -84,8 +99,8 @@ public class ActivitySetting extends AppCompatActivity implements TimePicker.OnT
         timePickerFrom.setCurrentMinute(fromMin);
         timePickerTo.setCurrentHour(toHour);
         timePickerTo.setCurrentMinute(toMin);
-        textViewFrom.setText("" + fromHour + ":" + getMinuts(fromMin));
-        textViewTo.setText(""+toHour+":"+getMinuts(toMin));
+        textViewFrom.setText("" + fromHour + ":" + getMinutes(fromMin));
+        textViewTo.setText(""+toHour+":"+ getMinutes(toMin));
 
     }
 
@@ -206,7 +221,7 @@ public class ActivitySetting extends AppCompatActivity implements TimePicker.OnT
             case R.id.timePickerFrom:
 
                 if(isInitTimeFrom){
-                    textViewFrom.setText(""+hourOfDay+":"+getMinuts(minute));
+                    textViewFrom.setText(""+hourOfDay+":"+ getMinutes(minute));
                     fromMin = minute;
                     fromHour = hourOfDay;
                 }
@@ -216,7 +231,7 @@ public class ActivitySetting extends AppCompatActivity implements TimePicker.OnT
             case R.id.timePickerTo:
 
                 if(isInitTimeTo){
-                    textViewTo.setText(""+hourOfDay+":"+getMinuts(minute));
+                    textViewTo.setText(""+hourOfDay+":"+ getMinutes(minute));
                     toMin = minute;
                     toHour = hourOfDay;
                 }
@@ -227,10 +242,78 @@ public class ActivitySetting extends AppCompatActivity implements TimePicker.OnT
 
         Log.d(TAG,""+hourOfDay+":"+minute);
     }
-    String getMinuts(int minute){
+    String getMinutes(int minute){
         if(minute<10){
             return "0"+minute;
         }
         return ""+minute;
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.btnLoadSetting:
+                LoadTask loadTask = new LoadTask(this);
+                loadTask.execute();
+                break;
+        }
+    }
+
+
+
+    private class LoadTask extends AsyncTask<String, Void, HashMap<String, Integer>> {
+        HttpURLConnection urlConnection;
+        Activity activity;
+        Loader loader;
+        LoadTask(Activity activity){
+            super();
+            this.activity = activity;
+            loader = new Loader(activity, globalLayout );
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            loader.show();
+
+        }
+
+        @Override
+        protected HashMap<String, Integer> doInBackground(String... params) {
+            HashMap<String, Integer> map = new HashMap<>();
+            URL url = null;
+            InputStream in = null;
+            StringBuilder sb = new StringBuilder();
+            try {
+                url = new URL("http://178.62.44.54/php/parserain.php");
+
+                urlConnection = (HttpURLConnection) url.openConnection();
+                urlConnection.setDoOutput(true);
+                Scanner inStream = new Scanner(urlConnection.getInputStream());
+                while (inStream.hasNextLine()) {
+                    sb.append(inStream.nextLine());
+
+                }
+            } catch (IOException e) {
+                Log.e(TAG, e.toString(), e);
+                e.printStackTrace();
+            } finally {
+                if (urlConnection != null) {
+                    urlConnection.disconnect();
+                }
+            }
+
+            if (0 < sb.length()) {
+                String json = sb.toString();
+
+            }
+            return null;
+        }
+        @Override
+        protected void onPostExecute(HashMap result) {
+            //Log.d(TAG, result);
+           // onCallback(result);
+            loader.hide();
+        }
     }
 }

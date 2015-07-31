@@ -10,11 +10,7 @@ import android.util.Log;
 
 import com.atlas.mars.weatherradar.DataBaseHelper;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.HashMap;
 
 /**
  * Created by Администратор on 7/26/15.
@@ -62,11 +58,8 @@ public class SampleBootReceiver extends BroadcastReceiver {
         long startAlarm;
         startAlarm = db.getStartTime();
 
-
-
-
-
         nm = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+
 
       /*  Notification notification;
         notification = new Notification.Builder(context).setContentTitle("Rain alarm")
@@ -95,7 +88,7 @@ public class SampleBootReceiver extends BroadcastReceiver {
        am.set(AlarmManager.RTC_WAKEUP, startAlarm, pendingIntent);
        // am.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis()+5*1000, -1, pendingIntent);
        // am.setRepeating(AlarmManager.RTC_WAKEUP, startAlarm, -1, pendingIntent);
-        Log.d(TAG, "onReceive");
+        Log.d(TAG, "Next alarm" + new Date(startAlarm).toString());
         context.startService(new Intent(context, MyService.class));
     }
 

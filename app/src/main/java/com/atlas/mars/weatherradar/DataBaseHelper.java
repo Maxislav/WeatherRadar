@@ -228,6 +228,9 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         }else{
             return true;
         }*/
+        if(getTimeNotify()==null){
+            return true;
+        }
         return  (System.currentTimeMillis()<getTimeNotify()+timeRepeatLong) ? false : true;
     }
 }
