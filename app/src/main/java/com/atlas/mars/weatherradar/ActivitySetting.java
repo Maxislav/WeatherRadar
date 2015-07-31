@@ -20,6 +20,8 @@ import android.widget.TimePicker;
 
 import com.atlas.mars.weatherradar.loader.Loader;
 import com.atlas.mars.weatherradar.timepisker.TimePickerColor;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -45,6 +47,7 @@ public class ActivitySetting extends AppCompatActivity implements TimePicker.OnT
     EditText timeRepeat, edTextRadius;
     Button btnLoadSetting;
     FrameLayout globalLayout;
+    static ObjectMapper mapper = new ObjectMapper();
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         fromHour = 8;
@@ -127,28 +130,7 @@ public class ActivitySetting extends AppCompatActivity implements TimePicker.OnT
 
     private void inflateSetting(){
 
-        if(mapSetting.get(DataBaseHelper.TITLE1)!=null){
-            ((EditText)arrayEditText.get(0)).setText(mapSetting.get(DataBaseHelper.TITLE1));
-        }
 
-        if(mapSetting.get(DataBaseHelper.TITLE2)!=null){
-            ((EditText)arrayEditText.get(2)).setText(mapSetting.get(DataBaseHelper.TITLE2));
-        }
-
-        if(mapSetting.get(DataBaseHelper.TITLE3)!=null){
-            ((EditText)arrayEditText.get(4)).setText(mapSetting.get(DataBaseHelper.TITLE3));
-        }
-
-
-        if(mapSetting.get(DataBaseHelper.URL1)!=null){
-            ((EditText)arrayEditText.get(1)).setText(mapSetting.get(DataBaseHelper.URL1));
-        }
-        if(mapSetting.get(DataBaseHelper.URL1)!=null){
-            ((EditText)arrayEditText.get(3)).setText(mapSetting.get(DataBaseHelper.URL2));
-        }
-        if(mapSetting.get(DataBaseHelper.URL3)!=null){
-            ((EditText)arrayEditText.get(5)).setText(mapSetting.get(DataBaseHelper.URL3));
-        }
         if(mapSetting.get(DataBaseHelper.TIME_REPEAT)!=null){
             timeRepeat.setText(mapSetting.get(DataBaseHelper.TIME_REPEAT));
         }else {
@@ -162,9 +144,33 @@ public class ActivitySetting extends AppCompatActivity implements TimePicker.OnT
             edTextRadius.setText(mapSetting.get(DataBaseHelper.RADIUS_ALARM));
         }
 
+        inflateUrlSetting(mapSetting);
 
     }
 
+    void inflateUrlSetting(HashMap<String, String> mapSetting){
+        if(mapSetting.get(DataBaseHelper.TITLE1)!=null){
+            ((EditText)arrayEditText.get(0)).setText(mapSetting.get(DataBaseHelper.TITLE1));
+        }
+
+        if(mapSetting.get(DataBaseHelper.TITLE2)!=null){
+            ((EditText)arrayEditText.get(2)).setText(mapSetting.get(DataBaseHelper.TITLE2));
+        }
+
+        if(mapSetting.get(DataBaseHelper.TITLE3)!=null){
+            ((EditText)arrayEditText.get(4)).setText(mapSetting.get(DataBaseHelper.TITLE3));
+        }
+
+        if(mapSetting.get(DataBaseHelper.URL1)!=null){
+            ((EditText)arrayEditText.get(1)).setText(mapSetting.get(DataBaseHelper.URL1));
+        }
+        if(mapSetting.get(DataBaseHelper.URL1)!=null){
+            ((EditText)arrayEditText.get(3)).setText(mapSetting.get(DataBaseHelper.URL2));
+        }
+        if(mapSetting.get(DataBaseHelper.URL3)!=null){
+            ((EditText)arrayEditText.get(5)).setText(mapSetting.get(DataBaseHelper.URL3));
+        }
+    }
 
     private  void  saveAndClose(){
         saveSetting();
@@ -259,9 +265,14 @@ public class ActivitySetting extends AppCompatActivity implements TimePicker.OnT
         }
     }
 
+    void  callbackLoadTask(HashMap<String, String> map){
+        if(map == null) return;
+        inflateUrlSetting(map);
+    }
 
 
-    private class LoadTask extends AsyncTask<String, Void, HashMap<String, Integer>> {
+
+    private class LoadTask extends AsyncTask<String, Void, HashMap<String, String>> {
         HttpURLConnection urlConnection;
         Activity activity;
         Loader loader;
@@ -278,14 +289,15 @@ public class ActivitySetting extends AppCompatActivity implements TimePicker.OnT
 
         }
 
+
         @Override
-        protected HashMap<String, Integer> doInBackground(String... params) {
-            HashMap<String, Integer> map = new HashMap<>();
+        protected HashMap<String, String> doInBackground(String... params) {
+            HashMap<String, String> map = new HashMap<>();
             URL url = null;
             InputStream in = null;
             StringBuilder sb = new StringBuilder();
             try {
-                url = new URL("http://178.62.44.54/php/parserain.php");
+                url = new URL("http://178.62.44.54/php/settingborispolradar.php");
 
                 urlConnection = (HttpURLConnection) url.openConnection();
                 urlConnection.setDoOutput(true);
@@ -303,17 +315,32 @@ public class ActivitySetting extends AppCompatActivity implements TimePicker.OnT
                 }
             }
 
+
             if (0 < sb.length()) {
                 String json = sb.toString();
+                try {
+                    ObjectNode root = (ObjectNode) mapper.readTree(json);
+                    map.put("title1", root.get("title1").asText());
+                    map.put("title2", root.get("title2").asText());
+                    map.put("title3", root.get("title3").asText());
+                    map.put("url1", root.get("url1").asText());
+                    map.put("url2", root.get("url2").asText());
+                    map.put("url3", root.get("url3").asText());
+
+                } catch (IOException e) {
+                    Log.e(TAG, e.toString(), e);
+                    e.printStackTrace();
+                }
 
             }
-            return null;
+            return map;
         }
         @Override
         protected void onPostExecute(HashMap result) {
             //Log.d(TAG, result);
            // onCallback(result);
             loader.hide();
+            callbackLoadTask(result);
         }
     }
 }
