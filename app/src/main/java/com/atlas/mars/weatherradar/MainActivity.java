@@ -7,6 +7,12 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.res.AssetFileDescriptor;
+import android.content.res.AssetManager;
+import android.media.AudioAttributes;
+import android.media.AudioManager;
+import android.media.SoundPool;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.PagerAdapter;
@@ -22,6 +28,7 @@ import com.atlas.mars.weatherradar.fragments.BoridpolRadar;
 import com.atlas.mars.weatherradar.fragments.InfraRed;
 import com.atlas.mars.weatherradar.fragments.Visible;
 
+import java.io.IOException;
 import java.util.HashMap;
 
 
@@ -45,6 +52,7 @@ public class MainActivity extends FragmentActivity implements Communicator{
     long startAlarm;
     static MyReceiver myReceiver;
     HashMap<String, String> mapSetting;
+
 
 
     @Override
@@ -73,7 +81,6 @@ public class MainActivity extends FragmentActivity implements Communicator{
         am.set(AlarmManager.RTC_WAKEUP, startAlarm, pIntent1);
 */
         //am.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 5000, pIntent1);
-
     }
 
     void alarmOn(){
@@ -228,4 +235,6 @@ public class MainActivity extends FragmentActivity implements Communicator{
         intentFilter.addAction(MainActivity.LOCATION);
         registerReceiver(myReceiver, intentFilter);
     }
+
+
 }

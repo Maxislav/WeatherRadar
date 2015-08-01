@@ -6,9 +6,15 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.AssetFileDescriptor;
+import android.content.res.AssetManager;
+import android.media.AudioAttributes;
+import android.media.AudioManager;
+import android.media.SoundPool;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.IBinder;
 import android.os.Vibrator;
 import android.util.Log;
@@ -43,6 +49,9 @@ public class MyService extends Service {
     DataBaseHelper db;
     int alarmMinDist = 40;
     HashMap<String, String> mapSetting;
+    AssetManager assets;
+    SoundPool sp;
+    final int MAX_STREAMS = 5;
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -56,7 +65,7 @@ public class MyService extends Service {
         db = new DataBaseHelper(this);
         mapSetting = db.mapSetting;
 
-        if(mapSetting.get(DataBaseHelper.RADIUS_ALARM)!=null){
+        if (mapSetting.get(DataBaseHelper.RADIUS_ALARM) != null) {
             alarmMinDist = Integer.parseInt(mapSetting.get(DataBaseHelper.RADIUS_ALARM));
         }
         super.onCreate();
@@ -101,8 +110,8 @@ public class MyService extends Service {
             Log.d(TAG, "Blocked notify");
             return;
         }
-       // Log.d(TAG, db.getTimeNotify().toString());
-
+        // Log.d(TAG, db.getTimeNotify().toString());
+        playSound();
         String message = "Distance: " + map.get("dist") + " Intensity: " + map.get("intensity");
 
         Notification notification = new Notification.Builder(this).setContentTitle("Rain alarm")
@@ -224,5 +233,47 @@ public class MyService extends Service {
                 = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    }
+
+    void playSound() {
+        sp = buildSoundPool();
+        assets = getAssets();
+        sp.setOnLoadCompleteListener(new SoundPool.OnLoadCompleteListener() {
+            @Override
+            public void onLoadComplete(SoundPool soundPool, int sampleId, int status) {
+                sp.play(sampleId, 1, 1, 0, 0, 1);
+            }
+        });
+        loadSound("bubbles.ogg");
+
+    }
+
+    private SoundPool buildSoundPool() {
+        SoundPool soundPool;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            AudioAttributes audioAttributes = new AudioAttributes.Builder()
+                    .setUsage(AudioAttributes.USAGE_GAME)
+                    .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                    .build();
+
+            soundPool = new SoundPool.Builder()
+                    .setMaxStreams(25)
+                    .setAudioAttributes(audioAttributes)
+                    .build();
+        } else {
+            soundPool = new SoundPool(25, AudioManager.STREAM_MUSIC, 0);
+        }
+        return soundPool;
+    }
+
+    private int loadSound(String fileName) {
+        AssetFileDescriptor afd = null;
+        try {
+            afd = assets.openFd(fileName);
+        } catch (IOException e) {
+            Log.d(TAG, e.toString(), e);
+            return -1;
+        }
+        return sp.load(afd, 1);
     }
 }
