@@ -8,6 +8,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.AssetFileDescriptor;
 import android.content.res.AssetManager;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.media.AudioAttributes;
 import android.media.AudioManager;
 import android.media.SoundPool;
@@ -22,6 +24,7 @@ import android.util.Log;
 import com.atlas.mars.weatherradar.DataBaseHelper;
 import com.atlas.mars.weatherradar.MainActivity;
 import com.atlas.mars.weatherradar.R;
+import com.atlas.mars.weatherradar.location.MyLocationListenerNet;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -52,6 +55,8 @@ public class MyService extends Service {
     AssetManager assets;
     SoundPool sp;
     final int MAX_STREAMS = 5;
+    public LocationManager  locationManagerNet;
+    public LocationListener locationListenerNet;
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -86,7 +91,23 @@ public class MyService extends Service {
         //locationManagerGps.removeUpdates(locationListenerGps);
     }
 
+    public void onLocationAccept(double lat, double lng){
+        if (isNetworkAvailable()) {
+            myAsynkTask = new MyAsynkTask();
+            myAsynkTask.execute(lat, lng);
+        }
+        if (locationManagerNet != null) {
+            locationManagerNet.removeUpdates(locationListenerNet);
+        }
+    }
+
     void someTask() {
+        locationManagerNet = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        locationListenerNet = new MyLocationListenerNet(this);
+        locationManagerNet.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListenerNet);
+
+
+
         //todo не удалять. Задача для активити
         Intent updIntent = new Intent();
         updIntent.setAction(MainActivity.LOCATION);
@@ -94,10 +115,10 @@ public class MyService extends Service {
         sendBroadcast(updIntent);
 
 
-        if (isNetworkAvailable()) {
+        /*if (isNetworkAvailable()) {
             myAsynkTask = new MyAsynkTask();
             myAsynkTask.execute();
-        }
+        }*/
     }
 
     void onStop() {
@@ -112,7 +133,7 @@ public class MyService extends Service {
         }
         // Log.d(TAG, db.getTimeNotify().toString());
         playSound();
-        String message = "Distance: " + map.get("dist") + " Intensity: " + map.get("intensity");
+        String message = "Distance: " + map.get("dist")+"Km" + " Intensity: " + getIntensity(map.get("intensity"));
 
         Notification notification = new Notification.Builder(this).setContentTitle("Rain alarm")
                 .setContentText(message)
@@ -164,17 +185,17 @@ public class MyService extends Service {
         onStop();
     }
 
-    private class MyAsynkTask extends AsyncTask<String, Void, HashMap<String, Integer>> {
+    private class MyAsynkTask extends AsyncTask<Double, Void, HashMap<String, Integer>> {
 
         @Override
-        protected HashMap<String, Integer> doInBackground(String... params) {
+        protected HashMap<String, Integer> doInBackground(Double... params) {
             int _intensity = 0, _dist = 0;
             HashMap<String, Integer> map = new HashMap<>();
             URL url = null;
             InputStream in = null;
             StringBuilder sb = new StringBuilder();
             try {
-                url = new URL("http://178.62.44.54/php/parserain.php");
+                url = new URL("http://178.62.44.54/php/parserain.php?lat="+params[0]+"&lng="+params[1]);
 
                 urlConnection = (HttpURLConnection) url.openConnection();
                 urlConnection.setDoOutput(true);
@@ -244,7 +265,7 @@ public class MyService extends Service {
                 sp.play(sampleId, 1, 1, 0, 0, 1);
             }
         });
-        loadSound("bubbles.ogg");
+        loadSound("storm.ogg");
 
     }
 
@@ -275,5 +296,35 @@ public class MyService extends Service {
             return -1;
         }
         return sp.load(afd, 1);
+    }
+    private String getIntensity(int i){
+        String intensity = "Unknown";
+        switch (i){
+            case 1:
+                return "Слостая облачность";
+            case 2:
+                return "Осадки слабые";
+            case 3:
+                return "Осадки умеренные";
+            case 4:
+                return "Осадки сильные";
+            case 5:
+                return "Конвективная облачность";
+            case 6:
+                return "Конвективные осадки слабые";
+            case 7:
+                return "Конвективные осадки умеренные";
+            case 8:
+                return "Конвективные осадки сильные";
+            case 9:
+                return "Гроза вероятность 30%-70%";
+            case 10:
+                return "Гроза вероятность 70%-90%";
+            case 11:
+                return "Гроза вероятность 90%-00%";
+            default:
+                return  intensity;
+        }
+
     }
 }
