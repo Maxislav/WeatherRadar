@@ -102,17 +102,20 @@ public class MyService extends Service {
     }
 
     void someTask() {
-        locationManagerNet = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        locationListenerNet = new MyLocationListenerNet(this);
-        locationManagerNet.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListenerNet);
-
-
-
         //todo не удалять. Задача для активити
         Intent updIntent = new Intent();
         updIntent.setAction(MainActivity.LOCATION);
         updIntent.putExtra("distance", "Wake Up");
         sendBroadcast(updIntent);
+
+        if (isNetworkAvailable()){
+            locationManagerNet = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+            locationListenerNet = new MyLocationListenerNet(this);
+            locationManagerNet.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListenerNet);
+        }else{
+            onStop();
+        }
+
 
 
         /*if (isNetworkAvailable()) {
