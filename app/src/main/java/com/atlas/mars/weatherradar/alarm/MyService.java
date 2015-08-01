@@ -133,7 +133,7 @@ public class MyService extends Service {
         }
         // Log.d(TAG, db.getTimeNotify().toString());
         playSound();
-        String message = "Distance: " + map.get("dist")+"Km" + " Intensity: " + getIntensity(map.get("intensity"));
+        String message = "Distance: " + map.get("dist")+"Km" + " " + getIntensity(map.get("intensity"));
 
         Notification notification = new Notification.Builder(this).setContentTitle("Rain alarm")
                 .setContentText(message)
@@ -181,7 +181,7 @@ public class MyService extends Service {
             onNotification(map);
         }
         Log.d(TAG, "onCallback " + (new Date(System.currentTimeMillis())));
-        // onNotification(map);
+       //  onNotification(map);
         onStop();
     }
 
@@ -297,8 +297,13 @@ public class MyService extends Service {
         }
         return sp.load(afd, 1);
     }
-    private String getIntensity(int i){
+    private String getIntensity(Integer i){
         String intensity = "Unknown";
+        if(i==null){
+            return  intensity;
+        }
+
+
         switch (i){
             case 1:
                 return "Слостая облачность";
