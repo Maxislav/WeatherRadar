@@ -55,8 +55,8 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     final String NEW_FORMAT = "yyyy-MM-dd HH:mm:ss.SSS";
     final DateFormat formatter = new SimpleDateFormat(NEW_FORMAT);
 
-    //static long intervalTime = 10*60*1000;
-    static long intervalTime = 10*1000;
+    static long intervalTime = 10*60*1000;
+    //static long intervalTime = 10*1000;
 
 
 
