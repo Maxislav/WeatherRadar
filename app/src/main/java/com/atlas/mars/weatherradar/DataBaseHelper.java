@@ -190,7 +190,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
             startAlarm = System.currentTimeMillis()+intervalTime;
         }
 
-        if(getForecastTime()!=null){
+        if(getForecastTime()!=null && !getStartForecast()){
             Calendar cal = Calendar.getInstance();
             cal.setTime(getForecastTime());
             if(mapSetting.get(FORECAST_RAIN)!=null && mapSetting.get(FORECAST_RAIN).equals("0")){
@@ -208,6 +208,8 @@ public class DataBaseHelper extends SQLiteOpenHelper {
             startAlarm = fromNotSleep.getTimeInMillis()+60*1000;
         }
 
+
+        Log.d(TAG, "FORECAST_RAIN:  "+mapSetting.get(FORECAST_RAIN)+" : getStartForecast "+getStartForecast() );
         return startAlarm;
     }
 
@@ -242,7 +244,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
             Log.e(TAG, e.toString(),e);
             e.printStackTrace();
         }
-        if(date!=null && date.getTime()<System.currentTimeMillis()+5*3600*1000){
+        if(date!=null && date.getTime()+(5*3600*1000)<System.currentTimeMillis()){
             return true;
         }
         return false;
