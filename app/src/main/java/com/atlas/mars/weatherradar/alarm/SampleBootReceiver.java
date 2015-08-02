@@ -21,7 +21,6 @@ public class SampleBootReceiver extends BroadcastReceiver {
     DataBaseHelper db;
     PendingIntent pendingIntent;
 
-    final String NEW_FORMAT = "yyyy-MM-dd HH:mm:ss.SSS";
     @Override
     public void onReceive(Context context, Intent intent) {
         db = new DataBaseHelper(context);
@@ -58,7 +57,7 @@ public class SampleBootReceiver extends BroadcastReceiver {
         long startAlarm;
         startAlarm = db.getStartTime();
 
-        nm = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+      //  nm = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
 
       /*  Notification notification;

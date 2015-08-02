@@ -49,6 +49,9 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     public  static final String TIME_TO_MINUTE = "timeToMinute";
     final String NEW_FORMAT = "yyyy-MM-dd HH:mm:ss.SSS";
 
+    //static long intervalTime = 10*60*1000;
+    static long intervalTime = 10*1000;
+
 
 
 
@@ -140,8 +143,8 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         sdb.close();
     }
     Calendar fromNotSleep, toNotSleep;
-    public  Long getStartTime(){
 
+    public  Long getStartTime(){
         Calendar c = new GregorianCalendar();
         fromNotSleep = new GregorianCalendar(c.get(Calendar.YEAR),c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH));
         toNotSleep = new GregorianCalendar(c.get(Calendar.YEAR),c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH));
@@ -153,7 +156,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         toNotSleep.add(Calendar.HOUR_OF_DAY, Integer.parseInt(mapSetting.get(TIME_TO_HOUR)!=null? mapSetting.get(TIME_TO_HOUR):"0"));
         toNotSleep.add(Calendar.MINUTE, Integer.parseInt(mapSetting.get(TIME_TO_MINUTE)!=null? mapSetting.get(TIME_TO_MINUTE):"0"));
 
-        Log.d(TAG, "" +fromNotSleep.getTimeInMillis());
+        //Log.d(TAG, "" +fromNotSleep.getTimeInMillis());
 
 
         //Date fromNotSleep = new Date(d.getYear() )
@@ -180,11 +183,11 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 
         long startAlarm;
         if(dif == 0){
-            startAlarm = System.currentTimeMillis()+10*60*1000;
+            startAlarm = System.currentTimeMillis()+intervalTime;
         }else if(dif<timeRepeatLong){
             startAlarm = System.currentTimeMillis()+(timeRepeatLong-dif);
         }else{
-            startAlarm = System.currentTimeMillis()+10*60*1000;
+            startAlarm = System.currentTimeMillis()+intervalTime;
         }
 
         if(startAlarm<fromNotSleep.getTimeInMillis()){
@@ -223,14 +226,9 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 
         int timeRepeat = mapSetting.get(TIME_REPEAT)!=null ? Integer.parseInt(mapSetting.get(TIME_REPEAT)):2;
         long timeRepeatLong = 3600*1000*timeRepeat;
-       /* if(System.currentTimeMillis()<getTimeNotify()+timeRepeatLong){
-            return false;
-        }else{
-            return true;
-        }*/
         if(getTimeNotify()==null){
             return true;
         }
-        return  (System.currentTimeMillis()<getTimeNotify()+timeRepeatLong) ? false : true;
+        return  (getTimeNotify()+timeRepeatLong)<(System.currentTimeMillis());
     }
 }

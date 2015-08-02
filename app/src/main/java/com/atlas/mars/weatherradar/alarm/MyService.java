@@ -42,9 +42,9 @@ import java.util.Scanner;
  * Created by mars on 7/27/15.
  */
 public class MyService extends Service {
-    MyAsynkTask myAsynkTask;
+    MyAsyncTask myAsyncTask;
     static ObjectMapper mapper = new ObjectMapper();
-    final String TAG = "MyServiceLog";
+    final String TAG = "MyServiceLogs";
     HttpURLConnection urlConnection;
     NotificationManager nm;
     Notification notification;
@@ -93,8 +93,8 @@ public class MyService extends Service {
 
     public void onLocationAccept(double lat, double lng){
         if (isNetworkAvailable()) {
-            myAsynkTask = new MyAsynkTask();
-            myAsynkTask.execute(lat, lng);
+            myAsyncTask = new MyAsyncTask();
+            myAsyncTask.execute(lat, lng);
         }
         if (locationManagerNet != null) {
             locationManagerNet.removeUpdates(locationListenerNet);
@@ -118,10 +118,7 @@ public class MyService extends Service {
 
 
 
-        /*if (isNetworkAvailable()) {
-            myAsynkTask = new MyAsynkTask();
-            myAsynkTask.execute();
-        }*/
+
     }
 
     void onStop() {
@@ -184,11 +181,18 @@ public class MyService extends Service {
             onNotification(map);
         }
         Log.d(TAG, "onCallback " + (new Date(System.currentTimeMillis())));
+
+
        //  onNotification(map);
+
+        /*SampleBootReceiver.CancelAlarm();
+        AlarmManager am = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
+        pendingIntent = PendingIntent.getBroadcast(this, 0, new Intent(this, SampleBootReceiver.class), PendingIntent.FLAG_CANCEL_CURRENT);
+        am.set(AlarmManager.RTC_WAKEUP, db.getStartTime(), pendingIntent);*/
         onStop();
     }
 
-    private class MyAsynkTask extends AsyncTask<Double, Void, HashMap<String, Integer>> {
+    private class MyAsyncTask extends AsyncTask<Double, Void, HashMap<String, Integer>> {
 
         @Override
         protected HashMap<String, Integer> doInBackground(Double... params) {
@@ -334,5 +338,15 @@ public class MyService extends Service {
                 return  intensity;
         }
 
+    }
+    Intent createIntent(String action, String extra) {
+       /* SampleBootReceiver sm = new SampleBootReceiver();
+        sm.setMainActivity(this);*/
+
+
+        Intent intent = new Intent(this, SampleBootReceiver.class);
+        intent.setAction(action);
+        intent.putExtra("extra", extra);
+        return intent;
     }
 }
