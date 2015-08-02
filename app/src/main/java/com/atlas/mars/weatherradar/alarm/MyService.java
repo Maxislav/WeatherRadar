@@ -15,7 +15,6 @@ import android.media.AudioManager;
 import android.media.SoundPool;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.IBinder;
 import android.os.Vibrator;
@@ -25,24 +24,20 @@ import com.atlas.mars.weatherradar.DataBaseHelper;
 import com.atlas.mars.weatherradar.MainActivity;
 import com.atlas.mars.weatherradar.R;
 import com.atlas.mars.weatherradar.location.MyLocationListenerNet;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Scanner;
 
 /**
  * Created by mars on 7/27/15.
  */
 public class MyService extends Service {
-    MyAsyncTask myAsyncTask;
+    BorispolTask borispolTask;
+    GoogleWeatherTask googleWeatherTask;
     static ObjectMapper mapper = new ObjectMapper();
     final String TAG = "MyServiceLogs";
     HttpURLConnection urlConnection;
@@ -50,13 +45,17 @@ public class MyService extends Service {
     Notification notification;
     Intent intent;
     DataBaseHelper db;
-    int alarmMinDist = 40;
+    static int alarmMinDist = 40;
     HashMap<String, String> mapSetting;
     AssetManager assets;
     SoundPool sp;
     final int MAX_STREAMS = 5;
-    public LocationManager  locationManagerNet;
+    public LocationManager locationManagerNet;
     public LocationListener locationListenerNet;
+    int taskEnd = 0;
+    int taskNeeded = 0;
+    boolean rainGoogle = false;
+    boolean rainBorispol = false;
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -91,13 +90,25 @@ public class MyService extends Service {
         //locationManagerGps.removeUpdates(locationListenerGps);
     }
 
-    public void onLocationAccept(double lat, double lng){
+    public void onLocationAccept(double lat, double lng) {
         if (isNetworkAvailable()) {
-            myAsyncTask = new MyAsyncTask();
-            myAsyncTask.execute(lat, lng);
+            if(mapSetting.get(DataBaseHelper.FORECAST_RAIN)==null || mapSetting.get(DataBaseHelper.FORECAST_RAIN).equals("1")){
+                taskNeeded++;
+                borispolTask = new BorispolTask(this);
+                borispolTask.execute(lat, lng);
+            }
+
+            if(db.getStartForecast()){
+                taskNeeded++;
+                googleWeatherTask = new GoogleWeatherTask(this);
+                googleWeatherTask.execute(lat, lng);
+            }
         }
         if (locationManagerNet != null) {
             locationManagerNet.removeUpdates(locationListenerNet);
+        }
+        if(taskNeeded == 0){
+            onStop();
         }
     }
 
@@ -108,15 +119,13 @@ public class MyService extends Service {
         updIntent.putExtra("distance", "Wake Up");
         sendBroadcast(updIntent);
 
-        if (isNetworkAvailable()){
+        if (isNetworkAvailable()) {
             locationManagerNet = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
             locationListenerNet = new MyLocationListenerNet(this);
             locationManagerNet.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListenerNet);
-        }else{
+        } else {
             onStop();
         }
-
-
 
 
     }
@@ -133,7 +142,7 @@ public class MyService extends Service {
         }
         // Log.d(TAG, db.getTimeNotify().toString());
         playSound();
-        String message = "Distance: " + map.get("dist")+"Km" + " " + getIntensity(map.get("intensity"));
+        String message = "Distance: " + map.get("dist") + "Km" + " " + getIntensity(map.get("intensity"));
 
         Notification notification = new Notification.Builder(this).setContentTitle("Rain alarm")
                 .setContentText(message)
@@ -160,101 +169,45 @@ public class MyService extends Service {
     }
 
     void timeStampDateBase() {
-        // 1) create a java calendar instance
-        Calendar calendar = Calendar.getInstance();
-
-// 2) get a java.util.Date from the calendar instance.
-//    this date will represent the current instant, or "now".
-        java.util.Date now = calendar.getTime();
-
-// 3) a java current time (now) instance
-        java.sql.Timestamp currentTimestamp = new java.sql.Timestamp(now.getTime());
-        String timeStamp = currentTimestamp.toString();
-        Log.d(TAG, timeStamp);
-        mapSetting.put(DataBaseHelper.TIME_NOTIFY, timeStamp);
+        mapSetting.put(DataBaseHelper.TIME_NOTIFY, getTimeStamp());
         db.saveSetting();
     }
 
 
-    void onCallback(HashMap<String, Integer> map) {
+    void onBorispolTaskResult(HashMap<String, Integer> map) {
+
         if (map.get("dist") != null && map.get("dist") < alarmMinDist) {
             onNotification(map);
         }
-        Log.d(TAG, "onCallback " + (new Date(System.currentTimeMillis())));
 
-
-       //  onNotification(map);
-
-        /*SampleBootReceiver.CancelAlarm();
-        AlarmManager am = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
-        pendingIntent = PendingIntent.getBroadcast(this, 0, new Intent(this, SampleBootReceiver.class), PendingIntent.FLAG_CANCEL_CURRENT);
-        am.set(AlarmManager.RTC_WAKEUP, db.getStartTime(), pendingIntent);*/
-        onStop();
-    }
-
-    private class MyAsyncTask extends AsyncTask<Double, Void, HashMap<String, Integer>> {
-
-        @Override
-        protected HashMap<String, Integer> doInBackground(Double... params) {
-            int _intensity = 0, _dist = 0;
-            HashMap<String, Integer> map = new HashMap<>();
-            URL url = null;
-            InputStream in = null;
-            StringBuilder sb = new StringBuilder();
-            try {
-                url = new URL("http://178.62.44.54/php/parserain.php?lat="+params[0]+"&lng="+params[1]);
-
-                urlConnection = (HttpURLConnection) url.openConnection();
-                urlConnection.setDoOutput(true);
-                Scanner inStream = new Scanner(urlConnection.getInputStream());
-                while (inStream.hasNextLine()) {
-                    sb.append(inStream.nextLine());
-                    // response += (inStream.nextLine());
-                }
-            } catch (IOException e) {
-                Log.e(TAG, e.toString(), e);
-                e.printStackTrace();
-            } finally {
-                if (urlConnection != null) {
-                    urlConnection.disconnect();
-                }
-            }
-
-
-            if (0 < sb.length()) {
-                String json = sb.toString();
-                Log.d(TAG, json);
-                try {
-                    // [{"color":"4793F8","colorRgb":"71 147 248","intensity":6,"dist":75,"xy":"153 164"},{"color":"9BE1FF","colorRgb":"155 225 255","intensity":5,"dist":75,"xy":"159 159"},{"color":"0C59FF","colorRgb":"12 89 255","intensity":7,"dist":78,"xy":"151 161"},{"color":"FF8C9B","colorRgb":"255 140 155","intensity":9,"dist":80,"xy":"151 158"},{"color":"9BEA8F","colorRgb":"155 234 143","intensity":2,"dist":108,"xy":"122 140"}]
-                    ArrayNode root = (ArrayNode) mapper.readTree(json);
-                    for (JsonNode jsonNode : root) {
-                        int dist = jsonNode.path("dist").asInt();
-                        int intensity = jsonNode.path("intensity").asInt();
-                        if (_intensity < intensity && dist < alarmMinDist) {
-                            _intensity = intensity;
-                            map.put("dist", dist);
-                            map.put("intensity", intensity);
-                        }
-                    }
-
-                } catch (IOException e) {
-                    Log.e(TAG, e.toString(), e);
-                    e.printStackTrace();
-                }
-            }
-
-
-            return map;
+        if(map.get("isIntensity")!=null && 0 <map.get("isIntensity")){
+            rainBorispol = true;
         }
 
-        @Override
-        protected void onPostExecute(HashMap result) {
-            //Log.d(TAG, result);
-            onCallback(result);
-        }
-
-
+        Log.d(TAG, "onBorispolTaskResult " + (new Date(System.currentTimeMillis())));
+        allTaskResult();
     }
+
+    void onGoogleWeatherTaskResult(HashMap<String, Boolean> map) {
+        rainGoogle = map.get("rain");
+        mapSetting.put(DataBaseHelper.FORECAST_TIME, getTimeStamp());
+        db.saveSetting();
+        allTaskResult();
+    }
+
+    void allTaskResult() {
+        taskEnd++;
+        if (taskNeeded <= taskEnd) {
+            if(rainBorispol || rainGoogle){
+                mapSetting.put(DataBaseHelper.FORECAST_RAIN, "1");
+            }else {
+                mapSetting.put(DataBaseHelper.FORECAST_RAIN, "0");
+            }
+            db.saveSetting();
+            onStop();
+        }
+    }
+
 
     private boolean isNetworkAvailable() {
         ConnectivityManager connectivityManager
@@ -304,14 +257,15 @@ public class MyService extends Service {
         }
         return sp.load(afd, 1);
     }
-    private String getIntensity(Integer i){
+
+    private String getIntensity(Integer i) {
         String intensity = "Unknown";
-        if(i==null){
-            return  intensity;
+        if (i == null) {
+            return intensity;
         }
 
 
-        switch (i){
+        switch (i) {
             case 1:
                 return "Слостая облачность";
             case 2:
@@ -335,10 +289,18 @@ public class MyService extends Service {
             case 11:
                 return "Гроза вероятность 90%-00%";
             default:
-                return  intensity;
+                return intensity;
         }
 
     }
+
+    private String getTimeStamp(){
+        Calendar calendar = Calendar.getInstance();
+        java.util.Date now = calendar.getTime();
+        java.sql.Timestamp currentTimestamp = new java.sql.Timestamp(now.getTime());
+        return currentTimestamp.toString();
+    }
+
     Intent createIntent(String action, String extra) {
        /* SampleBootReceiver sm = new SampleBootReceiver();
         sm.setMainActivity(this);*/

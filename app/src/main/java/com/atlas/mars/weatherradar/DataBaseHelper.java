@@ -47,7 +47,13 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     public  static final String TIME_FROM_MINUTE = "timeFromMinute";
     public  static final String TIME_TO_HOUR = "timeToHour";
     public  static final String TIME_TO_MINUTE = "timeToMinute";
+    public  static final String FORECAST_RAIN = "forecastRain"; // 0 || 1
+    public  static final String FORECAST_TIME = "forecastTime"; // 0 || 1
+
+
+
     final String NEW_FORMAT = "yyyy-MM-dd HH:mm:ss.SSS";
+    final DateFormat formatter = new SimpleDateFormat(NEW_FORMAT);
 
     //static long intervalTime = 10*60*1000;
     static long intervalTime = 10*1000;
@@ -98,7 +104,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     }
 
 
-    public void saveSetting(){
+    synchronized public void saveSetting(){
         sdb = getWritableDatabase();
         String query =  "SELECT * FROM " + TABLE_SETTING;
         Cursor cursor = sdb.rawQuery(query,null);
@@ -156,17 +162,11 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         toNotSleep.add(Calendar.HOUR_OF_DAY, Integer.parseInt(mapSetting.get(TIME_TO_HOUR)!=null? mapSetting.get(TIME_TO_HOUR):"0"));
         toNotSleep.add(Calendar.MINUTE, Integer.parseInt(mapSetting.get(TIME_TO_MINUTE)!=null? mapSetting.get(TIME_TO_MINUTE):"0"));
 
-        //Log.d(TAG, "" +fromNotSleep.getTimeInMillis());
-
-
-        //Date fromNotSleep = new Date(d.getYear() )
-
-
         int timeRepeat = mapSetting.get(TIME_REPEAT)!=null ? Integer.parseInt(mapSetting.get(TIME_REPEAT)):2;
         long timeRepeatLong = 3600*1000*timeRepeat;
         String timeNotify = mapSetting.get(TIME_NOTIFY)!=null ? mapSetting.get(TIME_NOTIFY) : null;
 
-        DateFormat formatter = new SimpleDateFormat(NEW_FORMAT);
+
         Date dateNotify = null;
         try {
             if(timeNotify!=null){
@@ -188,6 +188,15 @@ public class DataBaseHelper extends SQLiteOpenHelper {
             startAlarm = System.currentTimeMillis()+(timeRepeatLong-dif);
         }else{
             startAlarm = System.currentTimeMillis()+intervalTime;
+        }
+
+        if(getForecastTime()!=null){
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(getForecastTime());
+            if(mapSetting.get(FORECAST_RAIN)!=null && mapSetting.get(FORECAST_RAIN).equals("0")){
+                cal.add(Calendar.HOUR_OF_DAY, 5);
+                startAlarm = cal.getTimeInMillis();
+            }
         }
 
         if(startAlarm<fromNotSleep.getTimeInMillis()){
@@ -219,7 +228,39 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         }else{
             return  null;
         }
+    }
 
+    public boolean getStartForecast(){
+        String time = mapSetting.get(FORECAST_TIME);
+        if(time==null){
+            return  true;
+        }
+        Date date = null;
+        try {
+           date = formatter.parse(time);
+        } catch (ParseException e) {
+            Log.e(TAG, e.toString(),e);
+            e.printStackTrace();
+        }
+        if(date!=null && date.getTime()<System.currentTimeMillis()+5*3600*1000){
+            return true;
+        }
+        return false;
+    }
+
+    Date getForecastTime(){
+        String time = mapSetting.get(FORECAST_TIME);
+        if(time==null){
+            return  null;
+        }
+        Date date = null;
+        try {
+            date = formatter.parse(time);
+        } catch (ParseException e) {
+            Log.e(TAG, e.toString(),e);
+            e.printStackTrace();
+        }
+        return date;
     }
 
     public boolean permitNotify(){
