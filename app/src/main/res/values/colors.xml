@@ -19,6 +19,18 @@
     <item name="gradient_end" type="color">#ff9c9ca6</item>
 
 
+    <item name="hh00" type="color">#6f0057ff</item>
+    <item name="hh03" type="color">#350057ff</item>
+    <item name="hh06" type="color">#2b0057ff</item>
+    <item name="hh09" type="color">#1f0057ff</item>
+    <item name="hh12" type="color">#150057ff</item>
+    <item name="hh15" type="color">#200057ff</item>
+    <item name="hh18" type="color">#2b0057ff</item>
+    <item name="hh21" type="color">#430057ff</item>
+
+
+
+
 
     <item name="menuPressStart" type="color">#ffdcdce7</item>
     <item name="menuPressEnd" type="color">#ffd0d0db</item>

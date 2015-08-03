@@ -2,6 +2,7 @@ package com.atlas.mars.weatherradar;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.drawable.GradientDrawable;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.AsyncTask;
@@ -10,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -69,15 +71,46 @@ public class Forecast implements OnLocation {
 
                 View view = inflater.inflate(R.layout.forecast_container, null, false);
                 fr.addView(view);
-
                 ((TextView) view.findViewById(R.id.textDate)).setText(hashMap.get("date"));
                 ((TextView) view.findViewById(R.id.textTime)).setText(hashMap.get("time"));
                 ((TextView) view.findViewById(R.id.textTemp)).setText(hashMap.get("temp"));
+                ImageView imageView = (ImageView)view.findViewById(R.id.image);
+                new IconForecast(imageView,hashMap.get("icon") );
                 view.setLayoutParams(layoutParams);
+                ViewGroup viewGroup  = (ViewGroup)view;
+                LinearLayout childView = (LinearLayout)viewGroup.getChildAt(0);
+                //childView.setBackgroundColor(activity.getResources().getColor(getColorHour(hashMap.get("HH"))));
+                GradientDrawable shape =  new GradientDrawable();
+                shape.setCornerRadius(8);
+                shape.setColor(activity.getResources().getColor(getColorHour(hashMap.get("HH"))));
+                childView.setBackground(shape);
             }
         });
 
 
+    }
+
+    private Integer getColorHour(final String HH){
+       switch (HH){
+           case "00":
+               return R.color.hh00;
+           case "03":
+               return R.color.hh03;
+           case "06":
+               return R.color.hh06;
+           case "09":
+               return R.color.hh09;
+           case "12":
+               return R.color.hh12;
+           case "15":
+               return R.color.hh15;
+           case "18":
+               return R.color.hh18;
+           case "21":
+               return R.color.hh21;
+           default:
+               return R.color.hh15;
+       }
     }
 
     @Override
@@ -95,19 +128,24 @@ public class Forecast implements OnLocation {
 
         ArrayNode list = (ArrayNode) root.get("list");
         SimpleDateFormat dayMonth = new SimpleDateFormat("dd.MM"); //2015-08-03 18:00:00
-        SimpleDateFormat time = new SimpleDateFormat(" HH:mm"); //2015-08-03 18:00:00
+        SimpleDateFormat time = new SimpleDateFormat("HH:mm"); //2015-08-03 18:00:00
+        SimpleDateFormat HH = new SimpleDateFormat("HH"); //2015-08-03 18:00:00
         //  SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); //2015-08-03 18:00:00
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH);
 
         for (JsonNode jsonNode : list) {
             HashMap<String, String> map = new HashMap<>();
             String dt_txt = jsonNode.path("dt_txt").asText();
-            String temp = jsonNode.get("main").path("temp").asText();
+            String temp = Integer.toString(jsonNode.get("main").path("temp").asInt());
             String main =  jsonNode.get("weather").get(0).path("main").asText();
+            String icon =  jsonNode.get("weather").get(0).path("icon").asText();
+
             String description =  jsonNode.get("weather").get(0).path("description").asText();
             map.put("temp", temp);
             map.put("main", main);
             map.put("description", description);
+            map.put("icon", icon);
+
 
             try {
                 Date date = format.parse(dt_txt);
@@ -116,6 +154,7 @@ public class Forecast implements OnLocation {
 
                 map.put("date", dayMonth.format(date));
                 map.put("time", time.format(date));
+                map.put("HH", HH.format(date));
 
 
             } catch (ParseException e) {
