@@ -7,11 +7,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.res.AssetFileDescriptor;
-import android.content.res.AssetManager;
-import android.media.AudioAttributes;
-import android.media.AudioManager;
-import android.media.SoundPool;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
@@ -21,24 +16,34 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
+import android.widget.FrameLayout;
+import android.widget.ImageButton;
+import android.widget.LinearLayout;
+import android.widget.PopupMenu;
+import android.widget.ScrollView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.atlas.mars.weatherradar.alarm.SampleBootReceiver;
 import com.atlas.mars.weatherradar.fragments.BoridpolRadar;
 import com.atlas.mars.weatherradar.fragments.InfraRed;
+import com.atlas.mars.weatherradar.fragments.MyFragment;
 import com.atlas.mars.weatherradar.fragments.Visible;
 
-import java.io.IOException;
 import java.util.HashMap;
 
 
-public class MainActivity extends FragmentActivity implements Communicator{
+public class MainActivity extends FragmentActivity implements Communicator, ViewPager.OnPageChangeListener, View.OnClickListener, PopupMenu.OnMenuItemClickListener {
     public  final static String LOCATION = "LOCATION";
-    final String LOG_TAG = "MainActivityLogs";
+    final String TAG = "MainActivityLogs";
 
     ViewPager pager;
     PagerAdapter pagerAdapter;
     BoridpolRadar boridpolRadar;
+    int posinion;
+
     InfraRed infraRed;
     Visible visible;
     DataBaseHelper db;
@@ -53,6 +58,12 @@ public class MainActivity extends FragmentActivity implements Communicator{
     static MyReceiver myReceiver;
     HashMap<String, String> mapSetting;
 
+    ImageButton buttonReload;
+    ImageButton buttonMenu;
+    TextView title;
+
+    HashMap<Integer, Object> fragmetMap;
+    ScrollView scrollView;
 
 
     @Override
@@ -64,11 +75,27 @@ public class MainActivity extends FragmentActivity implements Communicator{
         startAlarm = db.getStartTime();
         mapSetting = DataBaseHelper.mapSetting;
 
+        buttonReload = (ImageButton)findViewById(R.id.buttonReload);
+        buttonMenu = (ImageButton)findViewById(R.id.buttonMenu);
+        title = (TextView)findViewById(R.id.title);
+        buttonMenu.setOnClickListener(this);
+        buttonReload.setOnClickListener(this);
+
+
+
+        fragmetMap = new HashMap<>();
+
         pager = (ViewPager) findViewById(R.id.pager);
         pagerAdapter = new MyFragmentPagerAdapter(getSupportFragmentManager());
         pager.setAdapter(pagerAdapter);
         pager.setOffscreenPageLimit(3);
+        pager.setOnPageChangeListener(this);
 
+        LinearLayout.LayoutParams parms = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,(int)(Density.widthPixels*1.34));
+        pager.setLayoutParams(parms);
+        scrollView = (ScrollView)findViewById(R.id.scrollView);
+
+        setSisze();
 
         if(mapSetting.get(DataBaseHelper.IS_ALARM)!=null && mapSetting.get(DataBaseHelper.IS_ALARM).equals("1")){
             alarmOn();
@@ -81,6 +108,36 @@ public class MainActivity extends FragmentActivity implements Communicator{
         am.set(AlarmManager.RTC_WAKEUP, startAlarm, pIntent1);
 */
         //am.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 5000, pIntent1);
+    }
+
+    private void setSisze(){
+        ViewTreeObserver observer = ((FrameLayout)buttonReload.getParent()).getViewTreeObserver();
+        observer.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                buttonReload.setLayoutParams(new  FrameLayout.LayoutParams (buttonReload.getHeight(),buttonReload.getHeight() ));
+                buttonMenu.setLayoutParams(new  FrameLayout.LayoutParams ((int)(buttonReload.getHeight()/1.5),buttonMenu.getHeight() ));
+            }
+        });
+
+        ViewTreeObserver observer1 = (scrollView).getViewTreeObserver();
+        observer1.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+              //  scrollView.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+
+                if (Build.VERSION.SDK_INT < 16) {
+                    scrollView.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                } else {
+                    scrollView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                }
+
+                Log.d(TAG, "" + scrollView.getHeight() + " : " + scrollView.getChildAt(0).getHeight());
+                scrollView.scrollTo(0, scrollView.getChildAt(0).getHeight() - scrollView.getHeight());
+            }
+        });
+
+
     }
 
     void alarmOn(){
@@ -111,8 +168,8 @@ public class MainActivity extends FragmentActivity implements Communicator{
         return intent;
     }
     void compare() {
-        Log.d(LOG_TAG, "intent1 = intent2: " + intent1.filterEquals(intent2));
-        Log.d(LOG_TAG, "pIntent1 = pIntent2: " + pIntent1.equals(pIntent2));
+        Log.d(TAG, "intent1 = intent2: " + intent1.filterEquals(intent2));
+        Log.d(TAG, "pIntent1 = pIntent2: " + pIntent1.equals(pIntent2));
     }
 
     @Override
@@ -121,7 +178,11 @@ public class MainActivity extends FragmentActivity implements Communicator{
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
-
+    @Override
+    public boolean onMenuItemClick(MenuItem item) {
+        onOptionsItemSelected(item);
+        return false;
+    }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
@@ -148,13 +209,19 @@ public class MainActivity extends FragmentActivity implements Communicator{
     public void initView(View v, int position) {
         switch (position){
             case 0:
+               // LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams().
+
+            //LinearLayout.LayoutParams parms = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,(int)(Density.widthPixels*1.34));
                 boridpolRadar = new BoridpolRadar(v, this, position);
+                fragmetMap.put(position, boridpolRadar);
                 break;
             case 1:
                 infraRed = new InfraRed(v, this, position);
+                fragmetMap.put(position, infraRed);
                 break;
             case 2:
                visible =  new Visible(v, this, position);
+                fragmetMap.put(position, visible);
                 break;
         }
     }
@@ -180,6 +247,42 @@ public class MainActivity extends FragmentActivity implements Communicator{
         }
     }
 
+    @Override
+    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+    }
+
+    @Override
+    public void onPageSelected(int position) {
+       setMyTitle(position);
+       Log.d(TAG, "position: "+ position);
+    }
+
+    @Override
+    public void onPageScrollStateChanged(int state) {
+
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.buttonReload:
+
+                MyFragment myFragment = (MyFragment)fragmetMap.get(posinion);// (MyFragment)pager.getChildAt(posinion);
+                myFragment.reloadImg();
+             //   reloadImg();
+                break;
+            case R.id.buttonMenu:
+                PopupMenu popupMenu = new PopupMenu(this, v);
+                popupMenu.inflate(R.menu.menu_main);
+                popupMenu.setOnMenuItemClickListener(this);
+                popupMenu.show();
+                break;
+        }
+    }
+
+
+
     /**
      * событие из сервиса
      */
@@ -199,6 +302,9 @@ public class MainActivity extends FragmentActivity implements Communicator{
         super.onResume();
       //  startService(new Intent(this, MyService.class));
         onCreateMyReceiver();
+        setMyTitle(pager.getCurrentItem());
+        //Log.d(TAG, "position: "+ pager.getCurrentItem());
+
 
         Bundle extras = getIntent().getExtras();
         if(extras != null){
@@ -235,6 +341,20 @@ public class MainActivity extends FragmentActivity implements Communicator{
         intentFilter.addAction(MainActivity.LOCATION);
         registerReceiver(myReceiver, intentFilter);
     }
+
+    void setMyTitle(int pos){
+        posinion = pos;
+        String titleText = "";
+        if(mapSetting.get("title"+(pos+1))==null){
+            title.setText(titleText);
+        }else{
+            title.setText(mapSetting.get("title"+(pos+1)));
+        }
+
+    }
+
+
+
 
 
 }
