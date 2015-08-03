@@ -57,18 +57,26 @@ public class Forecast implements OnLocation {
     }
 
 
-    void onInflate(HashMap<String, String> hashMap) {
-        LayoutInflater inflater = (LayoutInflater) (activity.getLayoutInflater());
-        int width = (int) (80 * Density.density);
-        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(width, ViewGroup.LayoutParams.MATCH_PARENT);
+    void onInflate(final HashMap<String, String> map) {
 
-        View view = inflater.inflate(R.layout.forecast_container, null, false);
-        fr.addView(view);
+        fr.post(new Runnable() {
+            final HashMap<String, String> hashMap = map;
+            @Override
+            public void run() {
+                LayoutInflater inflater = (LayoutInflater) (activity.getLayoutInflater());
+                int width = (int) (80 * Density.density);
+                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(width, ViewGroup.LayoutParams.MATCH_PARENT);
 
-        ((TextView) view.findViewById(R.id.textDate)).setText(hashMap.get("date"));
-        ((TextView) view.findViewById(R.id.textTime)).setText(hashMap.get("time"));
-        ((TextView) view.findViewById(R.id.textTemp)).setText(hashMap.get("temp"));
-        view.setLayoutParams(layoutParams);
+                View view = inflater.inflate(R.layout.forecast_container, null, false);
+                fr.addView(view);
+
+                ((TextView) view.findViewById(R.id.textDate)).setText(hashMap.get("date"));
+                ((TextView) view.findViewById(R.id.textTime)).setText(hashMap.get("time"));
+                ((TextView) view.findViewById(R.id.textTemp)).setText(hashMap.get("temp"));
+                view.setLayoutParams(layoutParams);
+            }
+        });
+
 
     }
 

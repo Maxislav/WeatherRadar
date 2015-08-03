@@ -1,47 +1,49 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="80dp"
-    android:layout_height="fill_parent"
-    android:orientation="vertical"
-
     android:background="@drawable/border"
-    android:padding="3dp"
-    >
-    <TextView
-        style="@style/MyText"
+    android:layout_height="fill_parent">
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
-        android:gravity="center"
-        android:id="@+id/textDate"
-        android:layout_height="wrap_content"
-        android:text="15:00"/>
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="3dp">
+        <TextView
+            style="@style/MyText"
+            android:layout_width="match_parent"
+            android:gravity="center"
+            android:id="@+id/textDate"
+            android:layout_height="wrap_content"
+            android:text="15:00"/>
 
-    <TextView
-        style="@style/MyText"
-        android:id="@+id/textTime"
-        android:layout_width="match_parent"
-        android:gravity="center"
-        android:layout_height="wrap_content"
-        android:text="15:00"/>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" android:orientation="horizontal"
-        android:gravity="center">
         <TextView
             style="@style/MyText"
-            android:id="@+id/textTemp"
-            android:layout_width="wrap_content"
-            android:gravity="center"
-            android:paddingRight="0dp"
-            android:layout_height="wrap_content"
-            android:text="ddd"/>
-        <TextView
-            style="@style/MyText"
-            android:layout_width="wrap_content"
-            android:layout_marginLeft="-5dp"
-            android:paddingLeft="0dp"
+            android:id="@+id/textTime"
+            android:layout_width="match_parent"
             android:gravity="center"
             android:layout_height="wrap_content"
-            android:text="&#176;"/>
+            android:text="15:00"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" android:orientation="horizontal"
+            android:gravity="center">
+            <TextView
+                style="@style/MyText"
+                android:id="@+id/textTemp"
+                android:layout_width="wrap_content"
+                android:gravity="center"
+                android:paddingRight="0dp"
+                android:layout_height="wrap_content"
+                android:text="ddd"/>
+            <TextView
+                style="@style/MyText"
+                android:layout_width="wrap_content"
+                android:layout_marginLeft="-5dp"
+                android:paddingLeft="0dp"
+                android:gravity="center"
+                android:layout_height="wrap_content"
+                android:text="&#176;"/>
         </LinearLayout>
 
 
-</LinearLayout>
+    </LinearLayout>
+</FrameLayout>

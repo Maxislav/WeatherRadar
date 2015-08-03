@@ -113,6 +113,8 @@ public class MainActivity extends FragmentActivity implements Communicator, View
         am.set(AlarmManager.RTC_WAKEUP, startAlarm, pIntent1);
 */
         //am.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 5000, pIntent1);
+
+        new ScroolObserv(this, scrollView);
     }
 
     private void setSisze(){
