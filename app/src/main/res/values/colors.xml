@@ -15,6 +15,11 @@
 
     <item name="titleColor" type="color">#fff4f4ff</item>
 
+    <item name="gradient_start" type="color">#ffd0d0db</item>
+    <item name="gradient_end" type="color">#ff9c9ca6</item>
+
+
+
     <item name="menuPressStart" type="color">#ffdcdce7</item>
     <item name="menuPressEnd" type="color">#ffd0d0db</item>
 

@@ -24,7 +24,7 @@ import com.atlas.mars.weatherradar.DataBaseHelper;
 import com.atlas.mars.weatherradar.MainActivity;
 import com.atlas.mars.weatherradar.R;
 import com.atlas.mars.weatherradar.location.MyLocationListenerNet;
-import com.atlas.mars.weatherradar.location.OnCallback;
+import com.atlas.mars.weatherradar.location.OnLocation;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
@@ -36,7 +36,7 @@ import java.util.HashMap;
 /**
  * Created by mars on 7/27/15.
  */
-public class MyService extends Service implements OnCallback {
+public class MyService extends Service implements OnLocation {
     BorispolTask borispolTask;
     GoogleWeatherTask googleWeatherTask;
     static ObjectMapper mapper = new ObjectMapper();

@@ -2,6 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/gradient_vertical"
     android:orientation="vertical"
     tools:context=".MainActivity">
 
@@ -73,14 +74,11 @@
                     <HorizontalScrollView
                         android:layout_width="match_parent"
                         android:layout_height="match_parent">
-
                         <LinearLayout
                             android:id="@+id/forecastLinearLayout"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:orientation="horizontal">
-
-
                         </LinearLayout>
 
 

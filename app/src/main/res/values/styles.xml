@@ -20,6 +20,7 @@
     </style>
     <style name="MyText" >
         <item name="android:textColor">@color/black</item>
+        <item name="android:padding">2dp</item>
     </style>
 
     <style name="MyTextAppearance" parent="MyAppTheme">

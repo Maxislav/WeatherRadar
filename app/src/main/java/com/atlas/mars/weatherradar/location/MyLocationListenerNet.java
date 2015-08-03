@@ -10,15 +10,17 @@ import com.atlas.mars.weatherradar.alarm.MyService;
  * Created by Администратор on 8/1/15.
  */
 public class MyLocationListenerNet implements LocationListener {
-    Object myService;
-    public MyLocationListenerNet(Object myService){
-        this.myService = myService;
+    Object obj;
+    public MyLocationListenerNet(Object obj){
+        this.obj = obj;
     }
 
-    void onCallback(double lat, double lng){
-        MyService myService1 = (MyService)myService;
+    public void onCallback(double lat, double lng){
+        MyService myService1 = (MyService)obj;
         myService1.onLocationAccept(lat, lng);
     }
+
+
 
     @Override
     public void onLocationChanged(Location location) {
