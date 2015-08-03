@@ -61,6 +61,7 @@ public class MainActivity extends FragmentActivity implements Communicator, View
     ImageButton buttonReload;
     ImageButton buttonMenu;
     TextView title;
+    LinearLayout forecastLinearLayout;
 
     HashMap<Integer, Object> fragmetMap;
     ScrollView scrollView;
@@ -78,6 +79,10 @@ public class MainActivity extends FragmentActivity implements Communicator, View
         buttonReload = (ImageButton)findViewById(R.id.buttonReload);
         buttonMenu = (ImageButton)findViewById(R.id.buttonMenu);
         title = (TextView)findViewById(R.id.title);
+        forecastLinearLayout = (LinearLayout)findViewById(R.id.forecastLinearLayout);
+
+        new Forecast(this, forecastLinearLayout);
+
         buttonMenu.setOnClickListener(this);
         buttonReload.setOnClickListener(this);
 

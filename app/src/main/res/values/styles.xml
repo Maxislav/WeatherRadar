@@ -18,6 +18,9 @@
         <item name="android:textAllCaps">@style/MyTextAppearance</item>
         <item name="android:textViewStyle">@style/MyTextAppearance</item>
     </style>
+    <style name="MyText" >
+        <item name="android:textColor">@color/black</item>
+    </style>
 
     <style name="MyTextAppearance" parent="MyAppTheme">
         <item name="android:padding">5dp</item>
