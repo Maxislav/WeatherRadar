@@ -206,6 +206,9 @@ public class MyService extends Service implements OnLocation {
                 mapSetting.put(DataBaseHelper.FORECAST_RAIN, "0");
             }
             db.saveSetting();
+
+
+
             onStop();
         }
     }

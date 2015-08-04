@@ -52,7 +52,7 @@ public class Forecast implements OnLocation {
         loader = new Loader(activity, parent);
 
         locationManagerNet = (LocationManager) activity.getSystemService(Context.LOCATION_SERVICE);
-        locationListenerNet = new Location(this);
+        locationListenerNet = new MyLocationListenerNet(this);
         locationManagerNet.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListenerNet);
         loader.show();
         //  onInflate();
@@ -174,16 +174,7 @@ public class Forecast implements OnLocation {
     }
 
 
-    private class Location extends MyLocationListenerNet {
-        public Location(Object myService) {
-            super(myService);
-        }
 
-        @Override
-        public void onCallback(double lat, double lng) {
-            onLocationAccept(lat, lng);
-        }
-    }
 
     private class ForecastGoogleApi extends AsyncTask<Double, Void, ObjectNode> {
         ObjectMapper mapper = new ObjectMapper();
