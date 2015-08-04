@@ -71,11 +71,12 @@ public class Forecast implements OnLocation {
 
                 View view = inflater.inflate(R.layout.forecast_container, null, false);
                 fr.addView(view);
-                ((TextView) view.findViewById(R.id.textDate)).setText(hashMap.get("date"));
+                ((TextView) view.findViewById(R.id.textDate)).setText( firstUpperCase(hashMap.get("dayWeek")) +" "+hashMap.get("date"));
                 ((TextView) view.findViewById(R.id.textTime)).setText(hashMap.get("time"));
                 ((TextView) view.findViewById(R.id.textTemp)).setText(hashMap.get("temp"));
                 ImageView imageView = (ImageView)view.findViewById(R.id.image);
                 new IconForecast(imageView,hashMap.get("icon") );
+                layoutParams.setMargins(2,2,2,2);
                 view.setLayoutParams(layoutParams);
                 ViewGroup viewGroup  = (ViewGroup)view;
                 LinearLayout childView = (LinearLayout)viewGroup.getChildAt(0);
@@ -130,6 +131,8 @@ public class Forecast implements OnLocation {
         SimpleDateFormat dayMonth = new SimpleDateFormat("dd.MM"); //2015-08-03 18:00:00
         SimpleDateFormat time = new SimpleDateFormat("HH:mm"); //2015-08-03 18:00:00
         SimpleDateFormat HH = new SimpleDateFormat("HH"); //2015-08-03 18:00:00
+        SimpleDateFormat dayWeek =new SimpleDateFormat("EE");
+
         //  SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); //2015-08-03 18:00:00
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH);
 
@@ -155,6 +158,7 @@ public class Forecast implements OnLocation {
                 map.put("date", dayMonth.format(date));
                 map.put("time", time.format(date));
                 map.put("HH", HH.format(date));
+                map.put("dayWeek", dayWeek.format(date));
 
 
             } catch (ParseException e) {
@@ -228,5 +232,9 @@ public class Forecast implements OnLocation {
         protected void onPostExecute(ObjectNode result) {
             onForecastAccept(result);
         }
+    }
+    private String firstUpperCase(String word){
+        if(word == null || word.isEmpty()) return "";//или return word;
+        return word.substring(0, 1).toUpperCase() + word.substring(1);
     }
 }
