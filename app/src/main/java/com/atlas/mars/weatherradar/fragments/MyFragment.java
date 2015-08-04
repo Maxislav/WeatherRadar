@@ -1,9 +1,12 @@
 package com.atlas.mars.weatherradar.fragments;
 
 import android.app.Activity;
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.view.MenuItem;
@@ -103,7 +106,7 @@ public abstract class MyFragment  implements View.OnClickListener, PopupMenu.OnM
     private void loadImg(){
         if(imageUrl == null || imageUrl.isEmpty()){
             toastShow("No url detect. Set url" + (position+1));
-        }else{
+        }else if(isNetworkAvailable()){
             LoadImage li = new LoadImage();
             li.execute();
         }
@@ -220,5 +223,12 @@ public abstract class MyFragment  implements View.OnClickListener, PopupMenu.OnM
 
     private void toastShow(String txt){
         ((MainActivity)activity).toastShow(txt);
+    }
+
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) activity.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 }

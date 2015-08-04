@@ -1,5 +1,6 @@
 package com.atlas.mars.weatherradar.alarm;
 
+import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -93,6 +94,8 @@ public class MyService extends Service implements OnLocation {
 
     @Override
     public void onLocationAccept(double lat, double lng) {
+
+
         if (isNetworkAvailable()) {
             if(mapSetting.get(DataBaseHelper.FORECAST_RAIN)==null || mapSetting.get(DataBaseHelper.FORECAST_RAIN).equals("1")){
                 taskNeeded++;
@@ -110,6 +113,7 @@ public class MyService extends Service implements OnLocation {
             locationManagerNet.removeUpdates(locationListenerNet);
         }
         if(taskNeeded == 0){
+          //  alarmRestart();
             onStop();
         }
     }
@@ -133,6 +137,9 @@ public class MyService extends Service implements OnLocation {
     }
 
     void onStop() {
+        if(mapSetting.get(DataBaseHelper.IS_ALARM)!=null && mapSetting.get(DataBaseHelper.IS_ALARM).equals("1")){
+            alarmRestart();
+        }
         this.stopSelf();
     }
 
@@ -206,11 +213,19 @@ public class MyService extends Service implements OnLocation {
                 mapSetting.put(DataBaseHelper.FORECAST_RAIN, "0");
             }
             db.saveSetting();
-
-
-
+           // alarmRestart();
             onStop();
         }
+    }
+
+    private void alarmRestart(){
+        Intent intent1 = createIntent("action 1", "extra 1");
+        PendingIntent pendingIntent;
+        AlarmManager am = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
+        pendingIntent = PendingIntent.getBroadcast(this, 0, intent1, PendingIntent.FLAG_CANCEL_CURRENT);
+        // am.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 10*60*1000, pendingIntent);
+        am.set(AlarmManager.RTC_WAKEUP, db.getStartTime(), pendingIntent);
+        am.cancel(pendingIntent);
     }
 
 

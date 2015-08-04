@@ -54,8 +54,7 @@ public class SampleBootReceiver extends BroadcastReceiver {
         }*/
 
 
-        long startAlarm;
-        startAlarm = db.getStartTime();
+       // startAlarm = db.getStartTime();
 
       //  nm = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
@@ -84,10 +83,13 @@ public class SampleBootReceiver extends BroadcastReceiver {
         AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         pendingIntent = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
       // am.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 10*60*1000, pendingIntent);
-       am.set(AlarmManager.RTC_WAKEUP, startAlarm, pendingIntent);
+        am.set(AlarmManager.RTC_WAKEUP, db.getStartTime(), pendingIntent);
+      // am.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis()+10*1000, pendingIntent);
+
+
        // am.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis()+5*1000, -1, pendingIntent);
        // am.setRepeating(AlarmManager.RTC_WAKEUP, startAlarm, -1, pendingIntent);
-        Log.d(TAG, "Next alarm" + new Date(startAlarm).toString());
+        Log.d(TAG, "Next alarm" + new Date(db.getStartTime()).toString());
         context.startService(new Intent(context, MyService.class));
     }
 

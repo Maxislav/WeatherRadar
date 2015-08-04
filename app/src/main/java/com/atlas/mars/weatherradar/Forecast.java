@@ -127,6 +127,7 @@ public class Forecast implements OnLocation {
 
     void onForecastAccept(ObjectNode root) {
 
+        if(root ==null ) return;
         ArrayNode list = (ArrayNode) root.get("list");
         SimpleDateFormat dayMonth = new SimpleDateFormat("dd.MM"); //2015-08-03 18:00:00
         SimpleDateFormat time = new SimpleDateFormat("HH:mm"); //2015-08-03 18:00:00
@@ -168,7 +169,7 @@ public class Forecast implements OnLocation {
             onInflate(map);
 
         }
-        loader.hide();
+
         Log.d(TAG, "olo");
         Log.d(TAG, "olo");
     }
@@ -221,6 +222,7 @@ public class Forecast implements OnLocation {
 
         @Override
         protected void onPostExecute(ObjectNode result) {
+            loader.hide();
             onForecastAccept(result);
         }
     }
