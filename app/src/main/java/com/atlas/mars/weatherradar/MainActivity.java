@@ -140,7 +140,9 @@ public class MainActivity extends FragmentActivity implements Communicator, View
                 }
 
                 Log.d(TAG, "" + scrollView.getHeight() + " : " + scrollView.getChildAt(0).getHeight());
-                scrollView.scrollTo(0, scrollView.getChildAt(0).getHeight() - scrollView.getHeight());
+
+                //todo установка позиции скрода при старте
+              //  scrollView.scrollTo(0, scrollView.getChildAt(0).getHeight() - scrollView.getHeight());
             }
         });
 

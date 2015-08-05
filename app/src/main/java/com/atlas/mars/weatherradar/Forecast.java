@@ -28,8 +28,12 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Scanner;
 
@@ -59,19 +63,18 @@ public class Forecast implements OnLocation {
     }
 
 
-    void onInflate(final HashMap<String, String> map) {
-
-        fr.post(new Runnable() {
+    void onInflate(final LinearLayout layoytDay,  final HashMap<String, String> map) {
+        layoytDay.post(new Runnable() {
             final HashMap<String, String> hashMap = map;
             @Override
             public void run() {
                 LayoutInflater inflater = (LayoutInflater) (activity.getLayoutInflater());
                 int width = (int) (80 * Density.density);
                 LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(width, ViewGroup.LayoutParams.MATCH_PARENT);
-
                 View view = inflater.inflate(R.layout.forecast_container, null, false);
-                fr.addView(view);
-                ((TextView) view.findViewById(R.id.textDate)).setText( firstUpperCase(hashMap.get("dayWeek")) +" "+hashMap.get("date"));
+                layoytDay.addView(view);
+               // ((TextView) view.findViewById(R.id.textDate)).setText( firstUpperCase(hashMap.get("dayWeek")) +" "+hashMap.get("date"));
+
                 ((TextView) view.findViewById(R.id.textTime)).setText(hashMap.get("time"));
                 ((TextView) view.findViewById(R.id.textTemp)).setText(hashMap.get("temp"));
                 ImageView imageView = (ImageView)view.findViewById(R.id.image);
@@ -117,7 +120,7 @@ public class Forecast implements OnLocation {
     @Override
     public void onLocationAccept(double lat, double lng) {
         Log.d(TAG, "lat lng: " + lat + " : " + lng);
-        // onInflate();
+
         if (locationManagerNet != null) {
             locationManagerNet.removeUpdates(locationListenerNet);
         }
@@ -126,6 +129,7 @@ public class Forecast implements OnLocation {
     }
 
     void onForecastAccept(ObjectNode root) {
+        List<HashMap> listMap = new ArrayList<>();
 
         if(root ==null ) return;
         ArrayNode list = (ArrayNode) root.get("list");
@@ -149,30 +153,110 @@ public class Forecast implements OnLocation {
             map.put("main", main);
             map.put("description", description);
             map.put("icon", icon);
-
-
+            Calendar cal = new GregorianCalendar();
             try {
                 Date date = format.parse(dt_txt);
                 dayMonth.format(date);
                 time.format(date);
 
+                cal.setTime(date);
+
                 map.put("date", dayMonth.format(date));
                 map.put("time", time.format(date));
                 map.put("HH", HH.format(date));
                 map.put("dayWeek", dayWeek.format(date));
+                map.put("dayWeekNum",Integer.toString(cal.get(Calendar.DAY_OF_WEEK)));
 
 
             } catch (ParseException e) {
                 Log.e(TAG, e.toString(), e);
                 e.printStackTrace();
             }
-            onInflate(map);
+
+            listMap.add(map);
+          //  onInflate(null, map);
+
+
 
         }
-
+        infladeDay(listMap);
         Log.d(TAG, "olo");
         Log.d(TAG, "olo");
     }
+
+    void infladeDay(List<HashMap> listMap){
+        String dayWeekNum = listMap.get(0).get("dayWeekNum").toString();
+         dayWeekNum = listMap.get(0).get("dayWeekNum").toString();
+        int i =0, count = listMap.size();
+
+        HashMap<String, List> mapDays = new HashMap<>();
+
+        List<List> listList = new ArrayList<>();
+
+
+        for(HashMap<String, String> map : listMap){
+            String dN = map.get("dayWeekNum");
+            List<HashMap> ll = mapDays.get(dN) == null ? new ArrayList<>() : mapDays.get(dN);
+            ll.add(map);
+
+
+            if(mapDays.get(dN)==null){
+              /*  List<HashMap> ll = new ArrayList<>();
+                ll.add(map);*/
+                mapDays.put(dN, ll);
+                listList.add(ll);
+
+            }/*else{
+                mapDays.get(dN).add(map);
+                listList.get(listList.size()-1).add(map);
+            }
+*/
+        }
+        for(List<HashMap> lm : listList){
+            LayoutInflater inflater = (LayoutInflater) (activity.getLayoutInflater());
+            final  View view = inflater.inflate(R.layout.coll_week, null, false);
+            final  LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT);
+
+            final LinearLayout daySprite = (LinearLayout) view.findViewById(R.id.daySprite);
+            final List<HashMap> _lm = lm;
+            fr.post(new Runnable() {
+
+
+                @Override
+                public void run() {
+                    fr.addView(view);
+                    view.setLayoutParams(layoutParams);
+
+
+                    TextView dayTitle = (TextView)view.findViewById(R.id.dayTitle);
+                    //firstUpperCase(hashMap.get("dayWeek")) +" "+hashMap.get("date")
+                    dayTitle.setText(firstUpperCase(_lm.get(0).get("dayWeek").toString()) + " " + _lm.get(0).get("date").toString());
+
+                }
+            });
+            for (HashMap<String,String> map : lm){
+                onInflate(daySprite, map);
+            }
+
+            /*for (HashMap<String,String> map : lm){
+                onInflate(daySprite, map);
+            }*/
+
+
+
+        }
+
+
+
+
+        Log.d(TAG, "od" +listList.toString());
+        Log.d(TAG, "od" +mapDays.toString());
+
+
+
+
+    }
+
 
 
 
