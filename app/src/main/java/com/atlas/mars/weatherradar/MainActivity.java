@@ -65,7 +65,8 @@ public class MainActivity extends FragmentActivity implements Communicator, View
 
     HashMap<Integer, Object> fragmetMap;
     ScrollView scrollView;
-
+    FrameLayout frLayoutCurrent;
+    CurrentWeather currentWeather;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,6 +81,8 @@ public class MainActivity extends FragmentActivity implements Communicator, View
         buttonMenu = (ImageButton)findViewById(R.id.buttonMenu);
         title = (TextView)findViewById(R.id.title);
         forecastLinearLayout = (LinearLayout)findViewById(R.id.forecastLinearLayout);
+        frLayoutCurrent = (FrameLayout)findViewById(R.id.frLayoutCurrent);
+        currentWeather = new CurrentWeather(this, frLayoutCurrent);
 
         new Forecast(this, forecastLinearLayout);
 
@@ -118,12 +121,12 @@ public class MainActivity extends FragmentActivity implements Communicator, View
     }
 
     private void setSisze(){
-        ViewTreeObserver observer = ((FrameLayout)buttonReload.getParent()).getViewTreeObserver();
+        ViewTreeObserver observer = ((LinearLayout)buttonReload.getParent()).getViewTreeObserver();
         observer.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
-                buttonReload.setLayoutParams(new  FrameLayout.LayoutParams (buttonReload.getHeight(),buttonReload.getHeight() ));
-                buttonMenu.setLayoutParams(new  FrameLayout.LayoutParams ((int)(buttonReload.getHeight()/1.5),buttonMenu.getHeight() ));
+                buttonReload.setLayoutParams(new  LinearLayout.LayoutParams (buttonReload.getHeight(),buttonReload.getHeight() ));
+                buttonMenu.setLayoutParams(new  LinearLayout.LayoutParams ((int)(buttonReload.getHeight()/1.5),buttonMenu.getHeight() ));
             }
         });
 
@@ -320,6 +323,7 @@ public class MainActivity extends FragmentActivity implements Communicator, View
             toastShow(extras.getString("item_id"));
             Log.i( "dd","Extra:" + extras.getString("item_id") );
         }
+        currentWeather.onResum();
     }
 
     @Override
