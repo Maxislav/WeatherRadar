@@ -78,7 +78,9 @@ public class Forecast implements OnLocation {
                 ((TextView) view.findViewById(R.id.textTime)).setText(hashMap.get("time"));
                 ((TextView) view.findViewById(R.id.textTemp)).setText(hashMap.get("temp"));
                 ImageView imageView = (ImageView)view.findViewById(R.id.image);
-                new IconForecast(imageView,hashMap.get("icon") );
+               // new IconForecast(imageView,hashMap.get("icon") );
+                getIcon(imageView, hashMap.get("icon"));
+
                 layoutParams.setMargins(2,2,2,2);
                 view.setLayoutParams(layoutParams);
                 ViewGroup viewGroup  = (ViewGroup)view;
@@ -91,6 +93,18 @@ public class Forecast implements OnLocation {
             }
         });
 
+
+    }
+
+
+    private void getIcon(ImageView imageView, String icon){
+        Log.d(TAG, "Icon " + icon);
+        int resId=activity.getResources().getIdentifier("i"+icon, "drawable", activity.getPackageName());
+        if(resId!=0){
+            imageView.setBackgroundResource(resId);
+        }else{
+            new IconForecast(imageView,icon );
+        }
 
     }
 

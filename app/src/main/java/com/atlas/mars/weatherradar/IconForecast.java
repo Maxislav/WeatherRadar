@@ -20,6 +20,12 @@ public class IconForecast {
 
     IconForecast(ImageView imageView, String icon){
         this.imageView = imageView;
+
+
+        //int resId=.getResources().getIdentifier("ball_red", "drawable", YourActivity.this.getPackageName());
+
+
+
         imageUrl = "http://openweathermap.org/img/w/"+icon+".png";
         LoadImage loadImage = new LoadImage();
         loadImage.execute();
