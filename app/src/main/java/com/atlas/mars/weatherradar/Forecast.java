@@ -81,7 +81,7 @@ public class Forecast implements OnLocation {
                // new IconForecast(imageView,hashMap.get("icon") );
                 getIcon(imageView, hashMap.get("icon"));
 
-                layoutParams.setMargins(2,2,2,2);
+                layoutParams.setMargins(2,0,2,0);
                 view.setLayoutParams(layoutParams);
                 ViewGroup viewGroup  = (ViewGroup)view;
                 LinearLayout childView = (LinearLayout)viewGroup.getChildAt(0);
