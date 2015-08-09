@@ -315,15 +315,16 @@ public class MainActivity extends FragmentActivity implements Communicator, View
       //  startService(new Intent(this, MyService.class));
         onCreateMyReceiver();
         setMyTitle(pager.getCurrentItem());
-        //Log.d(TAG, "position: "+ pager.getCurrentItem());
-
-
         Bundle extras = getIntent().getExtras();
         if(extras != null){
             toastShow(extras.getString("item_id"));
             Log.i( "dd","Extra:" + extras.getString("item_id") );
         }
         currentWeather.onResum();
+    }
+
+    public void setCityName(String name){
+        title.setText(name);
     }
 
     @Override
@@ -358,13 +359,15 @@ public class MainActivity extends FragmentActivity implements Communicator, View
     void setMyTitle(int pos){
         posinion = pos;
         String titleText = "";
-        if(mapSetting.get("title"+(pos+1))==null){
+      /*  if(mapSetting.get("title"+(pos+1))==null){
             title.setText(titleText);
         }else{
             title.setText(mapSetting.get("title"+(pos+1)));
         }
-
+*/
     }
+
+
 
 
 

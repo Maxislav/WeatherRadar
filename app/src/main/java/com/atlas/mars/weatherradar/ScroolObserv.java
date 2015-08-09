@@ -12,17 +12,15 @@ import android.widget.ScrollView;
  */
 public class ScroolObserv implements View.OnTouchListener {
     final String TAG = "ScroolObservLogs";
-    Activity activity;
+    MainActivity mainActivity;
     ScrollView scrollView;
     ViewTreeObserver observer;
 
 
-    ScroolObserv(Activity activity, ScrollView scrollView){
-        this.activity = activity;
+    ScroolObserv(MainActivity mainActivity, ScrollView scrollView){
+        this.mainActivity = mainActivity;
         this.scrollView = scrollView;
-
         scrollView.setOnTouchListener(this);
-
     }
 
     final ViewTreeObserver.OnScrollChangedListener onScrollChangedListener = new

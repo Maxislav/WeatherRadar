@@ -24,7 +24,7 @@ import java.util.Scanner;
  * Created by mars on 8/6/15.
  */
 public class CurrentWeather implements OnLocation {
-    Activity activity;
+    MainActivity mainActivity;
     FrameLayout frLayoutCurrent;
     final String TAG = "CurrentWeatherLogs";
     public LocationManager locationManagerNet;
@@ -33,8 +33,8 @@ public class CurrentWeather implements OnLocation {
     TextView textViewTemp, textViewWind, textViewHumidity;
     ImageView imageCurrentWeather;
 
-    CurrentWeather(Activity activity, FrameLayout frLayoutCurrent){
-        this.activity = activity;
+    CurrentWeather(MainActivity mainActivity, FrameLayout frLayoutCurrent){
+        this.mainActivity = mainActivity;
         textViewTemp = (TextView)frLayoutCurrent.findViewById(R.id.textViewTemp);
         textViewWind = (TextView)frLayoutCurrent.findViewById(R.id.textViewWind);
         textViewHumidity = (TextView)frLayoutCurrent.findViewById(R.id.textViewHumidity);
@@ -44,7 +44,7 @@ public class CurrentWeather implements OnLocation {
 
     public void onResum(){
 
-        locationManagerNet = (LocationManager) activity.getSystemService(Context.LOCATION_SERVICE);
+        locationManagerNet = (LocationManager) mainActivity.getSystemService(Context.LOCATION_SERVICE);
         locationListenerNet = new MyLocationListenerNet(this);
         locationManagerNet.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListenerNet);
 
@@ -61,7 +61,8 @@ public class CurrentWeather implements OnLocation {
 
        String icon = root.get("weather").get(0).path("icon").asText();
 
-
+        String nameCity = root.path("name").asText();
+        mainActivity.setCityName(nameCity);
 
         int temp = root.get("main").path("temp").asInt();
         String strtTemp = Integer.toString(temp);
@@ -81,7 +82,7 @@ public class CurrentWeather implements OnLocation {
 
     private void setIcon(ImageView imageView, String icon){
         Log.d(TAG, "Icon " + icon);
-        int resId=activity.getResources().getIdentifier("i"+icon, "drawable", activity.getPackageName());
+        int resId=mainActivity.getResources().getIdentifier("i"+icon, "drawable", mainActivity.getPackageName());
         if(resId!=0){
             imageView.setBackgroundResource(resId);
         }else{
