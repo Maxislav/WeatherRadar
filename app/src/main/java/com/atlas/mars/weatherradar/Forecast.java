@@ -98,11 +98,12 @@ public class Forecast implements OnLocation {
 
 
     private void getIcon(ImageView imageView, String icon){
-        Log.d(TAG, "Icon " + icon);
+
         int resId=activity.getResources().getIdentifier("i"+icon, "drawable", activity.getPackageName());
         if(resId!=0){
             imageView.setBackgroundResource(resId);
         }else{
+            Log.d(TAG, "Icon not exist " + icon);
             new IconForecast(imageView,icon );
         }
 
@@ -194,8 +195,7 @@ public class Forecast implements OnLocation {
 
         }
         infladeDay(listMap);
-        Log.d(TAG, "olo");
-        Log.d(TAG, "olo");
+
     }
 
     void infladeDay(List<HashMap> listMap){
