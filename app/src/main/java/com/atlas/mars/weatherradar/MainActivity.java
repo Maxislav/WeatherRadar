@@ -32,20 +32,25 @@ import com.atlas.mars.weatherradar.fragments.InfraRed;
 import com.atlas.mars.weatherradar.fragments.MyFragment;
 import com.atlas.mars.weatherradar.fragments.Visible;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 
 public class MainActivity extends FragmentActivity implements Communicator, ViewPager.OnPageChangeListener, View.OnClickListener, PopupMenu.OnMenuItemClickListener {
     public  final static String LOCATION = "LOCATION";
     final String TAG = "MainActivityLogs";
+    int posinion;
 
     ViewPager pager;
     PagerAdapter pagerAdapter;
     BoridpolRadar boridpolRadar;
-    int posinion;
-
     InfraRed infraRed;
     Visible visible;
+
+
+    HashMap<Integer, MyFragment> listFragments;
+
     DataBaseHelper db;
 
     NotificationManager nm;
@@ -85,6 +90,7 @@ public class MainActivity extends FragmentActivity implements Communicator, View
         currentWeather = new CurrentWeather(this, frLayoutCurrent);
 
         new Forecast(this, forecastLinearLayout);
+        listFragments = new HashMap<>();
 
         buttonMenu.setOnClickListener(this);
         buttonReload.setOnClickListener(this);
@@ -219,6 +225,8 @@ public class MainActivity extends FragmentActivity implements Communicator, View
 
     @Override
     public void initView(View v, int position) {
+        listFragments.put(position, new BoridpolRadar(v, this, position));
+
         switch (position){
             case 0:
                // LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams().
@@ -226,6 +234,8 @@ public class MainActivity extends FragmentActivity implements Communicator, View
             //LinearLayout.LayoutParams parms = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,(int)(Density.widthPixels*1.34));
                 boridpolRadar = new BoridpolRadar(v, this, position);
                 fragmetMap.put(position, boridpolRadar);
+
+              //  listFragments.put(new BoridpolRadar(v, this, position));
                 break;
             case 1:
                 infraRed = new InfraRed(v, this, position);
