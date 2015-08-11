@@ -32,9 +32,7 @@ import com.atlas.mars.weatherradar.fragments.InfraRed;
 import com.atlas.mars.weatherradar.fragments.MyFragment;
 import com.atlas.mars.weatherradar.fragments.Visible;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 
 public class MainActivity extends FragmentActivity implements Communicator, ViewPager.OnPageChangeListener, View.OnClickListener, PopupMenu.OnMenuItemClickListener {
@@ -81,6 +79,7 @@ public class MainActivity extends FragmentActivity implements Communicator, View
         db = new DataBaseHelper(this);
         startAlarm = db.getStartTime();
         mapSetting = DataBaseHelper.mapSetting;
+       // db.deleteValue(DataBaseHelper.TIME_NOTIFY);
 
         buttonReload = (ImageButton)findViewById(R.id.buttonReload);
         buttonMenu = (ImageButton)findViewById(R.id.buttonMenu);

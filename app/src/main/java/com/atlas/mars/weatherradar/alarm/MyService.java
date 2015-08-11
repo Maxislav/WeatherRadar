@@ -42,6 +42,7 @@ public class MyService extends Service implements OnLocation {
     GoogleWeatherTask googleWeatherTask;
     static ObjectMapper mapper = new ObjectMapper();
     final String TAG = "MyServiceLogs";
+    final String ALARM = "AlarmLogs";
     HttpURLConnection urlConnection;
     NotificationManager nm;
     Notification notification;
@@ -225,7 +226,8 @@ public class MyService extends Service implements OnLocation {
         pendingIntent = PendingIntent.getBroadcast(this, 0, intent1, PendingIntent.FLAG_CANCEL_CURRENT);
         // am.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 10*60*1000, pendingIntent);
         am.set(AlarmManager.RTC_WAKEUP, db.getStartTime(), pendingIntent);
-        am.cancel(pendingIntent);
+        Log.d(ALARM, "Alarm Restart: "+  new Date(db.getStartTime()).toString());
+        //am.cancel(pendingIntent);
     }
 
 

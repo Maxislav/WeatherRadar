@@ -17,6 +17,7 @@ import java.util.Date;
  */
 public class SampleBootReceiver extends BroadcastReceiver {
     final String TAG = "BootReceiverLogs";
+    final String ALARM = "AlarmLogs";
     NotificationManager nm;
     DataBaseHelper db;
     PendingIntent pendingIntent;
@@ -90,6 +91,7 @@ public class SampleBootReceiver extends BroadcastReceiver {
        // am.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis()+5*1000, -1, pendingIntent);
        // am.setRepeating(AlarmManager.RTC_WAKEUP, startAlarm, -1, pendingIntent);
         Log.d(TAG, "Next alarm" + new Date(db.getStartTime()).toString());
+        Log.d(ALARM, "Alarm start: "+  new Date(db.getStartTime()).toString());
         context.startService(new Intent(context, MyService.class));
     }
 

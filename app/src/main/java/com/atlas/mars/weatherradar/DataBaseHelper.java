@@ -56,11 +56,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     final DateFormat formatter = new SimpleDateFormat(NEW_FORMAT);
 
     static long intervalTime = 10*60*1000;
-    //static long intervalTime = 10*1000;
-
-
-
-
+    //static long intervalTime = 20*1000;
 
 
     private static final String SQL_CREATE_TABLE_SETTING =  "CREATE TABLE if not exists "
@@ -273,5 +269,20 @@ public class DataBaseHelper extends SQLiteOpenHelper {
             return true;
         }
         return  (getTimeNotify()+timeRepeatLong)<(System.currentTimeMillis());
+    }
+
+    public void deleteValue (String key){
+        sdb = getWritableDatabase();
+        String query =  "DELETE FROM " + TABLE_SETTING+ " WHERE " + KEY+"='"+key+"'";
+        try {
+            sdb.execSQL(query);
+        }catch (Exception e){
+            Log.e(TAG, e.toString());
+            e.printStackTrace();
+            sdb.close();
+           // return false;
+        }
+       // cursor.close();
+        sdb.close();
     }
 }

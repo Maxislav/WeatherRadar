@@ -1,6 +1,5 @@
 package com.atlas.mars.weatherradar;
 
-import android.app.Activity;
 import android.content.Context;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -53,7 +52,11 @@ public class CurrentWeather implements OnLocation {
 
     @Override
     public void onLocationAccept(double lat, double lng) {
+        if (locationManagerNet != null) {
+            locationManagerNet.removeUpdates(locationListenerNet);
+        }
         new CurrentWeatherTask().execute(lat, lng);
+
     }
 
     void onAccept(ObjectNode root){
