@@ -38,7 +38,7 @@ public class BorispolTask extends AsyncTask<Double, Void, HashMap<String, Intege
         InputStream in = null;
         StringBuilder sb = new StringBuilder();
         try {
-            url = new URL("http://178.62.44.54/php/parserain.php?lat=" + params[0] + "&lng=" + params[1]);
+            url = new URL("http://178.62.44.54/php/parseraindev.php?lat=" + params[0] + "&lng=" + params[1]);
             urlConnection = (HttpURLConnection) url.openConnection();
            // urlConnection.setDoOutput(true);
             Scanner inStream = new Scanner(urlConnection.getInputStream());
