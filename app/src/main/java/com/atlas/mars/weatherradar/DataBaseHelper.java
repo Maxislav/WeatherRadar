@@ -56,7 +56,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     final DateFormat formatter = new SimpleDateFormat(NEW_FORMAT);
 
     static long intervalTime = 10*60*1000;
-    //static long intervalTime = 20*1000;
+   //static long intervalTime = 20*1000;
 
 
     private static final String SQL_CREATE_TABLE_SETTING =  "CREATE TABLE if not exists "

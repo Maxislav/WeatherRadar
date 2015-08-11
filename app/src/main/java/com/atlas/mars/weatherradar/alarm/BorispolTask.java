@@ -40,7 +40,7 @@ public class BorispolTask extends AsyncTask<Double, Void, HashMap<String, Intege
         try {
             url = new URL("http://178.62.44.54/php/parseraindev.php?lat=" + params[0] + "&lng=" + params[1]);
             urlConnection = (HttpURLConnection) url.openConnection();
-            urlConnection.setDoOutput(true);
+           // urlConnection.setDoOutput(true);
             Scanner inStream = new Scanner(urlConnection.getInputStream());
             while (inStream.hasNextLine()) {
                 sb.append(inStream.nextLine());

@@ -101,7 +101,11 @@ public class MyService extends Service implements OnLocation {
             if(mapSetting.get(DataBaseHelper.FORECAST_RAIN)==null || mapSetting.get(DataBaseHelper.FORECAST_RAIN).equals("1")){
                 taskNeeded++;
                 borispolTask = new BorispolTask(this);
-                borispolTask.execute(lat, lng);
+                try {
+                    borispolTask.execute(lat, lng);
+                }catch (Exception e){
+                    Log.e(TAG, e.toString(), e);
+                }
             }
 
             if(db.getStartForecast()){
@@ -226,7 +230,7 @@ public class MyService extends Service implements OnLocation {
         pendingIntent = PendingIntent.getBroadcast(this, 0, intent1, PendingIntent.FLAG_CANCEL_CURRENT);
         // am.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 10*60*1000, pendingIntent);
         am.set(AlarmManager.RTC_WAKEUP, db.getStartTime(), pendingIntent);
-        Log.d(ALARM, "Alarm Restart: "+  new Date(db.getStartTime()).toString());
+        Log.d(ALARM, "Alarm Restart: " + new Date(db.getStartTime()).toString());
         //am.cancel(pendingIntent);
     }
 
