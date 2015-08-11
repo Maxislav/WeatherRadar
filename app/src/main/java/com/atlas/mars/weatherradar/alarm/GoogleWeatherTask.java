@@ -3,7 +3,6 @@ package com.atlas.mars.weatherradar.alarm;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -79,6 +78,7 @@ public class GoogleWeatherTask extends AsyncTask<Double, Void, HashMap<String, B
                     }
                     if(descriptionMain.equals("Rain") || descriptionMain.equals("Snow")){
                         map.put("rain",true);
+                        break;
                     }
 
                     Log.d(TAG, clouds+ " : "+ descriptionMain+" : " +description+ " :  "+ dt_txt + " : " + rain) ;

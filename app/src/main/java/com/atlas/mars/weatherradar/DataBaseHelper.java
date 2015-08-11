@@ -244,7 +244,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
             Log.e(TAG, e.toString(),e);
             e.printStackTrace();
         }
-        if(date!=null && date.getTime()+(5*3600*1000)<System.currentTimeMillis()){
+        if(date!=null && date.getTime()+(3*3600*1000)<System.currentTimeMillis()){
             return true;
         }
         return false;
