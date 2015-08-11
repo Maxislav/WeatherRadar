@@ -24,6 +24,8 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.ParseException;
@@ -48,9 +50,11 @@ public class Forecast implements OnLocation {
     public LocationManager locationManagerNet;
     public LocationListener locationListenerNet;
     Loader loader;
+    ToastShow toast;
 
     Forecast(Activity activity, LinearLayout fr) {
         this.activity = activity;
+        toast = (ToastShow)activity;
         this.fr = fr;
         parent = (FrameLayout)fr.getParent().getParent();
         loader = new Loader(activity, parent);
@@ -140,7 +144,7 @@ public class Forecast implements OnLocation {
             locationManagerNet.removeUpdates(locationListenerNet);
         }
         ForecastGoogleApi forecastGoogleApi = new ForecastGoogleApi();
-        forecastGoogleApi.execute(lat, lng);
+        forecastGoogleApi.execute(round(lat, 2), round(lng,2));
     }
 
     void onForecastAccept(ObjectNode root) {
@@ -155,46 +159,48 @@ public class Forecast implements OnLocation {
 
         //  SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); //2015-08-03 18:00:00
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH);
+        if(list!=null){
+            for (JsonNode jsonNode : list) {
+                HashMap<String, String> map = new HashMap<>();
+                String dt_txt = jsonNode.path("dt_txt").asText();
+                String temp = Integer.toString(jsonNode.get("main").path("temp").asInt());
+                String main =  jsonNode.get("weather").get(0).path("main").asText();
+                String icon =  jsonNode.get("weather").get(0).path("icon").asText();
 
-        for (JsonNode jsonNode : list) {
-            HashMap<String, String> map = new HashMap<>();
-            String dt_txt = jsonNode.path("dt_txt").asText();
-            String temp = Integer.toString(jsonNode.get("main").path("temp").asInt());
-            String main =  jsonNode.get("weather").get(0).path("main").asText();
-            String icon =  jsonNode.get("weather").get(0).path("icon").asText();
+                String description =  jsonNode.get("weather").get(0).path("description").asText();
+                map.put("temp", temp);
+                map.put("main", main);
+                map.put("description", description);
+                map.put("icon", icon);
+                Calendar cal = new GregorianCalendar();
+                try {
+                    Date date = format.parse(dt_txt);
+                    dayMonth.format(date);
+                    time.format(date);
 
-            String description =  jsonNode.get("weather").get(0).path("description").asText();
-            map.put("temp", temp);
-            map.put("main", main);
-            map.put("description", description);
-            map.put("icon", icon);
-            Calendar cal = new GregorianCalendar();
-            try {
-                Date date = format.parse(dt_txt);
-                dayMonth.format(date);
-                time.format(date);
+                    cal.setTime(date);
 
-                cal.setTime(date);
-
-                map.put("date", dayMonth.format(date));
-                map.put("time", time.format(date));
-                map.put("HH", HH.format(date));
-                map.put("dayWeek", dayWeek.format(date));
-                map.put("dayWeekNum",Integer.toString(cal.get(Calendar.DAY_OF_WEEK)));
+                    map.put("date", dayMonth.format(date));
+                    map.put("time", time.format(date));
+                    map.put("HH", HH.format(date));
+                    map.put("dayWeek", dayWeek.format(date));
+                    map.put("dayWeekNum",Integer.toString(cal.get(Calendar.DAY_OF_WEEK)));
 
 
-            } catch (ParseException e) {
-                Log.e(TAG, e.toString(), e);
-                e.printStackTrace();
+                } catch (ParseException e) {
+                    Log.e(TAG, e.toString(), e);
+                    e.printStackTrace();
+                }
+                listMap.add(map);
             }
-
-            listMap.add(map);
-          //  onInflate(null, map);
-
-
-
         }
-        infladeDay(listMap);
+
+        if(0<listMap.size()){
+            infladeDay(listMap);
+        }else{
+            toast.show("City not found");
+        }
+
 
     }
 
@@ -288,7 +294,7 @@ public class Forecast implements OnLocation {
                 //http://api.openweathermap.org/data/2.5/forecast?lat=35&lon=139
                 url = new URL(path);
                 urlConnection = (HttpURLConnection) url.openConnection();
-                urlConnection.setDoOutput(true);
+             //   urlConnection.setDoOutput(true);
                 Scanner inStream = new Scanner(urlConnection.getInputStream());
                 while (inStream.hasNextLine()) {
                     sb.append(inStream.nextLine());
@@ -327,5 +333,8 @@ public class Forecast implements OnLocation {
     private String firstUpperCase(String word){
         if(word == null || word.isEmpty()) return "";//или return word;
         return word.substring(0, 1).toUpperCase() + word.substring(1);
+    }
+    private double round(double d, int prec) {
+        return new BigDecimal(d).setScale(prec, RoundingMode.UP).doubleValue();
     }
 }

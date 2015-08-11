@@ -37,7 +37,7 @@ public class IconForecast {
             imageView.setImageBitmap(bitmap);
 
         }else{
-           // toastShow("Error load IMG on page№ " +(position+1));
+
         }
     }
 
@@ -66,7 +66,6 @@ public class IconForecast {
 
                 modyfy = Bitmap.createBitmap(mIcon11, 0, 0,  mIcon11.getWidth(),  mIcon11.getHeight(), matrix, true);
             } catch (Exception e) {
-                // toastShow("Error Load img");
                 Log.e(LogTags.TAG, e.getMessage());
                 e.printStackTrace();
             }

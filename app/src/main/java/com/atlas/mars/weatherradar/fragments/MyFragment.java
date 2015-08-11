@@ -206,7 +206,6 @@ public abstract class MyFragment  implements View.OnClickListener, PopupMenu.OnM
 
                 modyfy = Bitmap.createBitmap(mIcon11, 0, 0,  mIcon11.getWidth(),  mIcon11.getHeight(), matrix, true);
             } catch (Exception e) {
-                // toastShow("Error Load img");
                 Log.e(LogTags.TAG, e.getMessage());
                 e.printStackTrace();
             }
@@ -222,7 +221,7 @@ public abstract class MyFragment  implements View.OnClickListener, PopupMenu.OnM
     }
 
     private void toastShow(String txt){
-        ((MainActivity)activity).toastShow(txt);
+        ((MainActivity)activity).show(txt);
     }
 
     private boolean isNetworkAvailable() {

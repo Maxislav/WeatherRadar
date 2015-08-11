@@ -96,7 +96,6 @@ public class MyService extends Service implements OnLocation {
     @Override
     public void onLocationAccept(double lat, double lng) {
 
-
         if (isNetworkAvailable()) {
             if(mapSetting.get(DataBaseHelper.FORECAST_RAIN)==null || mapSetting.get(DataBaseHelper.FORECAST_RAIN).equals("1")){
                 taskNeeded++;
@@ -251,8 +250,7 @@ public class MyService extends Service implements OnLocation {
                 sp.play(sampleId, 1, 1, 0, 0, 1);
             }
         });
-        loadSound("storm.ogg");
-
+        loadSound("bul_bul.ogg");
     }
 
     private SoundPool buildSoundPool() {

@@ -35,7 +35,7 @@ import com.atlas.mars.weatherradar.fragments.Visible;
 import java.util.HashMap;
 
 
-public class MainActivity extends FragmentActivity implements Communicator, ViewPager.OnPageChangeListener, View.OnClickListener, PopupMenu.OnMenuItemClickListener {
+public class MainActivity extends FragmentActivity implements Communicator, ViewPager.OnPageChangeListener, View.OnClickListener, PopupMenu.OnMenuItemClickListener, ToastShow {
     public  final static String LOCATION = "LOCATION";
     final String TAG = "MainActivityLogs";
     int posinion;
@@ -246,11 +246,12 @@ public class MainActivity extends FragmentActivity implements Communicator, View
                 break;
         }
     }
-    public void toastShow(String txt){
+
+
+    @Override
+    public void show(String txt) {
         Toast.makeText(getApplicationContext(), txt, Toast.LENGTH_SHORT).show();
     }
-
-
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
@@ -313,7 +314,6 @@ public class MainActivity extends FragmentActivity implements Communicator, View
         public void onReceive(Context arg0, Intent arg1) {
 
             String distance = arg1.getExtras().getString("distance");
-           // toastShow(distance);
 
         }
     }
@@ -326,7 +326,7 @@ public class MainActivity extends FragmentActivity implements Communicator, View
         setMyTitle(pager.getCurrentItem());
         Bundle extras = getIntent().getExtras();
         if(extras != null){
-            toastShow(extras.getString("item_id"));
+            show(extras.getString("item_id"));
             Log.i( "dd","Extra:" + extras.getString("item_id") );
         }
         currentWeather.onResum();
@@ -340,7 +340,7 @@ public class MainActivity extends FragmentActivity implements Communicator, View
     public void onNewIntent(Intent intent) {
         Bundle extras = intent.getExtras();
         if(extras != null){
-            toastShow(extras.getString("item_id"));
+            show(extras.getString("item_id"));
             if(extras.getString("item_id").equals("1001")){
                 boridpolRadar.reloadImg();
             }
@@ -361,7 +361,7 @@ public class MainActivity extends FragmentActivity implements Communicator, View
         }*/
         myReceiver = new MyReceiver();
         IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction(MainActivity.LOCATION);
+        intentFilter.addAction(LOCATION);
         registerReceiver(myReceiver, intentFilter);
     }
 
