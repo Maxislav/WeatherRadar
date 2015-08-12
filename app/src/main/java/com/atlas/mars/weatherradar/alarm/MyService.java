@@ -98,7 +98,7 @@ public class MyService extends Service implements OnLocation {
     public void onLocationAccept(double lat, double lng) {
 
         if (isNetworkAvailable()) {
-            if(mapSetting.get(DataBaseHelper.FORECAST_RAIN)==null || mapSetting.get(DataBaseHelper.FORECAST_RAIN).equals("1")){
+            if(db.getStartBorispol()){
                 taskNeeded++;
                 borispolTask = new BorispolTask(this);
                 try {
@@ -199,6 +199,8 @@ public class MyService extends Service implements OnLocation {
         }
 
         Log.d(TAG, "onBorispolTaskResult " + (new Date(System.currentTimeMillis())));
+        mapSetting.put(DataBaseHelper.BORISPOL_TIME, getTimeStamp());
+        db.saveSetting();
         allTaskResult();
     }
 

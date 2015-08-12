@@ -48,7 +48,8 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     public  static final String TIME_TO_HOUR = "timeToHour";
     public  static final String TIME_TO_MINUTE = "timeToMinute";
     public  static final String FORECAST_RAIN = "forecastRain"; // 0 || 1
-    public  static final String FORECAST_TIME = "forecastTime"; // 0 || 1
+    public  static final String FORECAST_TIME = "forecastTime"; // Время запроса прогноза
+    public  static final String BORISPOL_TIME = "borispolTime"; // Время запроса борисполя
 
 
 
@@ -241,6 +242,32 @@ public class DataBaseHelper extends SQLiteOpenHelper {
             e.printStackTrace();
         }
         if(date!=null && date.getTime()+(3*3600*1000)<System.currentTimeMillis()){
+            return true;
+        }
+        return false;
+    }
+
+    public boolean getStartBorispol(){
+        int timeRepeat = mapSetting.get(TIME_REPEAT)!=null ? Integer.parseInt(mapSetting.get(TIME_REPEAT)):2;
+        long timeRepeatLong = 3600*1000*timeRepeat;
+        String time = mapSetting.get(BORISPOL_TIME);
+        Date date = null;
+        if(time == null){
+            return true;
+        }else{
+            try {
+                date = formatter.parse(time);
+            } catch (ParseException e) {
+                Log.e(TAG, e.toString(),e);
+                e.printStackTrace();
+            }
+        }
+
+        if(date!=null && date.getTime()+timeRepeatLong< new Date().getTime()){
+            return true;
+        }else if(mapSetting.get(DataBaseHelper.FORECAST_RAIN)==null){
+            return true;
+        }else if( mapSetting.get(DataBaseHelper.FORECAST_RAIN).equals("1")){
             return true;
         }
         return false;
