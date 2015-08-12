@@ -24,8 +24,6 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import java.io.IOException;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.ParseException;
@@ -144,7 +142,7 @@ public class Forecast implements OnLocation {
             locationManagerNet.removeUpdates(locationListenerNet);
         }
         ForecastGoogleApi forecastGoogleApi = new ForecastGoogleApi();
-        forecastGoogleApi.execute(round(lat, 2), round(lng,2));
+        forecastGoogleApi.execute(MathOperation.round(lat, 2),MathOperation.round(lng,2));
     }
 
     void onForecastAccept(ObjectNode root) {
@@ -334,7 +332,7 @@ public class Forecast implements OnLocation {
         if(word == null || word.isEmpty()) return "";//или return word;
         return word.substring(0, 1).toUpperCase() + word.substring(1);
     }
-    private double round(double d, int prec) {
+   /* private double round(double d, int prec) {
         return new BigDecimal(d).setScale(prec, RoundingMode.UP).doubleValue();
-    }
+    }*/
 }

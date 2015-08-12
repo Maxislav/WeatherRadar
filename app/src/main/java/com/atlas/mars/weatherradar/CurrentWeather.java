@@ -55,15 +55,23 @@ public class CurrentWeather implements OnLocation {
         if (locationManagerNet != null) {
             locationManagerNet.removeUpdates(locationListenerNet);
         }
-        new CurrentWeatherTask().execute(lat, lng);
+        new CurrentWeatherTask().execute(MathOperation.round(lat, 2), MathOperation.round(lng, 2));
 
     }
 
     void onAccept(ObjectNode root){
         Log.d(TAG, root.toString());
+        if(root == null){
+            return;
+        }
+        switch (root.path("cod").asInt()){
+            case 404:
+                mainActivity.show("City not found");
+                return;
+        }
 
-       String icon = root.get("weather").get(0).path("icon").asText();
 
+        String icon = root.get("weather").get(0).path("icon").asText();
         String nameCity = root.path("name").asText();
         mainActivity.setCityName(nameCity);
 

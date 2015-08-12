@@ -70,9 +70,11 @@ public class MainActivity extends FragmentActivity implements Communicator, View
     ScrollView scrollView;
     FrameLayout frLayoutCurrent;
     CurrentWeather currentWeather;
+    final static String OLOO = BuildConfig.BorispolParseRain;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         new Density(this);
@@ -93,11 +95,7 @@ public class MainActivity extends FragmentActivity implements Communicator, View
 
         buttonMenu.setOnClickListener(this);
         buttonReload.setOnClickListener(this);
-
-
-
         fragmetMap = new HashMap<>();
-
         pager = (ViewPager) findViewById(R.id.pager);
         pagerAdapter = new MyFragmentPagerAdapter(getSupportFragmentManager());
         pager.setAdapter(pagerAdapter);

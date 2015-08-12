@@ -3,6 +3,7 @@ package com.atlas.mars.weatherradar.alarm;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.atlas.mars.weatherradar.BuildConfig;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -38,7 +39,7 @@ public class BorispolTask extends AsyncTask<Double, Void, HashMap<String, Intege
         InputStream in = null;
         StringBuilder sb = new StringBuilder();
         try {
-            url = new URL("http://178.62.44.54/php/parseraindev.php?lat=" + params[0] + "&lng=" + params[1]);
+            url = new URL(BuildConfig.BorispolParseRain+"?lat=" + params[0] + "&lng=" + params[1]);
             urlConnection = (HttpURLConnection) url.openConnection();
            // urlConnection.setDoOutput(true);
             Scanner inStream = new Scanner(urlConnection.getInputStream());

@@ -84,6 +84,7 @@ public class GoogleWeatherTask extends AsyncTask<Double, Void, HashMap<String, B
                     Log.d(TAG, clouds+ " : "+ descriptionMain+" : " +description+ " :  "+ dt_txt + " : " + rain) ;
                 }
             } catch (IOException e) {
+                map.put("rain", true);
                 Log.e(TAG, e.toString(), e);
                 e.printStackTrace();
             }

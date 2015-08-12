@@ -23,6 +23,7 @@ import android.util.Log;
 
 import com.atlas.mars.weatherradar.DataBaseHelper;
 import com.atlas.mars.weatherradar.MainActivity;
+import com.atlas.mars.weatherradar.MathOperation;
 import com.atlas.mars.weatherradar.R;
 import com.atlas.mars.weatherradar.location.MyLocationListenerNet;
 import com.atlas.mars.weatherradar.location.OnLocation;
@@ -110,7 +111,7 @@ public class MyService extends Service implements OnLocation {
             if(db.getStartForecast()){
                 taskNeeded++;
                 googleWeatherTask = new GoogleWeatherTask(this);
-                googleWeatherTask.execute(lat, lng);
+                googleWeatherTask.execute(MathOperation.round(lat, 2), MathOperation.round(lng,2));
             }
         }
         if (locationManagerNet != null) {
@@ -240,6 +241,7 @@ public class MyService extends Service implements OnLocation {
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
+
 
     void playSound() {
         sp = buildSoundPool();
