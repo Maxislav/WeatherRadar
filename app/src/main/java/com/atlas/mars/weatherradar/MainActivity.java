@@ -40,6 +40,8 @@ public class MainActivity extends FragmentActivity implements Communicator, View
     final String TAG = "MainActivityLogs";
     int posinion;
 
+    public int scrollSliderSize;
+
     ViewPager pager;
     PagerAdapter pagerAdapter;
     BoridpolRadar boridpolRadar;
@@ -75,6 +77,8 @@ public class MainActivity extends FragmentActivity implements Communicator, View
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
+
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         new Density(this);
@@ -83,7 +87,7 @@ public class MainActivity extends FragmentActivity implements Communicator, View
         mapSetting = DataBaseHelper.mapSetting;
        // db.deleteValue(DataBaseHelper.TIME_NOTIFY);
 
-        buttonReload = (ImageButton)findViewById(R.id.buttonReload);
+        //buttonReload = (ImageButton)findViewById(R.id.buttonReload);
         buttonMenu = (ImageButton)findViewById(R.id.buttonMenu);
         title = (TextView)findViewById(R.id.title);
         forecastLinearLayout = (LinearLayout)findViewById(R.id.forecastLinearLayout);
@@ -94,7 +98,7 @@ public class MainActivity extends FragmentActivity implements Communicator, View
         listFragments = new HashMap<>();
 
         buttonMenu.setOnClickListener(this);
-        buttonReload.setOnClickListener(this);
+       // buttonReload.setOnClickListener(this);
         fragmetMap = new HashMap<>();
         pager = (ViewPager) findViewById(R.id.pager);
         pagerAdapter = new MyFragmentPagerAdapter(getSupportFragmentManager());
@@ -146,7 +150,7 @@ public class MainActivity extends FragmentActivity implements Communicator, View
                 }
 
                 Log.d(TAG, "" + scrollView.getHeight() + " : " + scrollView.getChildAt(0).getHeight());
-
+                scrollSliderSize = scrollView.getChildAt(0).getHeight() - scrollView.getHeight();
                 //todo установка позиции скрода при старте
               //  scrollView.scrollTo(0, scrollView.getChildAt(0).getHeight() - scrollView.getHeight());
             }

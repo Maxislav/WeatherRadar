@@ -1,6 +1,5 @@
 package com.atlas.mars.weatherradar;
 
-import android.app.Activity;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -15,11 +14,13 @@ public class ScroolObserv implements View.OnTouchListener {
     MainActivity mainActivity;
     ScrollView scrollView;
     ViewTreeObserver observer;
+    ToastShow toast;
 
 
     ScroolObserv(MainActivity mainActivity, ScrollView scrollView){
         this.mainActivity = mainActivity;
         this.scrollView = scrollView;
+        toast = (ToastShow)mainActivity;
         scrollView.setOnTouchListener(this);
     }
 
