@@ -145,7 +145,7 @@ public class Forecast implements OnLocation {
                return R.color.hh15;
        }
     }
-
+    ForecastGoogleApi forecastGoogleApi;
     @Override
     public void onLocationAccept(double lat, double lng) {
         Log.d(TAG, "lat lng: " + lat + " : " + lng);
@@ -153,8 +153,13 @@ public class Forecast implements OnLocation {
         if (locationManagerNet != null) {
             locationManagerNet.removeUpdates(locationListenerNet);
         }
-        ForecastGoogleApi forecastGoogleApi = new ForecastGoogleApi();
-        forecastGoogleApi.execute(MathOperation.round(lat, 2),MathOperation.round(lng,2));
+        if(forecastGoogleApi!=null && forecastGoogleApi.getStatus()==AsyncTask.Status.RUNNING){
+
+        }else{
+            forecastGoogleApi = new ForecastGoogleApi();
+            forecastGoogleApi.execute(MathOperation.round(lat, 2),MathOperation.round(lng,2));
+        }
+
     }
 
     void onForecastAccept(ObjectNode root) {

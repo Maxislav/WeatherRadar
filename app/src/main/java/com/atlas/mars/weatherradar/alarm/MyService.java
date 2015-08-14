@@ -200,11 +200,13 @@ public class MyService extends Service implements OnLocation {
         }
         if(map.get("error")!=null){
             rainBorispol = true;
+        }else {
+            mapSetting.put(DataBaseHelper.BORISPOL_TIME, getTimeStamp());
+            db.saveSetting();
         }
 
         Log.d(TAG, "onBorispolTaskResult " + (new Date(System.currentTimeMillis())));
-        mapSetting.put(DataBaseHelper.BORISPOL_TIME, getTimeStamp());
-        db.saveSetting();
+
         allTaskResult();
     }
 
