@@ -96,7 +96,9 @@ public class MyService extends Service implements OnLocation {
 
     @Override
     public void onLocationAccept(double lat, double lng) {
-
+        if (locationManagerNet != null) {
+            locationManagerNet.removeUpdates(locationListenerNet);
+        }
         if (isNetworkAvailable()) {
             if(db.getStartBorispol()){
                 taskNeeded++;
@@ -104,6 +106,7 @@ public class MyService extends Service implements OnLocation {
                 try {
                     borispolTask.execute(lat, lng);
                 }catch (Exception e){
+                    rainBorispol = true;
                     Log.e(TAG, e.toString(), e);
                 }
             }
@@ -114,9 +117,7 @@ public class MyService extends Service implements OnLocation {
                 googleWeatherTask.execute(MathOperation.round(lat, 2), MathOperation.round(lng,2));
             }
         }
-        if (locationManagerNet != null) {
-            locationManagerNet.removeUpdates(locationListenerNet);
-        }
+
         if(taskNeeded == 0){
           //  alarmRestart();
             onStop();
@@ -195,6 +196,9 @@ public class MyService extends Service implements OnLocation {
         }
 
         if(map.get("isIntensity")!=null && 0 <map.get("isIntensity")){
+            rainBorispol = true;
+        }
+        if(map.get("error")!=null){
             rainBorispol = true;
         }
 

@@ -87,7 +87,7 @@ public class MainActivity extends FragmentActivity implements Communicator, View
         mapSetting = DataBaseHelper.mapSetting;
        // db.deleteValue(DataBaseHelper.TIME_NOTIFY);
 
-        //buttonReload = (ImageButton)findViewById(R.id.buttonReload);
+        buttonReload = (ImageButton)findViewById(R.id.buttonReload);
         buttonMenu = (ImageButton)findViewById(R.id.buttonMenu);
         title = (TextView)findViewById(R.id.title);
         forecastLinearLayout = (LinearLayout)findViewById(R.id.forecastLinearLayout);
@@ -98,7 +98,7 @@ public class MainActivity extends FragmentActivity implements Communicator, View
         listFragments = new HashMap<>();
 
         buttonMenu.setOnClickListener(this);
-       // buttonReload.setOnClickListener(this);
+        buttonReload.setOnClickListener(this);
         fragmetMap = new HashMap<>();
         pager = (ViewPager) findViewById(R.id.pager);
         pagerAdapter = new MyFragmentPagerAdapter(getSupportFragmentManager());

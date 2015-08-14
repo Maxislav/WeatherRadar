@@ -41,6 +41,9 @@ public class TimePickerColor  {
     }
 
     private void set_numberpicker_text_colour(NumberPicker number_picker){
+        if(number_picker==null){
+            return;
+        }
         final int count = number_picker.getChildCount();
         final int color = getResources().getColor(R.color.white);
 

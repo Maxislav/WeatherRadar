@@ -5,6 +5,8 @@ import android.content.Context;
 import android.graphics.drawable.GradientDrawable;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -57,10 +59,20 @@ public class Forecast implements OnLocation {
         parent = (FrameLayout)fr.getParent().getParent();
         loader = new Loader(activity, parent);
 
-        locationManagerNet = (LocationManager) activity.getSystemService(Context.LOCATION_SERVICE);
-        locationListenerNet = new MyLocationListenerNet(this);
-        locationManagerNet.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListenerNet);
-        loader.show();
+
+        if(isNetworkAvailable()){
+            locationManagerNet = (LocationManager) activity.getSystemService(Context.LOCATION_SERVICE);
+            locationListenerNet = new MyLocationListenerNet(this);
+            if(locationManagerNet.getAllProviders().contains(LocationManager.NETWORK_PROVIDER)){
+                locationManagerNet.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListenerNet);
+                loader.show();
+            }else{
+                onForecastAccept(null);
+            }
+        }else{
+            onForecastAccept(null);
+        }
+
         //  onInflate();
     }
 
@@ -148,7 +160,10 @@ public class Forecast implements OnLocation {
     void onForecastAccept(ObjectNode root) {
         List<HashMap> listMap = new ArrayList<>();
 
-        if(root ==null ) return;
+        if(root ==null ) {
+            toast.show("City not found");
+            return;
+        }
         ArrayNode list = (ArrayNode) root.get("list");
         SimpleDateFormat dayMonth = new SimpleDateFormat("dd.MM"); //2015-08-03 18:00:00
         SimpleDateFormat time = new SimpleDateFormat("HH:mm"); //2015-08-03 18:00:00
@@ -296,7 +311,6 @@ public class Forecast implements OnLocation {
                 Scanner inStream = new Scanner(urlConnection.getInputStream());
                 while (inStream.hasNextLine()) {
                     sb.append(inStream.nextLine());
-                    // response += (inStream.nextLine());
                 }
             } catch (IOException e) {
                 Log.e(TAG, e.toString(), e);
@@ -335,4 +349,11 @@ public class Forecast implements OnLocation {
    /* private double round(double d, int prec) {
         return new BigDecimal(d).setScale(prec, RoundingMode.UP).doubleValue();
     }*/
+
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) activity.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    }
 }

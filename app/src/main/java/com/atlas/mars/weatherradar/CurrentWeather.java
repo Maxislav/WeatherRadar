@@ -31,6 +31,8 @@ public class CurrentWeather implements OnLocation {
 
     TextView textViewTemp, textViewWind, textViewHumidity;
     ImageView imageCurrentWeather;
+    CurrentWeatherTask currentWeatherTask;
+    boolean isDoing = false;
 
     CurrentWeather(MainActivity mainActivity, FrameLayout frLayoutCurrent){
         this.mainActivity = mainActivity;
@@ -55,15 +57,20 @@ public class CurrentWeather implements OnLocation {
         if (locationManagerNet != null) {
             locationManagerNet.removeUpdates(locationListenerNet);
         }
-        new CurrentWeatherTask().execute(MathOperation.round(lat, 2), MathOperation.round(lng, 2));
+        if(!isDoing){
+            currentWeatherTask = new CurrentWeatherTask();
+            currentWeatherTask.execute(MathOperation.round(lat, 2), MathOperation.round(lng, 2));
+        }
+
 
     }
 
     void onAccept(ObjectNode root){
-        Log.d(TAG, root.toString());
+
         if(root == null){
             return;
         }
+        Log.d(TAG, root.toString());
         switch (root.path("cod").asInt()){
             case 404:
                 mainActivity.show("City not found");
@@ -109,6 +116,12 @@ public class CurrentWeather implements OnLocation {
          HttpURLConnection urlConnection;
 
          @Override
+         protected void onPreExecute() {
+             super.onPreExecute();
+             isDoing = true;
+         }
+
+         @Override
          protected ObjectNode doInBackground(Double... params) {
              URL url;
              String path = "http://api.openweathermap.org/data/2.5/weather?lat=" + params[0] + "&lon=" + params[1] + "&units=metric";
@@ -150,6 +163,7 @@ public class CurrentWeather implements OnLocation {
          protected void onPostExecute(ObjectNode result) {
            //  loader.hide();
              onAccept(result);
+             isDoing = false;
          }
 
      }

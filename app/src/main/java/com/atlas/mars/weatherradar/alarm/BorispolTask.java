@@ -77,6 +77,7 @@ public class BorispolTask extends AsyncTask<Double, Void, HashMap<String, Intege
 
             } catch (IOException e) {
                 Log.e(TAG, e.toString(), e);
+                map.put("error", 1);
                 e.printStackTrace();
             }
         }

@@ -191,7 +191,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
             Calendar cal = Calendar.getInstance();
             cal.setTime(getForecastTime());
             if(mapSetting.get(FORECAST_RAIN)!=null && mapSetting.get(FORECAST_RAIN).equals("0")){
-                cal.add(Calendar.HOUR_OF_DAY, 5);
+                cal.add(Calendar.HOUR_OF_DAY, 3); //не реже чем черз 3 часа
                 startAlarm = cal.getTimeInMillis();
             }
         }
@@ -241,7 +241,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
             Log.e(TAG, e.toString(),e);
             e.printStackTrace();
         }
-        if(date!=null && date.getTime()+(3*3600*1000)<System.currentTimeMillis()){
+        if(date!=null && date.getTime()+(3*3600*1000)<=System.currentTimeMillis()){
             return true;
         }
         return false;
@@ -263,7 +263,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
             }
         }
 
-        if(date!=null && date.getTime()+timeRepeatLong< new Date().getTime()){
+        if(date!=null && date.getTime()+timeRepeatLong-100< new Date().getTime()){
             return true;
         }else if(mapSetting.get(DataBaseHelper.FORECAST_RAIN)==null){
             return true;
