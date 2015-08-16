@@ -5,6 +5,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
@@ -36,7 +37,7 @@ import java.util.HashMap;
 public abstract class MyFragment  implements View.OnClickListener, PopupMenu.OnMenuItemClickListener  {
 
     private View view;
-    private ImageView imageView;
+    private ImageView loadingImageView, imageView;
     private LinearLayout mainLayout;
     private static Activity activity;
     public String imageUrl;
@@ -53,8 +54,11 @@ public abstract class MyFragment  implements View.OnClickListener, PopupMenu.OnM
         this.view = view;
         this.position = position;
         loadImage = new LoadImage();
-        imageView = (ImageView)view.findViewById(R.id.image);
+
+
+      //  loadingImageView = new ImageView(activity);
         containerImg = (FrameLayout)view.findViewById(R.id.containerImg);
+
         // buttonReload = (ImageButton)view.findViewById(R.id.buttonReload);
         //buttonMenu = (ImageButton)view.findViewById(R.id.buttonMenu);
         //  buttonMenu.setOnClickListener(this);
@@ -122,8 +126,9 @@ public abstract class MyFragment  implements View.OnClickListener, PopupMenu.OnM
 
     private void setBitmap(Bitmap bitmap){
         if(bitmap!=null){
-            imageShow(imageView);
-            imageView.setImageBitmap(bitmap);
+            loadingImageView.setImageBitmap(bitmap);
+            imageShow(loadingImageView);
+
 
         }else{
             toastShow("Error load IMG on page№ " +(position+1));
@@ -133,6 +138,7 @@ public abstract class MyFragment  implements View.OnClickListener, PopupMenu.OnM
 
 
     private void imageShow(final ImageView imageView){
+        final Context context = activity;
         AlphaAnimation fadeInAnimation = new AlphaAnimation(0.0f, 1.0f);
         fadeInAnimation.setDuration(500);
         fadeInAnimation.setAnimationListener(new Animation.AnimationListener() {
@@ -142,7 +148,7 @@ public abstract class MyFragment  implements View.OnClickListener, PopupMenu.OnM
             }
             @Override
             public void onAnimationEnd(Animation animation) {
-
+                replaceImage();
             }
 
             @Override
@@ -154,6 +160,17 @@ public abstract class MyFragment  implements View.OnClickListener, PopupMenu.OnM
     }
 
     private void imageHide(){
+
+    }
+    void replaceImage(){
+        if(imageView!=null){
+            containerImg.removeView(imageView);
+        }
+        imageView = new ImageView(activity);
+        setLayoutParams(imageView);
+        containerImg.addView(imageView);
+        imageView.setImageBitmap(((BitmapDrawable)loadingImageView.getDrawable()).getBitmap());
+        containerImg.removeView(loadingImageView);
 
     }
 
@@ -180,6 +197,12 @@ public abstract class MyFragment  implements View.OnClickListener, PopupMenu.OnM
         return false;
     }
 
+    private void setLayoutParams(ImageView imageView){
+        FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        imageView.setLayoutParams(layoutParams);
+        imageView.setScaleType(ImageView.ScaleType.FIT_XY);
+    }
+
 
     private class LoadImage extends AsyncTask<String, Void, Bitmap> {
 
@@ -187,9 +210,15 @@ public abstract class MyFragment  implements View.OnClickListener, PopupMenu.OnM
 
         protected void onPreExecute() {
             super.onPreExecute();
+            loadingImageView = new ImageView(activity);
+            containerImg.addView(loadingImageView);
+            loadingImageView.setVisibility(View.INVISIBLE);
+            setLayoutParams(loadingImageView);
+           /* FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+            loadingImageView.setLayoutParams(layoutParams);
+            loadingImageView.setScaleType(ImageView.ScaleType.FIT_XY);*/
             loader = new Loader(activity, containerImg);
             loader.show();
-
         }
 
         @Override

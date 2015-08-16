@@ -9,17 +9,19 @@ import android.widget.ScrollView;
 /**
  * Created by mars on 8/3/15.
  */
-public class ScroolObserv implements View.OnTouchListener {
+public class ScrollObserv implements View.OnTouchListener {
     final String TAG = "ScroolObservLogs";
     MainActivity mainActivity;
     ScrollView scrollView;
     ViewTreeObserver observer;
     ToastShow toast;
+    int scrollSliderSize;
 
 
-    ScroolObserv(MainActivity mainActivity, ScrollView scrollView){
+    ScrollObserv(MainActivity mainActivity, ScrollView scrollView, int scrollSliderSize){
         this.mainActivity = mainActivity;
         this.scrollView = scrollView;
+        this.scrollSliderSize =scrollSliderSize;
         toast = (ToastShow)mainActivity;
         scrollView.setOnTouchListener(this);
     }
@@ -31,6 +33,13 @@ public class ScroolObserv implements View.OnTouchListener {
                 public void onScrollChanged() {
                     //do stuff here
                     Log.d(TAG, ""+scrollView.getScrollY());
+
+                    if(scrollView.getScrollY() == 0){
+                        mainActivity.changeFragmentBar(0);
+                    }
+                    if(scrollView.getScrollY() == scrollSliderSize){
+                        mainActivity.changeFragmentBar(1);
+                    }
                     /*scrollView.post(new Runnable() {
                         @Override
                         public void run() {
@@ -57,6 +66,8 @@ public class ScroolObserv implements View.OnTouchListener {
         return false;
 
     }
+
+
 
 
    /* @Override

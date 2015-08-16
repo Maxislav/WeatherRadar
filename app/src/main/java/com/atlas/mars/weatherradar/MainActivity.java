@@ -66,7 +66,7 @@ public class MainActivity extends FragmentActivity implements Communicator, View
     static MyReceiver myReceiver;
     HashMap<String, String> mapSetting;
 
-    ImageButton buttonReload;
+   // ImageButton buttonReload;
     ImageButton buttonMenu;
     TextView title;
     LinearLayout forecastLinearLayout;
@@ -77,7 +77,7 @@ public class MainActivity extends FragmentActivity implements Communicator, View
     CurrentWeather currentWeather;
     final static String OLOO = BuildConfig.BorispolParseRain;
     FragmentTransaction fragmentTransaction;
-    Fragment fragmentWeather, fragmentImageMap;
+    Fragment fragmentWeather, fragmentImageAction;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,7 +92,7 @@ public class MainActivity extends FragmentActivity implements Communicator, View
         mapSetting = DataBaseHelper.mapSetting;
        // db.deleteValue(DataBaseHelper.TIME_NOTIFY);
 
-        buttonReload = (ImageButton)findViewById(R.id.buttonReload);
+      //  buttonReload = (ImageButton)findViewById(R.id.buttonReload);
         buttonMenu = (ImageButton)findViewById(R.id.buttonMenu);
         title = (TextView)findViewById(R.id.title);
         forecastLinearLayout = (LinearLayout)findViewById(R.id.forecastLinearLayout);
@@ -104,7 +104,7 @@ public class MainActivity extends FragmentActivity implements Communicator, View
         mapFragments = new HashMap<>();
 
         buttonMenu.setOnClickListener(this);
-        buttonReload.setOnClickListener(this);
+       // buttonReload.setOnClickListener(this);
         fragmetMap = new HashMap<>();
         pager = (ViewPager) findViewById(R.id.pager);
         pagerAdapter = new MyFragmentPagerAdapter(getSupportFragmentManager());
@@ -130,21 +130,43 @@ public class MainActivity extends FragmentActivity implements Communicator, View
 */
         //am.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 5000, pIntent1);
         fragmentWeather = new CurrentWeather();
+        fragmentImageAction  = new FragmentImageAction();
         fragmentTransaction = getFragmentManager().beginTransaction();
         fragmentTransaction.add(R.id.frLayoutCurrent, fragmentWeather);
         fragmentTransaction.commit();
-        new ScroolObserv(this, scrollView);
+       // new ScroolObserv(this, scrollView);
+    }
+
+    public void changeFragmentBar(int i){
+        fragmentTransaction = getFragmentManager().beginTransaction();
+        switch (i){
+            case 0:
+
+                fragmentTransaction.replace(R.id.frLayoutCurrent, fragmentWeather);
+                fragmentTransaction.addToBackStack(null);
+                fragmentTransaction.commit();
+                break;
+            case 1:
+
+                fragmentTransaction.replace(R.id.frLayoutCurrent, fragmentImageAction);
+                fragmentTransaction.addToBackStack(null);
+                fragmentTransaction.commit();
+                ((FragmentImageAction)fragmentImageAction).setTitle(posinion);
+                break;
+        }
+
     }
 
     private void setSisze(){
-        ViewTreeObserver observer = ((LinearLayout)buttonReload.getParent()).getViewTreeObserver();
+        final MainActivity mainActivity = this;
+       /* ViewTreeObserver observer = ((LinearLayout)buttonReload.getParent()).getViewTreeObserver();
         observer.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
                 buttonReload.setLayoutParams(new  LinearLayout.LayoutParams (buttonReload.getHeight(),buttonReload.getHeight() ));
                 buttonMenu.setLayoutParams(new  LinearLayout.LayoutParams ((int)(buttonReload.getHeight()/1.5),buttonMenu.getHeight() ));
             }
-        });
+        });*/
 
         ViewTreeObserver observer1 = (scrollView).getViewTreeObserver();
         observer1.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
@@ -160,12 +182,11 @@ public class MainActivity extends FragmentActivity implements Communicator, View
 
                 Log.d(TAG, "" + scrollView.getHeight() + " : " + scrollView.getChildAt(0).getHeight());
                 scrollSliderSize = scrollView.getChildAt(0).getHeight() - scrollView.getHeight();
+                new ScrollObserv(mainActivity, scrollView, scrollSliderSize);
                 //todo установка позиции скрода при старте
               //  scrollView.scrollTo(0, scrollView.getChildAt(0).getHeight() - scrollView.getHeight());
             }
         });
-
-
     }
 
     void alarmOn(){
@@ -389,6 +410,7 @@ public class MainActivity extends FragmentActivity implements Communicator, View
     void setMyTitle(int pos){
         posinion = pos;
         String titleText = "";
+        ((FragmentImageAction)fragmentImageAction).setTitle(posinion);
       /*  if(mapSetting.get("title"+(pos+1))==null){
             title.setText(titleText);
         }else{
