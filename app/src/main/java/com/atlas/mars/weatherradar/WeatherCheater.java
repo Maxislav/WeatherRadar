@@ -23,7 +23,8 @@ public class WeatherCheater extends Application {
     public void onCreate() {
         // The following line triggers the initialization of ACRA
         super.onCreate();
-        ACRA.init(this);
-
+        if (BuildConfig.ACRA){
+            ACRA.init(this);
+        }
     }
 }

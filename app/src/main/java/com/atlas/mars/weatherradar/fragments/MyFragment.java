@@ -41,6 +41,7 @@ public abstract class MyFragment  implements View.OnClickListener, PopupMenu.OnM
     private static Activity activity;
     public String imageUrl;
     public TextView title;
+    LoadImage loadImage;
     // ImageButton buttonReload;
     //  ImageButton buttonMenu;
     FrameLayout containerImg;
@@ -51,6 +52,7 @@ public abstract class MyFragment  implements View.OnClickListener, PopupMenu.OnM
         this.activity = activity;
         this.view = view;
         this.position = position;
+        loadImage = new LoadImage();
         imageView = (ImageView)view.findViewById(R.id.image);
         containerImg = (FrameLayout)view.findViewById(R.id.containerImg);
         // buttonReload = (ImageButton)view.findViewById(R.id.buttonReload);
@@ -107,12 +109,10 @@ public abstract class MyFragment  implements View.OnClickListener, PopupMenu.OnM
         if(imageUrl == null || imageUrl.isEmpty()){
             toastShow("No url detect. Set url" + (position+1));
         }else if(isNetworkAvailable()){
-            LoadImage li = new LoadImage();
-            li.execute();
+            if(loadImage.getStatus() != AsyncTask.Status.RUNNING){
+                loadImage.execute();
+            }
         }
-
-
-
     }
 
     public void reloadImg(){
@@ -216,6 +216,7 @@ public abstract class MyFragment  implements View.OnClickListener, PopupMenu.OnM
 
         protected void onPostExecute(Bitmap result) {
             loader.hide();
+            loadImage = new LoadImage();
             setBitmap(result);
         }
     }

@@ -1,12 +1,21 @@
 package com.atlas.mars.weatherradar;
 
+import android.app.Activity;
+import android.app.Fragment;
 import android.content.Context;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.AsyncTask;
+import android.os.Build;
+import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.atlas.mars.weatherradar.location.MyLocationListenerNet;
@@ -22,30 +31,79 @@ import java.util.Scanner;
 /**
  * Created by mars on 8/6/15.
  */
-public class CurrentWeather implements OnLocation {
+public class CurrentWeather extends Fragment implements OnLocation {
+
+      //private final String TAG =  "CurrentWeather"
     MainActivity mainActivity;
+    Activity activity;
+    Context context;
     FrameLayout frLayoutCurrent;
     final String TAG = "CurrentWeatherLogs";
     public LocationManager locationManagerNet;
     public LocationListener locationListenerNet;
 
-    TextView textViewTemp, textViewWind, textViewHumidity;
+    TextView textViewTitle, textViewTemp, textViewWind, textViewHumidity;
     ImageView imageCurrentWeather;
     CurrentWeatherTask currentWeatherTask;
     boolean isDoing = false;
 
-    CurrentWeather(MainActivity mainActivity, FrameLayout frLayoutCurrent){
+    View weatherView;
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
+        weatherView = inflater.inflate(R.layout.fragmet_weather, null);
+        textViewTemp = (TextView)weatherView.findViewById(R.id.textViewTemp);
+        textViewWind = (TextView)weatherView.findViewById(R.id.textViewWind);
+        textViewHumidity = (TextView)weatherView.findViewById(R.id.textViewHumidity);
+        textViewTitle = (TextView)weatherView.findViewById(R.id.textViewTitle);
+        imageCurrentWeather = (ImageView)weatherView.findViewById(R.id.imageCurrentWeather);
+       // LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+       // imageCurrentWeather.setLayoutParams(layoutParams);
+       /* ViewTreeObserver observer = (weatherView).getViewTreeObserver();
+        observer.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                Log.d(TAG," weatherView Height "+weatherView.getHeight());
+                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(weatherView.getHeight(), weatherView.getHeight());
+                imageCurrentWeather.setLayoutParams(layoutParams);
+                if (Build.VERSION.SDK_INT < 16) {
+                    weatherView.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                } else {
+                    weatherView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                }
+            }
+        });*/
+        return weatherView;
+        //activity = (Activity)getActivity();
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        this.activity = activity;
+        mainActivity = (MainActivity)activity;
+       // _onStart();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        _onStart();
+    }
+
+   /* CurrentWeather(MainActivity mainActivity, FrameLayout frLayoutCurrent){
         this.mainActivity = mainActivity;
         textViewTemp = (TextView)frLayoutCurrent.findViewById(R.id.textViewTemp);
         textViewWind = (TextView)frLayoutCurrent.findViewById(R.id.textViewWind);
         textViewHumidity = (TextView)frLayoutCurrent.findViewById(R.id.textViewHumidity);
         imageCurrentWeather = (ImageView)frLayoutCurrent.findViewById(R.id.imageCurrentWeather);
 
-    }
+    }*/
 
-    public void onResum(){
+    public void _onStart(){
 
-        locationManagerNet = (LocationManager) mainActivity.getSystemService(Context.LOCATION_SERVICE);
+        locationManagerNet = (LocationManager) activity.getSystemService(Context.LOCATION_SERVICE);
         locationListenerNet = new MyLocationListenerNet(this);
         locationManagerNet.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListenerNet);
 
@@ -80,7 +138,8 @@ public class CurrentWeather implements OnLocation {
 
         String icon = root.get("weather").get(0).path("icon").asText();
         String nameCity = root.path("name").asText();
-        mainActivity.setCityName(nameCity);
+        textViewTitle.setText(nameCity);
+        //mainActivity.setCityName(nameCity);
 
         int temp = root.get("main").path("temp").asInt();
         String strtTemp = Integer.toString(temp);

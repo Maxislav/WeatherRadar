@@ -1,6 +1,8 @@
 package com.atlas.mars.weatherradar;
 
 import android.app.AlarmManager;
+import android.app.Fragment;
+import android.app.FragmentTransaction;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
@@ -33,6 +35,7 @@ import com.atlas.mars.weatherradar.fragments.MyFragment;
 import com.atlas.mars.weatherradar.fragments.Visible;
 
 import java.util.HashMap;
+import java.util.Map;
 
 
 public class MainActivity extends FragmentActivity implements Communicator, ViewPager.OnPageChangeListener, View.OnClickListener, PopupMenu.OnMenuItemClickListener, ToastShow {
@@ -49,7 +52,7 @@ public class MainActivity extends FragmentActivity implements Communicator, View
     Visible visible;
 
 
-    HashMap<Integer, MyFragment> listFragments;
+    HashMap<Integer, MyFragment> mapFragments;
 
     DataBaseHelper db;
 
@@ -73,6 +76,8 @@ public class MainActivity extends FragmentActivity implements Communicator, View
     FrameLayout frLayoutCurrent;
     CurrentWeather currentWeather;
     final static String OLOO = BuildConfig.BorispolParseRain;
+    FragmentTransaction fragmentTransaction;
+    Fragment fragmentWeather, fragmentImageMap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,10 +97,11 @@ public class MainActivity extends FragmentActivity implements Communicator, View
         title = (TextView)findViewById(R.id.title);
         forecastLinearLayout = (LinearLayout)findViewById(R.id.forecastLinearLayout);
         frLayoutCurrent = (FrameLayout)findViewById(R.id.frLayoutCurrent);
-        currentWeather = new CurrentWeather(this, frLayoutCurrent);
+
+       // currentWeather = new CurrentWeather(this, frLayoutCurrent);
 
         new Forecast(this, forecastLinearLayout);
-        listFragments = new HashMap<>();
+        mapFragments = new HashMap<>();
 
         buttonMenu.setOnClickListener(this);
         buttonReload.setOnClickListener(this);
@@ -123,7 +129,10 @@ public class MainActivity extends FragmentActivity implements Communicator, View
         am.set(AlarmManager.RTC_WAKEUP, startAlarm, pIntent1);
 */
         //am.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 5000, pIntent1);
-
+        fragmentWeather = new CurrentWeather();
+        fragmentTransaction = getFragmentManager().beginTransaction();
+        fragmentTransaction.add(R.id.frLayoutCurrent, fragmentWeather);
+        fragmentTransaction.commit();
         new ScroolObserv(this, scrollView);
     }
 
@@ -219,24 +228,26 @@ public class MainActivity extends FragmentActivity implements Communicator, View
     }
 
     private void reloadAll(){
-        boridpolRadar.reloadImg();
+
+        for (Map.Entry entry : mapFragments.entrySet()) {
+            ((BoridpolRadar)entry.getValue()).reloadImg();
+
+            /*System.out.println("Key: " + entry.getKey() + " Value: "
+                    + entry.getValue());*/
+        }
+       /* boridpolRadar.reloadImg();
         infraRed.reloadImg();
-        visible.reloadImg();
+        visible.reloadImg();*/
     }
 
     @Override
     public void initView(View v, int position) {
-        listFragments.put(position, new BoridpolRadar(v, this, position));
+        mapFragments.put(position, new BoridpolRadar(v, this, position));
 
-        switch (position){
+       /* switch (position){
             case 0:
-               // LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams().
-
-            //LinearLayout.LayoutParams parms = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,(int)(Density.widthPixels*1.34));
                 boridpolRadar = new BoridpolRadar(v, this, position);
                 fragmetMap.put(position, boridpolRadar);
-
-              //  listFragments.put(new BoridpolRadar(v, this, position));
                 break;
             case 1:
                 infraRed = new InfraRed(v, this, position);
@@ -246,7 +257,7 @@ public class MainActivity extends FragmentActivity implements Communicator, View
                visible =  new Visible(v, this, position);
                 fragmetMap.put(position, visible);
                 break;
-        }
+        }*/
     }
 
 
@@ -292,8 +303,9 @@ public class MainActivity extends FragmentActivity implements Communicator, View
         switch (v.getId()){
             case R.id.buttonReload:
 
-                MyFragment myFragment = (MyFragment)fragmetMap.get(posinion);// (MyFragment)pager.getChildAt(posinion);
-                myFragment.reloadImg();
+               /* MyFragment myFragment = (MyFragment)fragmetMap.get(posinion);// (MyFragment)pager.getChildAt(posinion);
+                myFragment.reloadImg();*/
+                mapFragments.get(posinion).reloadImg();
              //   reloadImg();
                 break;
             case R.id.buttonMenu:
@@ -320,19 +332,7 @@ public class MainActivity extends FragmentActivity implements Communicator, View
         }
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-      //  startService(new Intent(this, MyService.class));
-        onCreateMyReceiver();
-        setMyTitle(pager.getCurrentItem());
-        Bundle extras = getIntent().getExtras();
-        if(extras != null){
-            show(extras.getString("item_id"));
-            Log.i( "dd","Extra:" + extras.getString("item_id") );
-        }
-        currentWeather.onResum();
-    }
+
 
     public void setCityName(String name){
         title.setText(name);
@@ -350,7 +350,26 @@ public class MainActivity extends FragmentActivity implements Communicator, View
           //  Log.i( "dd","Extra:" + extras.getString("item_id") );
         }
     }
+    @Override
+    protected void onResume() {
+        super.onResume();
+        //  startService(new Intent(this, MyService.class));
+        onCreateMyReceiver();
+        //setMyTitle(pager.getCurrentItem());
+        Bundle extras = getIntent().getExtras();
+        if(extras != null){
+            show(extras.getString("item_id"));
+            Log.i( "dd","Extra:" + extras.getString("item_id") );
+        }
+      /*  fragmentTransaction.replace(R.id.frLayoutCurrent, fragmentWeather);
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();*/
+       // fragmentWeather.onResume();
+      //  fTrans.add(R.id.frgmCont, frag1);
 
+
+       // currentWeather.onResum();
+    }
     @Override
     protected void onPause() {
         unregisterReceiver(myReceiver);
