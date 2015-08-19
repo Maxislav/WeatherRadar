@@ -365,7 +365,8 @@ public class MainActivity extends FragmentActivity implements Communicator, View
         if(extras != null){
             show(extras.getString("item_id"));
             if(extras.getString("item_id").equals("1001")){
-                boridpolRadar.reloadImg();
+                mapFragments.get(0).reloadImg();
+                //boridpolRadar.reloadImg();
             }
 
           //  Log.i( "dd","Extra:" + extras.getString("item_id") );
