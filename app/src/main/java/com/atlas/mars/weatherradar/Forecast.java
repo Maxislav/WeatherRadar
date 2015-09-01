@@ -250,11 +250,13 @@ public class Forecast implements OnLocation {
             }
 */
         }
+        final LinearLayout.LayoutParams layoutParamsFrorTitle = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        layoutParamsFrorTitle.setMargins(2,2,2,2);
         for(List<HashMap> lm : listList){
             LayoutInflater inflater = (LayoutInflater) (activity.getLayoutInflater());
             final  View view = inflater.inflate(R.layout.coll_week, null, false);
             final  LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT);
-
+            //layoutParams.setMargins(2,2,2,2);
             final LinearLayout daySprite = (LinearLayout) view.findViewById(R.id.daySprite);
             final List<HashMap> _lm = lm;
             fr.post(new Runnable() {
@@ -267,6 +269,7 @@ public class Forecast implements OnLocation {
 
 
                     TextView dayTitle = (TextView)view.findViewById(R.id.dayTitle);
+                   dayTitle.setLayoutParams(layoutParamsFrorTitle);
                     //firstUpperCase(hashMap.get("dayWeek")) +" "+hashMap.get("date")
                     dayTitle.setText(firstUpperCase(_lm.get(0).get("dayWeek").toString()) + " " + _lm.get(0).get("date").toString());
 

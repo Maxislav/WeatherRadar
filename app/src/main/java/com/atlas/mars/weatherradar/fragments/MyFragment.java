@@ -48,6 +48,8 @@ public abstract class MyFragment  implements View.OnClickListener, PopupMenu.OnM
     FrameLayout containerImg;
     static HashMap<String, String> mapSetting;
     int position;
+    Bitmap bitmap;
+
 
     public MyFragment(View view, Activity activity, int position){
         this.activity = activity;
@@ -76,7 +78,7 @@ public abstract class MyFragment  implements View.OnClickListener, PopupMenu.OnM
         // setSisze();
         setImageUrl();
         setTitle();
-        loadImg();
+        //loadImg();
     }
 
     private void setSisze(){
@@ -118,6 +120,11 @@ public abstract class MyFragment  implements View.OnClickListener, PopupMenu.OnM
             }
         }
     }
+    public void firstLoad(){
+        if(bitmap == null){
+            loadImg();
+        }
+    }
 
     public void reloadImg(){
         setImageUrl();
@@ -126,9 +133,9 @@ public abstract class MyFragment  implements View.OnClickListener, PopupMenu.OnM
 
     private void setBitmap(Bitmap bitmap){
         if(bitmap!=null){
+            this.bitmap = bitmap;
             loadingImageView.setImageBitmap(bitmap);
             imageShow(loadingImageView);
-
 
         }else{
             toastShow("Error load IMG on page№ " +(position+1));
@@ -232,8 +239,8 @@ public abstract class MyFragment  implements View.OnClickListener, PopupMenu.OnM
                 matrix.postRotate(90);
                 InputStream in = new java.net.URL(imageUrl).openStream();
                 mIcon11 = BitmapFactory.decodeStream(in);
-
-                modyfy = Bitmap.createBitmap(mIcon11, 0, 0,  mIcon11.getWidth(),  mIcon11.getHeight(), matrix, true);
+                if(mIcon11!=null)
+                    modyfy = Bitmap.createBitmap(mIcon11, 0, 0,  mIcon11.getWidth(),  mIcon11.getHeight(), matrix, true);
             } catch (Exception e) {
                 Log.e(LogTags.TAG, e.getMessage());
                 e.printStackTrace();

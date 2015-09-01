@@ -41,7 +41,7 @@ import java.util.Map;
 public class MainActivity extends FragmentActivity implements Communicator, ViewPager.OnPageChangeListener, View.OnClickListener, PopupMenu.OnMenuItemClickListener, ToastShow {
     public  final static String LOCATION = "LOCATION";
     final String TAG = "MainActivityLogs";
-    int posinion;
+    private int posinion;
 
     public int scrollSliderSize;
 
@@ -264,7 +264,9 @@ public class MainActivity extends FragmentActivity implements Communicator, View
     @Override
     public void initView(View v, int position) {
         mapFragments.put(position, new BoridpolRadar(v, this, position));
-
+        if(position == 0){
+            mapFragments.get(0).firstLoad();
+        }
        /* switch (position){
             case 0:
                 boridpolRadar = new BoridpolRadar(v, this, position);
@@ -312,6 +314,8 @@ public class MainActivity extends FragmentActivity implements Communicator, View
     public void onPageSelected(int position) {
        setMyTitle(position);
        Log.d(TAG, "position: "+ position);
+        mapFragments.get(position).firstLoad();
+
     }
 
     @Override
