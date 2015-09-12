@@ -42,10 +42,13 @@ public class CurrentWeather extends Fragment implements OnLocation {
     public LocationManager locationManagerNet;
     public LocationListener locationListenerNet;
 
+
     TextView textViewTitle, textViewTemp, textViewWind, textViewHumidity;
     ImageView imageCurrentWeather;
     CurrentWeatherTask currentWeatherTask;
     boolean isDoing = false;
+
+    private int onTaskResult = 0;
 
     View weatherView;
 
@@ -114,13 +117,23 @@ public class CurrentWeather extends Fragment implements OnLocation {
     public void onLocationAccept(double lat, double lng) {
         if (locationManagerNet != null) {
             locationManagerNet.removeUpdates(locationListenerNet);
+            locationManagerNet = null;
         }
+        onStartWeatherTask(lat, lng);
+    }
+
+
+    void onStartWeatherTask(double lat, double lng){
         if(!isDoing){
-            currentWeatherTask = new CurrentWeatherTask();
-            currentWeatherTask.execute(MathOperation.round(lat, 2), MathOperation.round(lng, 2));
+            if(lat!=0 && lng!=0){
+                currentWeatherTask = new CurrentWeatherTask();
+                currentWeatherTask.execute(MathOperation.round(lat, 4), MathOperation.round(lng, 4));
+            }else{
+                currentWeatherTask = new CurrentWeatherTask();
+                currentWeatherTask.execute();
+            }
+
         }
-
-
     }
 
     void onAccept(ObjectNode root){
@@ -131,7 +144,14 @@ public class CurrentWeather extends Fragment implements OnLocation {
         Log.d(TAG, root.toString());
         switch (root.path("cod").asInt()){
             case 404:
-                mainActivity.show("City not found");
+                mainActivity.show("City not found. Try Kiev get");
+                if(onTaskResult == 0){
+                    onTaskResult++;
+                    onStartWeatherTask(0,0);
+                }else{
+                    mainActivity.show("Error current weather task");
+                }
+
                 return;
         }
 
@@ -174,6 +194,7 @@ public class CurrentWeather extends Fragment implements OnLocation {
          ObjectMapper mapper = new ObjectMapper();
          HttpURLConnection urlConnection;
 
+
          @Override
          protected void onPreExecute() {
              super.onPreExecute();
@@ -183,7 +204,10 @@ public class CurrentWeather extends Fragment implements OnLocation {
          @Override
          protected ObjectNode doInBackground(Double... params) {
              URL url;
-             String path = "http://api.openweathermap.org/data/2.5/weather?lat=" + params[0] + "&lon=" + params[1] + "&units=metric";
+             String path = "http://api.openweathermap.org/data/2.5/weather?q=Kiev,UA&units=metric";
+             if(params.length==2){
+                 path = "http://api.openweathermap.org/data/2.5/weather?lat=" + params[0] + "&lon=" + params[1] + "&units=metric";;
+             }
              StringBuilder sb = new StringBuilder();
              try {
                  //http://api.openweathermap.org/data/2.5/forecast?lat=35&lon=139
@@ -221,8 +245,9 @@ public class CurrentWeather extends Fragment implements OnLocation {
          @Override
          protected void onPostExecute(ObjectNode result) {
            //  loader.hide();
-             onAccept(result);
              isDoing = false;
+             onAccept(result);
+
          }
 
      }

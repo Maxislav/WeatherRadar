@@ -263,7 +263,8 @@ public class DataBaseHelper extends SQLiteOpenHelper {
             }
         }
 
-        if(date!=null && date.getTime()+timeRepeatLong-100< new Date().getTime()){
+        long curDateLong = new Date().getTime();
+        if(date!=null && date.getTime()+timeRepeatLong-100< curDateLong){
             return true;
         }else if(mapSetting.get(DataBaseHelper.FORECAST_RAIN)==null){
             return true;
