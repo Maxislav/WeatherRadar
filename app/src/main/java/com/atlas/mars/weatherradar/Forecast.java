@@ -51,6 +51,7 @@ public class Forecast implements OnLocation {
     public LocationListener locationListenerNet;
     Loader loader;
     ToastShow toast;
+    private  int onTaskResult = 0;
 
     Forecast(Activity activity, LinearLayout fr) {
         this.activity = activity;
@@ -152,12 +153,23 @@ public class Forecast implements OnLocation {
 
         if (locationManagerNet != null) {
             locationManagerNet.removeUpdates(locationListenerNet);
+            locationManagerNet = null;
         }
         if(forecastGoogleApi!=null && forecastGoogleApi.getStatus()==AsyncTask.Status.RUNNING){
 
         }else{
+            onStartWeatherTask(lat,lng);
+        }
+
+    }
+
+    private void onStartWeatherTask(double lat, double lng){
+        if(lat!=0 && lng != 0){
             forecastGoogleApi = new ForecastGoogleApi();
-            forecastGoogleApi.execute(MathOperation.round(lat, 2),MathOperation.round(lng,2));
+            forecastGoogleApi.execute(MathOperation.round(lat, 4),MathOperation.round(lng,4));
+        }else{
+            forecastGoogleApi = new ForecastGoogleApi();
+            forecastGoogleApi.execute();
         }
 
     }
@@ -169,6 +181,21 @@ public class Forecast implements OnLocation {
             toast.show("City not found");
             return;
         }
+
+
+        switch (root.path("cod").asInt()){
+            case 404:
+                toast.show("City not found. Try Kiev get");
+                if(onTaskResult == 0){
+                    onTaskResult++;
+                    onStartWeatherTask(0,0);
+                }else{
+                    toast.show("Error forecast task");
+                }
+                return;
+        }
+
+
         ArrayNode list = (ArrayNode) root.get("list");
         SimpleDateFormat dayMonth = new SimpleDateFormat("dd.MM"); //2015-08-03 18:00:00
         SimpleDateFormat time = new SimpleDateFormat("HH:mm"); //2015-08-03 18:00:00
@@ -309,7 +336,13 @@ public class Forecast implements OnLocation {
         @Override
         protected ObjectNode doInBackground(Double... params) {
             URL url;
-            String path = "http://api.openweathermap.org/data/2.5/forecast?lat=" + params[0] + "&lon=" + params[1] + "&units=metric";
+            String path;
+            if(params.length==2){
+                path  = "http://api.openweathermap.org/data/2.5/forecast?lat=" + params[0] + "&lon=" + params[1] + "&units=metric";
+            }else{
+                path  = "http://api.openweathermap.org/data/2.5/forecast?q=Kiev,UA&units=metric";
+            }
+
             StringBuilder sb = new StringBuilder();
             try {
                 //http://api.openweathermap.org/data/2.5/forecast?lat=35&lon=139

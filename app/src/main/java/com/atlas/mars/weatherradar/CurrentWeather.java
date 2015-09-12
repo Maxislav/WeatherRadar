@@ -204,9 +204,11 @@ public class CurrentWeather extends Fragment implements OnLocation {
          @Override
          protected ObjectNode doInBackground(Double... params) {
              URL url;
-             String path = "http://api.openweathermap.org/data/2.5/weather?q=Kiev,UA&units=metric";
+             String path;
              if(params.length==2){
                  path = "http://api.openweathermap.org/data/2.5/weather?lat=" + params[0] + "&lon=" + params[1] + "&units=metric";;
+             }else{
+                 path = "http://api.openweathermap.org/data/2.5/weather?q=Kiev,UA&units=metric";
              }
              StringBuilder sb = new StringBuilder();
              try {
