@@ -198,12 +198,12 @@ public class MyService extends Service implements OnLocation {
         if(map.get("isIntensity")!=null && 0 <map.get("isIntensity")){
             rainBorispol = true;
         }
-        if(map.get("error")!=null){
+
+        if(map.get("error")!=null && map.get("error")==1){
             rainBorispol = true;
-        }else {
-            mapSetting.put(DataBaseHelper.BORISPOL_TIME, getTimeStamp());
-            db.saveSetting();
         }
+        mapSetting.put(DataBaseHelper.BORISPOL_TIME, getTimeStamp());
+        db.saveSetting();
 
         Log.d(TAG, "onBorispolTaskResult " + (new Date(System.currentTimeMillis())));
 
