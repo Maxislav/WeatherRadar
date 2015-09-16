@@ -51,6 +51,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     public static final String FORECAST_TIME = "forecastTime"; // Время запроса прогноза
     public static final String BORISPOL_TIME = "borispolTime"; // Время запроса борисполя
 
+    Calendar fromNotSleep, toNotSleep;
 
     final String NEW_FORMAT = "yyyy-MM-dd HH:mm:ss.SSS";
     final DateFormat formatter = new SimpleDateFormat(NEW_FORMAT);
@@ -142,7 +143,26 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         sdb.close();
     }
 
-    Calendar fromNotSleep, toNotSleep;
+
+    public boolean isWorkTime(){
+        long curMills = System.currentTimeMillis();
+        Calendar c = new GregorianCalendar();
+        fromNotSleep = new GregorianCalendar(c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH));
+        toNotSleep = new GregorianCalendar(c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH));
+
+        fromNotSleep.add(Calendar.HOUR_OF_DAY, Integer.parseInt(mapSetting.get(TIME_FROM_HOUR) != null ? mapSetting.get(TIME_FROM_HOUR) : "0"));
+        fromNotSleep.add(Calendar.MINUTE, Integer.parseInt(mapSetting.get(TIME_FROM_MINUTE) != null ? mapSetting.get(TIME_FROM_MINUTE) : "0"));
+
+        toNotSleep.add(Calendar.HOUR_OF_DAY, Integer.parseInt(mapSetting.get(TIME_TO_HOUR) != null ? mapSetting.get(TIME_TO_HOUR) : "0"));
+        toNotSleep.add(Calendar.MINUTE, Integer.parseInt(mapSetting.get(TIME_TO_MINUTE) != null ? mapSetting.get(TIME_TO_MINUTE) : "0"));
+
+        if(fromNotSleep.getTimeInMillis()<curMills && curMills<toNotSleep.getTimeInMillis()){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
 
     public Long getStartTime() {
         Calendar c = new GregorianCalendar();

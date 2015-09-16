@@ -90,6 +90,11 @@ public class MainActivity extends FragmentActivity implements Communicator, View
         db = new DataBaseHelper(this);
         startAlarm = db.getStartTime();
         mapSetting = DataBaseHelper.mapSetting;
+
+        //todo закоментировать
+        //boolean isWork = db.isWorkTime();
+
+
        // db.deleteValue(DataBaseHelper.TIME_NOTIFY);
 
       //  buttonReload = (ImageButton)findViewById(R.id.buttonReload);

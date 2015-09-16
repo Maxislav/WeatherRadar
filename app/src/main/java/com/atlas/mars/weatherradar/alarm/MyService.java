@@ -131,7 +131,7 @@ public class MyService extends Service implements OnLocation {
         updIntent.putExtra("distance", "Wake Up");
         sendBroadcast(updIntent);
 
-        if (isNetworkAvailable()) {
+        if (isNetworkAvailable() && db.isWorkTime()) {
             locationManagerNet = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
             locationListenerNet = new MyLocationListenerNet(this);
             locationManagerNet.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListenerNet);
