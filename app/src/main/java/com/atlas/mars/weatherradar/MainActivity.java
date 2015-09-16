@@ -127,6 +127,7 @@ public class MainActivity extends FragmentActivity implements Communicator, View
             alarmOn();
         }
 
+        Log.d(TAG, BuildConfig.BorispolParseRain);
        /* am = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         intent1 = createIntent("action 1", "extra 1");
         pIntent1 = PendingIntent.getBroadcast(this, 0, intent1, PendingIntent.FLAG_CANCEL_CURRENT );
