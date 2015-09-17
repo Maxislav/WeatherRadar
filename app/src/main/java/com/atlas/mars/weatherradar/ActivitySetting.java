@@ -2,6 +2,8 @@ package com.atlas.mars.weatherradar;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -48,6 +50,7 @@ public class ActivitySetting extends AppCompatActivity implements TimePicker.OnT
     Button btnLoadSetting;
     FrameLayout globalLayout;
     static ObjectMapper mapper = new ObjectMapper();
+    PackageInfo pInfo;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         fromHour = 8;
@@ -56,6 +59,14 @@ public class ActivitySetting extends AppCompatActivity implements TimePicker.OnT
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_setting);
         db = new DataBaseHelper(this);
+        try {
+            pInfo   = getPackageManager().getPackageInfo(getPackageName(), 0);
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        getSupportActionBar().setTitle("V "+pInfo.versionName+ "." +Integer.toString(BuildConfig.VERSION_CODE));
+
         mapSetting = DataBaseHelper.mapSetting;
         jQuery = new MyJQuery();
         globalLayout = (FrameLayout)findViewById(R.id.globalLayout);

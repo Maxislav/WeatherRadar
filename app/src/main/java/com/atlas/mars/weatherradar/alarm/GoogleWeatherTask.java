@@ -47,18 +47,30 @@ public class GoogleWeatherTask extends AsyncTask<Double, Void, HashMap<String, B
         } catch (IOException e) {
             Log.e(TAG, e.toString(), e);
             e.printStackTrace();
+            map.put("rain", true);
+            return map;
+
         } finally {
             if (urlConnection != null) {
                 urlConnection.disconnect();
             }
         }
 
-        if (0 < sb.length()) {
+        if (0<sb.length()) {
             String json = sb.toString();
-           // Log.d(TAG, json);
+            ObjectNode root;
+            try {
+                 root = (ObjectNode) mapper.readTree(json);
+            } catch (IOException e) {
+                map.put("rain", true);
+                Log.e(TAG, e.toString(), e);
+                e.printStackTrace();
+                return map;
+            }
+
+
             try {
                 // [{"color":"4793F8","colorRgb":"71 147 248","intensity":6,"dist":75,"xy":"153 164"},{"color":"9BE1FF","colorRgb":"155 225 255","intensity":5,"dist":75,"xy":"159 159"},{"color":"0C59FF","colorRgb":"12 89 255","intensity":7,"dist":78,"xy":"151 161"},{"color":"FF8C9B","colorRgb":"255 140 155","intensity":9,"dist":80,"xy":"151 158"},{"color":"9BEA8F","colorRgb":"155 234 143","intensity":2,"dist":108,"xy":"122 140"}]
-                ObjectNode root = (ObjectNode) mapper.readTree(json);
                 ArrayNode arrayNode = (ArrayNode)root.get("list");
                 int forecastCount = arrayNode.size();
                 String clouds;
@@ -83,7 +95,7 @@ public class GoogleWeatherTask extends AsyncTask<Double, Void, HashMap<String, B
 
                     Log.d(TAG, clouds+ " : "+ descriptionMain+" : " +description+ " :  "+ dt_txt + " : " + rain) ;
                 }
-            } catch (IOException e) {
+            } catch (Exception e) {
                 map.put("rain", true);
                 Log.e(TAG, e.toString(), e);
                 e.printStackTrace();
