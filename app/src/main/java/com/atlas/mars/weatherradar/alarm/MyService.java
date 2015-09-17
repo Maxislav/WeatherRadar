@@ -232,15 +232,26 @@ public class MyService extends Service implements OnLocation {
     }
 
     private void alarmRestart(){
-        Intent intent1 = createIntent("action 1", "extra 1");
-        PendingIntent pendingIntent;
-        AlarmManager am = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
-        pendingIntent = PendingIntent.getBroadcast(this, 0, intent1, PendingIntent.FLAG_CANCEL_CURRENT);
+
         // am.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 10*60*1000, pendingIntent);
-        am.set(AlarmManager.RTC_WAKEUP, db.getStartTime(), pendingIntent);
-        //todo убрать
-       // am.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis()+30*1000, pendingIntent);
-        Log.d(ALARM, "Alarm Restart: " + new Date(db.getStartTime()).toString());
+       long startTime = 0;
+        try {
+           startTime = db.getStartTime();
+        }catch (Exception e){
+           Log.e(TAG, e.toString(), e);
+           Log.e(ALARM, e.toString(), e);
+        }
+
+        if(startTime!=0){
+            Intent intent1 = createIntent("action 1", "extra 1");
+            PendingIntent pendingIntent;
+            AlarmManager am = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
+            pendingIntent = PendingIntent.getBroadcast(this, 0, intent1, PendingIntent.FLAG_CANCEL_CURRENT);
+            am.set(AlarmManager.RTC_WAKEUP, db.getStartTime(), pendingIntent);
+            //todo убрать
+            // am.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis()+30*1000, pendingIntent);
+            Log.d(ALARM, "Alarm Restart: " + new Date(db.getStartTime()).toString());
+        }
         //am.cancel(pendingIntent);
     }
 
