@@ -43,9 +43,9 @@ public class CurrentWeather extends Fragment implements OnLocation {
     TextView textViewTitle, textViewTemp, textViewWind, textViewHumidity;
     ImageView imageCurrentWeather;
     CurrentWeatherTask currentWeatherTask;
-    boolean isDoing = false;
+    static boolean isDoing = false;
 
-    private int onTaskResult = 0;
+    private static int onTaskResult = 0;
 
     View weatherView;
 

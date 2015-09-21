@@ -51,7 +51,8 @@ public class Forecast implements OnLocation {
     public LocationListener locationListenerNet;
     Loader loader;
     ToastShow toast;
-    private  int onTaskResult = 0;
+    private boolean isDoing = false;
+    private static  int onTaskResult = 0;
 
     Forecast(Activity activity, LinearLayout fr) {
         this.activity = activity;
@@ -164,7 +165,7 @@ public class Forecast implements OnLocation {
     }
 
     private void onStartWeatherTask(double lat, double lng){
-        if(lat!=0 && lng != 0){
+        if(lat!=0 && lng != 0 && !isDoing){
             forecastGoogleApi = new ForecastGoogleApi();
             forecastGoogleApi.execute(MathOperation.round(lat, 4),MathOperation.round(lng,4));
         }else{
@@ -339,6 +340,12 @@ public class Forecast implements OnLocation {
         HttpURLConnection urlConnection;
 
         @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            isDoing = true;
+        }
+
+        @Override
         protected ObjectNode doInBackground(Double... params) {
             URL url;
             String path;
@@ -384,6 +391,7 @@ public class Forecast implements OnLocation {
 
         @Override
         protected void onPostExecute(ObjectNode result) {
+            isDoing = false;
             loader.hide();
             onForecastAccept(result);
         }
