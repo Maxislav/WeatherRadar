@@ -28,7 +28,6 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.atlas.mars.weatherradar.Rest.MyRestTest;
 import com.atlas.mars.weatherradar.alarm.SampleBootReceiver;
 import com.atlas.mars.weatherradar.fragments.BoridpolRadar;
 import com.atlas.mars.weatherradar.fragments.InfraRed;
@@ -144,7 +143,7 @@ public class MainActivity extends FragmentActivity implements Communicator, View
        // new ScroolObserv(this, scrollView);
 
         //todo закоментировать
-        new MyRestTest();
+       // new MyRestTest();
     }
 
     public void changeFragmentBar(int i){

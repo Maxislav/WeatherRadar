@@ -120,7 +120,7 @@ public class CurrentWeather extends Fragment implements OnLocation {
         if (root == null) {
             return;
         }
-        Log.d(TAG, root.toString());
+       /* Log.d(TAG, root.toString());
         switch (root.path("cod").asInt()) {
             case 404:
                 mainActivity.show("City not found. Try Kiev get");
@@ -132,7 +132,32 @@ public class CurrentWeather extends Fragment implements OnLocation {
                 }
 
                 return;
+        }*/
+
+
+
+
+        int cod = 200;
+        try{
+            cod= root.path("cod").asInt();
+        }catch (Exception e){
+            cod = 404;
+            mainActivity.show("Error current weather task");
+            Log.d(TAG, e.toString(), e);
         }
+        if(cod==404){
+            mainActivity.show("City not found. Try Kiev get");
+            if(onTaskResult == 0){
+                onTaskResult++;
+                onStartWeatherTask(0,0);
+            }else{
+                mainActivity.show("Error forecast task");
+            }
+            return;
+        }
+
+
+
 
 
         String icon = root.get("weather").get(0).path("icon").asText();

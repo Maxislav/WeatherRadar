@@ -182,19 +182,24 @@ public class Forecast implements OnLocation {
             return;
         }
 
-
-        switch (root.path("cod").asInt()){
-            case 404:
-                toast.show("City not found. Try Kiev get");
-                if(onTaskResult == 0){
-                    onTaskResult++;
-                    onStartWeatherTask(0,0);
-                }else{
-                    toast.show("Error forecast task");
-                }
-                return;
+        int cod = 200;
+        try{
+            cod= root.path("cod").asInt();
+        }catch (Exception e){
+            cod = 404;
+            toast.show("Error forecast task");
+            Log.d(TAG, e.toString(), e);
         }
-
+        if(cod==404){
+            toast.show("City not found. Try Kiev get");
+            if(onTaskResult == 0){
+                onTaskResult++;
+                onStartWeatherTask(0,0);
+            }else{
+                toast.show("Error forecast task");
+            }
+            return;
+        }
 
         ArrayNode list = (ArrayNode) root.get("list");
         SimpleDateFormat dayMonth = new SimpleDateFormat("dd.MM"); //2015-08-03 18:00:00
