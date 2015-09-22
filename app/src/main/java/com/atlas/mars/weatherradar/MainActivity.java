@@ -28,6 +28,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.atlas.mars.weatherradar.alarm.MorningService;
 import com.atlas.mars.weatherradar.alarm.SampleBootReceiver;
 import com.atlas.mars.weatherradar.fragments.BoridpolRadar;
 import com.atlas.mars.weatherradar.fragments.InfraRed;
@@ -58,7 +59,7 @@ public class MainActivity extends FragmentActivity implements Communicator, View
 
     NotificationManager nm;
     AlarmManager am;
-    Intent intent1;
+    Intent intent1, morningIntent;
     Intent intent2;
     PendingIntent pIntent1;
     PendingIntent pIntent2;
@@ -81,7 +82,6 @@ public class MainActivity extends FragmentActivity implements Communicator, View
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
 
 
         super.onCreate(savedInstanceState);
@@ -123,8 +123,12 @@ public class MainActivity extends FragmentActivity implements Communicator, View
 
         setSisze();
 
+
         if(mapSetting.get(DataBaseHelper.IS_ALARM)!=null && mapSetting.get(DataBaseHelper.IS_ALARM).equals("1")){
-            alarmOn();
+           alarmOn();
+        }
+        if(mapSetting.get(DataBaseHelper.MORNING_ALARM)!=null && mapSetting.get(DataBaseHelper.MORNING_ALARM).equals("1")){
+            morningAlarm();
         }
 
         Log.d(TAG, BuildConfig.BorispolParseRain);
@@ -198,9 +202,19 @@ public class MainActivity extends FragmentActivity implements Communicator, View
         });
     }
 
+    void morningAlarm(){
+      //  startService(new Intent(this, MorningService.class));
+        morningIntent = createIntent("morningAction", "extraMorning",  MorningService.class);
+        startService(morningIntent);
+        //startService(new Intent(this, MyService.class));
+       // startService(morningIntent);
+       // PendingIntent  pIntent = PendingIntent.getBroadcast(this, 0, morningIntent, PendingIntent.FLAG_CANCEL_CURRENT );
+    }
+
+
     void alarmOn(){
         am = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-        intent1 = createIntent("action 1", "extra 1");
+        intent1 = createIntent("action 1", "extra 1", SampleBootReceiver.class);
         pIntent1 = PendingIntent.getBroadcast(this, 0, intent1, PendingIntent.FLAG_CANCEL_CURRENT );
         am.cancel(pIntent1);
         //am.set(AlarmManager.RTC_WAKEUP, startAlarm, pIntent1);
@@ -215,12 +229,11 @@ public class MainActivity extends FragmentActivity implements Communicator, View
 
     }
 
-    Intent createIntent(String action, String extra) {
-       /* SampleBootReceiver sm = new SampleBootReceiver();
-        sm.setMainActivity(this);*/
 
 
-        Intent intent = new Intent(this, SampleBootReceiver.class);
+    Intent createIntent(String action, String extra, Class c) {
+        //Intent intent = new Intent(this, SampleBootReceiver.class);
+        Intent intent = new Intent(this, c);
         intent.setAction(action);
         intent.putExtra("extra", extra);
         return intent;

@@ -50,6 +50,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     public static final String FORECAST_RAIN = "forecastRain"; // 0 || 1
     public static final String FORECAST_TIME = "forecastTime"; // Время запроса прогноза
     public static final String BORISPOL_TIME = "borispolTime"; // Время запроса борисполя
+    public static final String MORNING_ALARM = "morningAlarm"; // 0 || 1
 
     Calendar fromNotSleep, toNotSleep;
 
