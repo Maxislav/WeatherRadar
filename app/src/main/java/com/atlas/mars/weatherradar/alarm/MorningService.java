@@ -16,7 +16,7 @@ import com.atlas.mars.weatherradar.location.OnLocation;
 /**
  * Created by mars on 9/22/15.
  */
-public class MorningService extends Service implements OnLocation {
+public class MorningService extends Service implements OnLocation, DayForecastRain.Callbackwqw {
     private LocationManager locationManagerNet;
     private LocationListener locationListenerNet;
 
@@ -46,7 +46,7 @@ public class MorningService extends Service implements OnLocation {
             if(locationManagerNet.getAllProviders().contains(LocationManager.NETWORK_PROVIDER)){
                 locationManagerNet.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListenerNet);
             }else{
-                new DayForecastRain();
+                new DayForecastRain(this);
             }
         }
     }
@@ -64,7 +64,13 @@ public class MorningService extends Service implements OnLocation {
             locationManagerNet.removeUpdates(locationListenerNet);
             locationManagerNet = null;
         }
-        new DayForecastRain(lat, lng);
+        new DayForecastRain(this, lat, lng);
+    }
+
+    @Override
+    public void Success() {
+
+        this.stopSelf();
     }
 }
 

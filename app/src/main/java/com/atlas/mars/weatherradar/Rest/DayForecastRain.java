@@ -2,6 +2,9 @@ package com.atlas.mars.weatherradar.Rest;
 
 import android.util.Log;
 
+import com.atlas.mars.weatherradar.MathOperation;
+
+import java.util.HashMap;
 import java.util.List;
 
 import retrofit.Callback;
@@ -21,14 +24,18 @@ public class DayForecastRain {
 
     private static String TAG =  "DayForecastRain";
     Double lat,  lng;
+    DayForecastRain.Callbackwqw callbackwqw;
 
-    public DayForecastRain(Double... latLng){
+    public DayForecastRain(DayForecastRain.Callbackwqw callbackwqw, Double... latLng){
+        this.callbackwqw = callbackwqw;
         if(1<latLng.length){
-            this.lat = latLng[0];
-            this.lng= latLng[1];
+            this.lat = MathOperation.round(latLng[0], 2);
+            this.lng= MathOperation.round(latLng[1], 2);
         }
         myTask();
     }
+
+
 
     public interface Constants{
         //  path = "http://api.openweathermap.org/data/2.5/weather?q=Kiev,UA&units=metric";
@@ -57,15 +64,25 @@ public class DayForecastRain {
                 public void success(Success success, Response response) {
                     // Access user here after response is parsed
                    // float lat = success.getCoord().getLat();
+                    HashMap<String, Object > map = new HashMap<String, Object>();
                     List<Item> items = success.getItems();
-                    Log.d(TAG, items.toString());
+                    String name = success.getCity().getName();
+                    for(Item it : items){
+                        Log.d(TAG, it.dt+" : "+it.weather.get(0).main);
+                    }
 
+                    map.put("name",name);
+                    map.put("list", items);
+
+                    Log.d(TAG, items.toString());
+                    callbackwqw.Success();
                    // success.consoleLog(response);
                 }
 
                 @Override
                 public void failure(RetrofitError retrofitError) {
                     Log.d(TAG, retrofitError.toString());
+                    callbackwqw.Success();
                     // Log error here since request failed
                 }
             });
@@ -96,21 +113,41 @@ public class DayForecastRain {
 
 
     private class Success{
-
+        public List<Item> list;
+        City city;
         public List<Item> getItems() {
-            return items;
+            return list;
         }
-
-        public List<Item> items;
-
+        public City getCity() {
+            return city;
+        }
     }
 
+    class City{
+        String name;
+        public String getName() {
+            return name;
+        }
+    }
     private class Item{
+        long dt;
+        List<Weather> weather;
         public long getDt() {
             return dt;
         }
-        long dt;
+        public Weather getWeather() {
+            return weather.get(0);
+        }
+    }
+    class Weather{
+        String main;
+        public String getMain() {
+            return main;
+        }
+    }
 
+    public interface Callbackwqw{
+        public void Success();
     }
 
 }
