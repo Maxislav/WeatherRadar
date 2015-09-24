@@ -54,7 +54,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 
     Calendar fromNotSleep, toNotSleep;
 
-    final String NEW_FORMAT = "yyyy-MM-dd HH:mm:ss.SSS";
+    final static String NEW_FORMAT = "yyyy-MM-dd HH:mm:ss.SSS";
     final DateFormat formatter = new SimpleDateFormat(NEW_FORMAT);
 
     static long intervalTime = 10 * 60 * 1000;

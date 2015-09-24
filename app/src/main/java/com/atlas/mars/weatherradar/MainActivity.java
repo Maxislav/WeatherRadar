@@ -28,6 +28,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.atlas.mars.weatherradar.alarm.MorningBroadCast;
 import com.atlas.mars.weatherradar.alarm.MorningService;
 import com.atlas.mars.weatherradar.alarm.SampleBootReceiver;
 import com.atlas.mars.weatherradar.fragments.BoridpolRadar;
@@ -58,7 +59,7 @@ public class MainActivity extends FragmentActivity implements Communicator, View
     DataBaseHelper db;
 
     NotificationManager nm;
-    AlarmManager am;
+    AlarmManager am, alarmManagerMorning;
     Intent intent1, morningIntent;
     Intent intent2;
     PendingIntent pIntent1;
@@ -185,7 +186,7 @@ public class MainActivity extends FragmentActivity implements Communicator, View
         observer1.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
-              //  scrollView.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                //  scrollView.getViewTreeObserver().removeGlobalOnLayoutListener(this);
 
                 if (Build.VERSION.SDK_INT < 16) {
                     scrollView.getViewTreeObserver().removeGlobalOnLayoutListener(this);
@@ -197,15 +198,18 @@ public class MainActivity extends FragmentActivity implements Communicator, View
                 scrollSliderSize = scrollView.getChildAt(0).getHeight() - scrollView.getHeight();
                 new ScrollObserv(mainActivity, scrollView, scrollSliderSize);
                 //todo установка позиции скрода при старте
-              //  scrollView.scrollTo(0, scrollView.getChildAt(0).getHeight() - scrollView.getHeight());
+                //  scrollView.scrollTo(0, scrollView.getChildAt(0).getHeight() - scrollView.getHeight());
             }
         });
     }
 
     void morningAlarm(){
-      //  startService(new Intent(this, MorningService.class));
-        morningIntent = createIntent("morningAction", "extraMorning",  MorningService.class);
+        alarmManagerMorning = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
+        morningIntent = createIntent("morningAction", "extraMorning",  MorningBroadCast.class);
         startService(morningIntent);
+        pIntent2 =  PendingIntent.getBroadcast(this, 0, morningIntent, PendingIntent.FLAG_CANCEL_CURRENT );
+        alarmManagerMorning.cancel(pIntent2);
+        am.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis()+1*1000, pIntent2);
         //startService(new Intent(this, MyService.class));
        // startService(morningIntent);
        // PendingIntent  pIntent = PendingIntent.getBroadcast(this, 0, morningIntent, PendingIntent.FLAG_CANCEL_CURRENT );

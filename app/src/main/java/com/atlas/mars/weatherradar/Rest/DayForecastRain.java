@@ -64,25 +64,25 @@ public class DayForecastRain {
                 public void success(Success success, Response response) {
                     // Access user here after response is parsed
                    // float lat = success.getCoord().getLat();
-                    HashMap<String, Object > map = new HashMap<String, Object>();
+                   // HashMap<String, Object > map = new HashMap<String, Object>();
+                    HashMap<Long, String> map = new HashMap<>();
+
                     List<Item> items = success.getItems();
                     String name = success.getCity().getName();
                     for(Item it : items){
+                        map.put(it.dt, it.weather.get(0).main);
                         Log.d(TAG, it.dt+" : "+it.weather.get(0).main);
                     }
 
-                    map.put("name",name);
-                    map.put("list", items);
 
                     Log.d(TAG, items.toString());
-                    callbackwqw.Success();
-                   // success.consoleLog(response);
+                    callbackwqw.Success(map, name);
                 }
 
                 @Override
                 public void failure(RetrofitError retrofitError) {
                     Log.d(TAG, retrofitError.toString());
-                    callbackwqw.Success();
+                    callbackwqw.Success(null, null);
                     // Log error here since request failed
                 }
             });
@@ -147,7 +147,7 @@ public class DayForecastRain {
     }
 
     public interface Callbackwqw{
-        public void Success();
+        public void Success(HashMap<Long, String>map, String name);
     }
 
 }

@@ -8,17 +8,26 @@ import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.IBinder;
+import android.util.Log;
 
+import com.atlas.mars.weatherradar.DataBaseHelper;
 import com.atlas.mars.weatherradar.Rest.DayForecastRain;
 import com.atlas.mars.weatherradar.location.MyLocationListenerNet;
 import com.atlas.mars.weatherradar.location.OnLocation;
+
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by mars on 9/22/15.
  */
 public class MorningService extends Service implements OnLocation, DayForecastRain.Callbackwqw {
+    private static final String TAG = "MorningServiceLogs";
     private LocationManager locationManagerNet;
     private LocationListener locationListenerNet;
+    DataBaseHelper db;
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -27,6 +36,7 @@ public class MorningService extends Service implements OnLocation, DayForecastRa
 
     @Override
     public void onCreate() {
+        db = new DataBaseHelper(this);
         super.onCreate();
 
     }
@@ -68,8 +78,22 @@ public class MorningService extends Service implements OnLocation, DayForecastRa
     }
 
     @Override
-    public void Success() {
+    public void Success(HashMap<Long, String> map, String name) {
+        if(map==null) {
+            this.stopSelf();
+            return;
+        }
+        for (Map.Entry entry : map.entrySet()) {
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTimeInMillis((Long)entry.getKey()*1000);
+            //Date date =  (Long)entry.getKey()*1000;
+            java.util.Date now = calendar.getTime();
+            java.sql.Timestamp currentTimestamp = new java.sql.Timestamp(now.getTime());
 
+            Log.d(TAG, currentTimestamp +" " +entry.getValue());
+           /* System.out.println("Key: " + entry.getKey() + " Value: "
+                    + entry.getValue());*/
+        }
         this.stopSelf();
     }
 }
