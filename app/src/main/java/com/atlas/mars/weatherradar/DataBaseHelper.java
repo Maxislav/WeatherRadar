@@ -345,4 +345,25 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         // cursor.close();
         sdb.close();
     }
+    public long getMorningWakeUp(){
+        Calendar c = Calendar.getInstance();
+        c.setTimeInMillis(System.currentTimeMillis());
+
+
+        mapSetting.get(TIME_FROM_HOUR);
+        mapSetting.get(TIME_FROM_MINUTE);
+        Calendar calendarWakeUp = Calendar.getInstance();
+        calendarWakeUp.set(Calendar.YEAR, c.get(Calendar.YEAR));
+        calendarWakeUp.set(Calendar.MONTH, c.get(Calendar.MONTH));
+        calendarWakeUp.set(Calendar.DAY_OF_MONTH, c.get(Calendar.DAY_OF_MONTH));
+        calendarWakeUp.set(Calendar.HOUR_OF_DAY, Integer.parseInt(mapSetting.get(TIME_FROM_HOUR)));
+        calendarWakeUp.set(Calendar.MINUTE, Integer.parseInt(mapSetting.get(TIME_FROM_MINUTE)));
+        calendarWakeUp.set(Calendar.SECOND, 0);
+        calendarWakeUp.set(Calendar.MILLISECOND, 0);
+
+        if(calendarWakeUp.getTimeInMillis() <c.getTimeInMillis()){
+            calendarWakeUp.add(c.DAY_OF_MONTH, 1);
+        }
+        return calendarWakeUp.getTimeInMillis();
+    }
 }

@@ -18,10 +18,14 @@ public class MorningBroadCast extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         db = new DataBaseHelper(context);
-        context.startService(new Intent(context, MorningService.class));
+
+
+      //  //pIntent2 =  PendingIntent.getBroadcast(this, 0, morningIntent, PendingIntent.FLAG_CANCEL_CURRENT );
+        //alarmManagerMorning.cancel(pIntent2);
 
         AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         pendingIntent = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+        am.set(AlarmManager.RTC_WAKEUP, db.getMorningWakeUp(), pendingIntent);
         context.startService(new Intent(context, MorningService.class));
     }
 }

@@ -4,8 +4,10 @@ import android.util.Log;
 
 import com.atlas.mars.weatherradar.MathOperation;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
 import retrofit.Callback;
 import retrofit.RestAdapter;
@@ -59,24 +61,31 @@ public class DayForecastRain {
 
 
         if(lat!=null && lng!=null){
-            apiService.getForecastByLatLng(lat, lng,"metric", new Callback<Success>() {
+            apiService.getForecastByLatLng(lat, lng, "metric", 3, new Callback<Success>() {
                 @Override
                 public void success(Success success, Response response) {
                     // Access user here after response is parsed
                    // float lat = success.getCoord().getLat();
                    // HashMap<String, Object > map = new HashMap<String, Object>();
-                    HashMap<Long, String> map = new HashMap<>();
-
+                    HashMap<String, Object> map;
+                    List<HashMap> list = new ArrayList<HashMap>();
                     List<Item> items = success.getItems();
                     String name = success.getCity().getName();
                     for(Item it : items){
-                        map.put(it.dt, it.weather.get(0).main);
-                        Log.d(TAG, it.dt+" : "+it.weather.get(0).main);
+
+                        map = new HashMap<>();
+                        map.put("dt", it.dt);
+                        map.put("main",it.weather.get(0).main );
+                        list.add(map);
+
+
+                        //map.put(it.dt, it.weather.get(0).main);
+                       // Log.d(TAG, it.dt+" : "+);
                     }
 
 
                     Log.d(TAG, items.toString());
-                    callbackwqw.Success(map, name);
+                    callbackwqw.Success(list, name);
                 }
 
                 @Override
@@ -95,7 +104,7 @@ public class DayForecastRain {
         // Callback for the parsed response is the last parameter
 
         @GET("/")
-        void getForecastByLatLng(@Query("lat") double lat, @Query("lon") double lon , @Query("units") String units, Callback<Success> cb);
+        void getForecastByLatLng(@Query("lat") double lat, @Query("lon") double lon , @Query("units") String units, @Query("cnt") int cnt, Callback<Success> cb);
 
         @GET("/")
         void getWeather(@Query("q") String cityCode, @Query("units") String units, Callback<Success> cb);
@@ -147,7 +156,7 @@ public class DayForecastRain {
     }
 
     public interface Callbackwqw{
-        public void Success(HashMap<Long, String>map, String name);
+        public void Success(List<HashMap> list, String name);
     }
 
 }

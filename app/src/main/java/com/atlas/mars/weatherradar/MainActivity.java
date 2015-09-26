@@ -36,6 +36,7 @@ import com.atlas.mars.weatherradar.fragments.InfraRed;
 import com.atlas.mars.weatherradar.fragments.MyFragment;
 import com.atlas.mars.weatherradar.fragments.Visible;
 
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -204,15 +205,20 @@ public class MainActivity extends FragmentActivity implements Communicator, View
     }
 
     void morningAlarm(){
+
+        long time = db.getMorningWakeUp();
         alarmManagerMorning = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
         morningIntent = createIntent("morningAction", "extraMorning",  MorningBroadCast.class);
         startService(morningIntent);
         pIntent2 =  PendingIntent.getBroadcast(this, 0, morningIntent, PendingIntent.FLAG_CANCEL_CURRENT );
         alarmManagerMorning.cancel(pIntent2);
-        am.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis()+1*1000, pIntent2);
-        //startService(new Intent(this, MyService.class));
-       // startService(morningIntent);
-       // PendingIntent  pIntent = PendingIntent.getBroadcast(this, 0, morningIntent, PendingIntent.FLAG_CANCEL_CURRENT );
+        alarmManagerMorning.set(AlarmManager.RTC_WAKEUP, time, pIntent2);
+    }
+    void morningAlarmCancel(){
+        if(pIntent2!=null && alarmManagerMorning!=null){
+            pIntent2 = PendingIntent.getBroadcast(this, 0, morningIntent, PendingIntent.FLAG_CANCEL_CURRENT );
+            alarmManagerMorning.cancel(pIntent1);
+        }
     }
 
 

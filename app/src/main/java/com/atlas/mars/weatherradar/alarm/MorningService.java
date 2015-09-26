@@ -1,5 +1,8 @@
 package com.atlas.mars.weatherradar.alarm;
 
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -11,6 +14,8 @@ import android.os.IBinder;
 import android.util.Log;
 
 import com.atlas.mars.weatherradar.DataBaseHelper;
+import com.atlas.mars.weatherradar.MainActivity;
+import com.atlas.mars.weatherradar.R;
 import com.atlas.mars.weatherradar.Rest.DayForecastRain;
 import com.atlas.mars.weatherradar.location.MyLocationListenerNet;
 import com.atlas.mars.weatherradar.location.OnLocation;
@@ -18,6 +23,7 @@ import com.atlas.mars.weatherradar.location.OnLocation;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -78,8 +84,39 @@ public class MorningService extends Service implements OnLocation, DayForecastRa
     }
 
     @Override
-    public void Success(HashMap<Long, String> map, String name) {
-        if(map==null) {
+    public void Success(List<HashMap> list, String name) {
+        if(list==null) {
+            this.stopSelf();
+            return;
+        }
+        Calendar calendarCur = Calendar.getInstance();
+        calendarCur.setTimeInMillis(System.currentTimeMillis());
+
+        int dateOfMonthCur = calendarCur.get(Calendar.DAY_OF_MONTH);
+
+
+        for (HashMap<String, Object> map : list){
+            Long dt = (Long)(map.get("dt"));
+            String main = (String)map.get("main");
+
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTimeInMillis(dt*1000);
+
+            int dateOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
+            if(dateOfMonth==dateOfMonthCur){
+                java.util.Date now = calendar.getTime();
+                java.sql.Timestamp timestamp = new java.sql.Timestamp(now.getTime());
+                if(main.equals("Rain")){
+                    String hh = Integer.toString(calendar.get(Calendar.HOUR_OF_DAY));
+                    notificationCreate(hh);
+                    Log.d(TAG,"///////////");
+                    break;
+                }
+                Log.d(TAG, timestamp+" : " +main);
+            }
+        }
+
+        /*if(map==null) {
             this.stopSelf();
             return;
         }
@@ -91,10 +128,27 @@ public class MorningService extends Service implements OnLocation, DayForecastRa
             java.sql.Timestamp currentTimestamp = new java.sql.Timestamp(now.getTime());
 
             Log.d(TAG, currentTimestamp +" " +entry.getValue());
-           /* System.out.println("Key: " + entry.getKey() + " Value: "
-                    + entry.getValue());*/
-        }
+           *//* System.out.println("Key: " + entry.getKey() + " Value: "
+                    + entry.getValue());*//*
+        }*/
         this.stopSelf();
+    }
+
+    void notificationCreate(String HH){
+        NotificationManager nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        Notification notification = new Notification.Builder(this).setContentTitle("Rain alarm")
+                .setContentText("Возможен дождь в "+HH+"ч")
+                .setSmallIcon(R.drawable.notification_rain)
+                .build();
+        notification.flags = Notification.DEFAULT_LIGHTS | Notification.FLAG_AUTO_CANCEL;
+
+        Intent notificationIntent = new Intent(this, MainActivity.class);
+        notificationIntent.putExtra("item_id", "1002");
+        notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        PendingIntent intent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
+        notification.contentIntent = intent;
+        nm.notify(2, notification);
+
     }
 }
 
