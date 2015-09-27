@@ -74,7 +74,18 @@ public class CurrentWeather extends Fragment implements OnLocation {
         _onStart();
     }
 
-   /* CurrentWeather(MainActivity mainActivity, FrameLayout frLayoutCurrent){
+    @Override
+    public void onPause() {
+        isDoing = false;
+        if(locationManagerNet!=null){
+            locationManagerNet.removeUpdates(locationListenerNet);
+            locationManagerNet = null;
+        }
+
+        super.onPause();
+
+    }
+/* CurrentWeather(MainActivity mainActivity, FrameLayout frLayoutCurrent){
         this.mainActivity = mainActivity;
         textViewTemp = (TextView)frLayoutCurrent.findViewById(R.id.textViewTemp);
         textViewWind = (TextView)frLayoutCurrent.findViewById(R.id.textViewWind);
@@ -111,7 +122,6 @@ public class CurrentWeather extends Fragment implements OnLocation {
                 currentWeatherTask = new CurrentWeatherTask();
                 currentWeatherTask.execute();
             }
-
         }
     }
 
@@ -120,22 +130,6 @@ public class CurrentWeather extends Fragment implements OnLocation {
         if (root == null) {
             return;
         }
-       /* Log.d(TAG, root.toString());
-        switch (root.path("cod").asInt()) {
-            case 404:
-                mainActivity.show("City not found. Try Kiev get");
-                if (onTaskResult == 0) {
-                    onTaskResult++;
-                    onStartWeatherTask(0, 0);
-                } else {
-                    mainActivity.show("Error current weather task");
-                }
-
-                return;
-        }*/
-
-
-
 
         int cod = 200;
         try{
@@ -208,6 +202,7 @@ public class CurrentWeather extends Fragment implements OnLocation {
         protected ObjectNode doInBackground(Double... params) {
             URL url;
             String path;
+
             if (params.length == 2) {
                 path = "http://api.openweathermap.org/data/2.5/weather?lat=" + params[0] + "&lon=" + params[1] + "&units=metric";
                 ;

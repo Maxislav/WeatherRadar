@@ -14,6 +14,7 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.transition.Fade;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -82,6 +83,8 @@ public class MainActivity extends FragmentActivity implements Communicator, View
     FragmentTransaction fragmentTransaction;
     Fragment fragmentWeather, fragmentImageAction;
 
+    Forecast forecast;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -107,7 +110,8 @@ public class MainActivity extends FragmentActivity implements Communicator, View
 
        // currentWeather = new CurrentWeather(this, frLayoutCurrent);
 
-        new Forecast(this, forecastLinearLayout);
+        forecast =  new Forecast(this, forecastLinearLayout);
+
         mapFragments = new HashMap<>();
 
         buttonMenu.setOnClickListener(this);
@@ -141,9 +145,14 @@ public class MainActivity extends FragmentActivity implements Communicator, View
         am.set(AlarmManager.RTC_WAKEUP, startAlarm, pIntent1);
 */
         //am.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 5000, pIntent1);
+        //Fade fade = new Fade(Fade.IN);
+        //fade.setDuration(1000);
         fragmentWeather = new CurrentWeather();
+    //fragmentWeather.setEnterTransition(fade);
+
         fragmentImageAction  = new FragmentImageAction();
         fragmentTransaction = getFragmentManager().beginTransaction();
+        //fragmentTransaction.setCustomAnimations(R.anim.fade_out, R.anim.fade_in);
         fragmentTransaction.add(R.id.frLayoutCurrent, fragmentWeather);
         fragmentTransaction.commit();
        // new ScroolObserv(this, scrollView);
@@ -154,6 +163,7 @@ public class MainActivity extends FragmentActivity implements Communicator, View
 
     public void changeFragmentBar(int i){
         fragmentTransaction = getFragmentManager().beginTransaction();
+        fragmentTransaction.setCustomAnimations( R.anim.fade_in ,R.anim.fade_out );
         switch (i){
             case 0:
 
@@ -206,6 +216,8 @@ public class MainActivity extends FragmentActivity implements Communicator, View
 
     void morningAlarm(){
 
+        //todo закоментировать
+       //startService(new Intent(this, MorningService.class));
         long time = db.getMorningWakeUp();
         alarmManagerMorning = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
         morningIntent = createIntent("morningAction", "extraMorning",  MorningBroadCast.class);
@@ -333,6 +345,11 @@ public class MainActivity extends FragmentActivity implements Communicator, View
                 }else {
                     alarmCancel();
                 }
+                if(extras.getBoolean(DataBaseHelper.MORNING_ALARM)){
+                    morningAlarm();
+                }else{
+                    morningAlarmCancel();
+                }
             }
         }
     }
@@ -403,6 +420,13 @@ public class MainActivity extends FragmentActivity implements Communicator, View
             if(extras.getString("item_id").equals("1001")){
                 mapFragments.get(0).reloadImg();
                 //boridpolRadar.reloadImg();
+            }
+            if(extras.getString("item_id").equals("1002")){
+                if(forecast!=null){
+                    forecast.onRegen();
+                }else{
+                    forecast =  new Forecast(this, forecastLinearLayout);
+                }
             }
 
           //  Log.i( "dd","Extra:" + extras.getString("item_id") );

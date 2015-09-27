@@ -192,6 +192,7 @@ public class ActivitySetting extends AppCompatActivity implements TimePicker.OnT
         saveSetting();
         Intent answerIntent = new Intent();
         answerIntent.putExtra(DataBaseHelper.IS_ALARM, isAlarm.isChecked());
+        answerIntent.putExtra(DataBaseHelper.MORNING_ALARM, isMorningAlarm.isChecked());
         setResult(RESULT_OK, answerIntent);
         finish();
     }

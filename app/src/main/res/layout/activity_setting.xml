@@ -29,7 +29,7 @@
                     android:layout_height="wrap_content"
                     android:button="@drawable/custom_checkbox_design"
                     android:checked="false"
-                    android:text="Утреннее предупреждение о дожде"
+                    android:text="Утреннее оповещение об осадках"
                     android:textColor="@color/white" />
 
                 <LinearLayout
@@ -46,7 +46,7 @@
                     android:layout_height="wrap_content"
                     android:button="@drawable/custom_checkbox_design"
                     android:checked="false"
-                    android:text="Включиить оповещение"
+                    android:text="Онлайн оповещение о приближении"
                     android:textColor="@color/white" />
 
                 <LinearLayout

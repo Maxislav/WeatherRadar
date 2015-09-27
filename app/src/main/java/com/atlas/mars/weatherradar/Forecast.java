@@ -55,13 +55,20 @@ public class Forecast implements OnLocation {
     private static  int onTaskResult = 0;
 
     Forecast(Activity activity, LinearLayout fr) {
+
         this.activity = activity;
         toast = (ToastShow)activity;
         this.fr = fr;
         parent = (FrameLayout)fr.getParent().getParent();
         loader = new Loader(activity, parent);
 
+        _onStart();
 
+
+        //  onInflate();
+    }
+
+    private void _onStart(){
         if(isNetworkAvailable()){
             locationManagerNet = (LocationManager) activity.getSystemService(Context.LOCATION_SERVICE);
             locationListenerNet = new MyLocationListenerNet(this);
@@ -74,8 +81,12 @@ public class Forecast implements OnLocation {
         }else{
             onForecastAccept(null);
         }
+    }
 
-        //  onInflate();
+
+    public void onRegen(){
+        fr.removeAllViews();
+        _onStart();
     }
 
 
@@ -330,7 +341,6 @@ public class Forecast implements OnLocation {
 
 
     }
-
 
 
 

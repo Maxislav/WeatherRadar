@@ -12,6 +12,8 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.IBinder;
 import android.util.Log;
+import android.widget.RemoteViews;
+import android.widget.TextView;
 
 import com.atlas.mars.weatherradar.DataBaseHelper;
 import com.atlas.mars.weatherradar.MainActivity;
@@ -108,7 +110,7 @@ public class MorningService extends Service implements OnLocation, DayForecastRa
                 java.sql.Timestamp timestamp = new java.sql.Timestamp(now.getTime());
                 if(main.equals("Rain")){
                     String hh = Integer.toString(calendar.get(Calendar.HOUR_OF_DAY));
-                    notificationCreate(hh);
+                    notificationCreate(hh, name);
                     Log.d(TAG,"///////////");
                     break;
                 }
@@ -134,13 +136,24 @@ public class MorningService extends Service implements OnLocation, DayForecastRa
         this.stopSelf();
     }
 
-    void notificationCreate(String HH){
+    void notificationCreate(String HH, String city){
+       // String contentText = "Возможен дождь в "+HH+"ч";
+
+       // CharSequence cs = contentText;
+
+        RemoteViews remoteViews = new RemoteViews(getPackageName(),
+                R.layout.notification_morning);
+
+
         NotificationManager nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         Notification notification = new Notification.Builder(this).setContentTitle("Rain alarm")
-                .setContentText("Возможен дождь в "+HH+"ч")
+                .setContentText(city+". Возможен дождь в "+HH+"ч")
+                //.setContent(remoteViews)
+
                 .setSmallIcon(R.drawable.notification_rain)
                 .build();
         notification.flags = Notification.DEFAULT_LIGHTS | Notification.FLAG_AUTO_CANCEL;
+       // remoteViews.setTextViewText(R.id.contentT,cs);
 
         Intent notificationIntent = new Intent(this, MainActivity.class);
         notificationIntent.putExtra("item_id", "1002");

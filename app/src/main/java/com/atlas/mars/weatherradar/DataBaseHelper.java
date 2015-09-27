@@ -361,7 +361,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         calendarWakeUp.set(Calendar.SECOND, 0);
         calendarWakeUp.set(Calendar.MILLISECOND, 0);
 
-        if(calendarWakeUp.getTimeInMillis() <c.getTimeInMillis()){
+        if(calendarWakeUp.getTimeInMillis() <= c.getTimeInMillis()){
             calendarWakeUp.add(c.DAY_OF_MONTH, 1);
         }
         return calendarWakeUp.getTimeInMillis();
