@@ -108,7 +108,7 @@ public class MorningService extends Service implements OnLocation, DayForecastRa
             if(dateOfMonth==dateOfMonthCur){
                 java.util.Date now = calendar.getTime();
                 java.sql.Timestamp timestamp = new java.sql.Timestamp(now.getTime());
-                if(main.equals("Rain")){
+                if(main.equals("Rain") && now.after(calendarCur.getTime())){
                     String hh = Integer.toString(calendar.get(Calendar.HOUR_OF_DAY));
                     notificationCreate(hh, name);
                     Log.d(TAG,"///////////");

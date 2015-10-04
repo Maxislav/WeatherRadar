@@ -217,7 +217,8 @@ public class MainActivity extends FragmentActivity implements Communicator, View
     void morningAlarm(){
 
         //todo закоментировать
-       //startService(new Intent(this, MorningService.class));
+       startService(new Intent(this, MorningService.class));
+
         long time = db.getMorningWakeUp();
         alarmManagerMorning = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
         morningIntent = createIntent("morningAction", "extraMorning",  MorningBroadCast.class);
