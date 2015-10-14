@@ -204,7 +204,7 @@ public class CurrentWeather extends Fragment implements OnLocation {
             String path;
 
             if (params.length == 2) {
-                path = "http://api.openweathermap.org/data/2.5/weather?lat=" + params[0] + "&lon=" + params[1] + "&units=metric";
+                path = "http://api.openweathermap.org/data/2.5/weather?lat=" + params[0] + "&lon=" + params[1] +"&APPID="+BuildConfig.APPID+ "&units=metric";
                 ;
             } else {
                 path = "http://api.openweathermap.org/data/2.5/weather?q=Kiev,UA&units=metric";

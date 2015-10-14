@@ -360,7 +360,7 @@ public class Forecast implements OnLocation {
             URL url;
             String path;
             if(params.length==2){
-                path  = "http://api.openweathermap.org/data/2.5/forecast?lat=" + params[0] + "&lon=" + params[1] + "&units=metric";
+                path  = "http://api.openweathermap.org/data/2.5/forecast?lat=" + params[0] + "&lon=" + params[1] +"&APPID="+BuildConfig.APPID+ "&units=metric";
             }else{
                 path  = "http://api.openweathermap.org/data/2.5/forecast?q=Kiev,UA&units=metric";
             }

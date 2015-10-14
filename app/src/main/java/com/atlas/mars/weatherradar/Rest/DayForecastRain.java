@@ -2,12 +2,12 @@ package com.atlas.mars.weatherradar.Rest;
 
 import android.util.Log;
 
+import com.atlas.mars.weatherradar.BuildConfig;
 import com.atlas.mars.weatherradar.MathOperation;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Objects;
 
 import retrofit.Callback;
 import retrofit.RestAdapter;
@@ -61,7 +61,7 @@ public class DayForecastRain {
 
 
         if(lat!=null && lng!=null){
-            apiService.getForecastByLatLng(lat, lng, "metric", 3, new Callback<Success>() {
+            apiService.getForecastByLatLng(lat, lng, "metric", 3, BuildConfig.APPID , new Callback<Success>() {
                 @Override
                 public void success(Success success, Response response) {
                     // Access user here after response is parsed
@@ -104,7 +104,7 @@ public class DayForecastRain {
         // Callback for the parsed response is the last parameter
 
         @GET("/")
-        void getForecastByLatLng(@Query("lat") double lat, @Query("lon") double lon , @Query("units") String units, @Query("cnt") int cnt, Callback<Success> cb);
+        void getForecastByLatLng(@Query("lat") double lat, @Query("lon") double lon , @Query("units") String units, @Query("cnt") int cnt,  @Query("APPID") String appid  ,Callback<Success> cb);
 
         @GET("/")
         void getWeather(@Query("q") String cityCode, @Query("units") String units, Callback<Success> cb);

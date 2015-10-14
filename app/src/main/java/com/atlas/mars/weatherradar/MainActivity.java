@@ -14,7 +14,6 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.transition.Fade;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -30,14 +29,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.atlas.mars.weatherradar.alarm.MorningBroadCast;
-import com.atlas.mars.weatherradar.alarm.MorningService;
 import com.atlas.mars.weatherradar.alarm.SampleBootReceiver;
 import com.atlas.mars.weatherradar.fragments.BoridpolRadar;
 import com.atlas.mars.weatherradar.fragments.InfraRed;
 import com.atlas.mars.weatherradar.fragments.MyFragment;
 import com.atlas.mars.weatherradar.fragments.Visible;
 
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -217,8 +214,7 @@ public class MainActivity extends FragmentActivity implements Communicator, View
     void morningAlarm(){
 
         //todo закоментировать
-       startService(new Intent(this, MorningService.class));
-
+       //startService(new Intent(this, MorningService.class));
         long time = db.getMorningWakeUp();
         alarmManagerMorning = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
         morningIntent = createIntent("morningAction", "extraMorning",  MorningBroadCast.class);
