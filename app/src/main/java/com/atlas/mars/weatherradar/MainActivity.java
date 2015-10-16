@@ -285,6 +285,9 @@ public class MainActivity extends FragmentActivity implements Communicator, View
             reloadAll();
             return true;
         }
+        if(id == R.id.action_license){
+            return true;
+        }
 
         return super.onOptionsItemSelected(item);
     }

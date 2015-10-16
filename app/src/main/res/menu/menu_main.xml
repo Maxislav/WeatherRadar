@@ -6,4 +6,6 @@
         android:orderInCategory="100" app:showAsAction="never" />
     <item android:id="@+id/action_reload" android:title="Reload all"
         android:orderInCategory="100" app:showAsAction="never" />
+    <item android:id="@+id/action_license" android:title="@string/app_license"
+        android:orderInCategory="100" app:showAsAction="never" />
 </menu>

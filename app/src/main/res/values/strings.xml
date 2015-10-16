@@ -5,5 +5,6 @@
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
     <string name="app_error">Непредвиденная ошибка</string>
-
+    <string name="app_license">Weather Cheater Licence</string>
+    <string name="web" translatable="false"><![CDATA[<html><meta charset=\"utf-8\"><body><p style=\"color:#A0A0A0;text-indent: 20px; text-align: justify;\">{content}</p></body></html> ]]></string>
 </resources>
