@@ -9,7 +9,6 @@
     <facet type="android" name="Android">
       <configuration>
         <option name="SELECTED_BUILD_VARIANT" value="developDebug" />
-        <option name="SELECTED_TEST_ARTIFACT" value="_android_test_" />
         <option name="ASSEMBLE_TASK_NAME" value="assembleDevelopDebug" />
         <option name="COMPILE_JAVA_TASK_NAME" value="compileDevelopDebugSources" />
         <option name="ASSEMBLE_TEST_TASK_NAME" value="assembleDevelopDebugTest" />
@@ -110,6 +109,7 @@
     <orderEntry type="library" exported="" name="appcompat-v7-22.1.0" level="project" />
     <orderEntry type="library" exported="" name="gson-2.3.1" level="project" />
     <orderEntry type="library" exported="" name="jackson-annotations-2.5.0" level="project" />
+    <orderEntry type="library" exported="" name="phrase-1.0.3" level="project" />
     <orderEntry type="library" exported="" name="okhttp-2.2.0" level="project" />
     <orderEntry type="library" exported="" name="support-annotations-22.1.0" level="project" />
     <orderEntry type="library" exported="" name="support-v4-22.1.0" level="project" />

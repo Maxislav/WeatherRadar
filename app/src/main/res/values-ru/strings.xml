@@ -6,5 +6,10 @@
     <string name="action_settings">Настройки</string>
     <string name="app_error">Непредвиденная ошибка</string>
     <string name="app_license">Условия использования</string>
+    <string name="license_text">
+
+        Данные о местоположении вашего телефона будут периодически передаваться на сервер для просчета дистанций до осадков.
+        Так же данные о вашем местоположении используются для запроса прогноза погоды по адресу <a style="color: blue">http://openweathermap.org</a>
+    </string>
 
 </resources>

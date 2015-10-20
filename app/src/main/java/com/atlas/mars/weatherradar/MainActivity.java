@@ -276,8 +276,9 @@ public class MainActivity extends FragmentActivity implements Communicator, View
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
+        Intent intent;
         if (id == R.id.action_settings) {
-            Intent intent = new Intent(this, ActivitySetting.class);
+            intent = new Intent(this, ActivitySetting.class);
             startActivityForResult(intent,0);
             return true;
         }
@@ -286,6 +287,8 @@ public class MainActivity extends FragmentActivity implements Communicator, View
             return true;
         }
         if(id == R.id.action_license){
+            intent = new Intent(this, ActivityLicense.class);
+            startActivityForResult(intent,1);
             return true;
         }
 
@@ -351,6 +354,9 @@ public class MainActivity extends FragmentActivity implements Communicator, View
                     morningAlarmCancel();
                 }
             }
+        }
+        if(requestCode==1){
+            Log.d(TAG, requestCode+"");
         }
     }
 
