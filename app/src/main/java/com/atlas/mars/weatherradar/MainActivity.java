@@ -2,6 +2,7 @@ package com.atlas.mars.weatherradar;
 
 import android.app.Activity;
 import android.app.AlarmManager;
+import android.app.Dialog;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.app.NotificationManager;
@@ -12,10 +13,12 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -32,6 +35,7 @@ import android.widget.Toast;
 import com.atlas.mars.weatherradar.alarm.MorningBroadCast;
 import com.atlas.mars.weatherradar.alarm.SampleBootReceiver;
 import com.atlas.mars.weatherradar.dialog.MyDialog;
+import com.atlas.mars.weatherradar.dialog.OnEvents;
 import com.atlas.mars.weatherradar.fragments.BoridpolRadar;
 import com.atlas.mars.weatherradar.fragments.InfraRed;
 import com.atlas.mars.weatherradar.fragments.MyFragment;
@@ -41,7 +45,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 
-public class MainActivity extends FragmentActivity implements Communicator, ViewPager.OnPageChangeListener, View.OnClickListener, PopupMenu.OnMenuItemClickListener, ToastShow {
+public class MainActivity extends FragmentActivity implements Communicator, ViewPager.OnPageChangeListener, View.OnClickListener, PopupMenu.OnMenuItemClickListener, ToastShow, OnEvents {
     public  final static String LOCATION = "LOCATION";
     final String TAG = "MainActivityLogs";
     private int posinion;
@@ -84,6 +88,8 @@ public class MainActivity extends FragmentActivity implements Communicator, View
 
     Forecast forecast;
 
+    MyDialog dialogLicence;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -95,26 +101,44 @@ public class MainActivity extends FragmentActivity implements Communicator, View
         startAlarm = db.getStartTime();
         mapSetting = DataBaseHelper.mapSetting;
 
+        if(mapSetting.get(db.LICENCE)!=null && mapSetting.get(db.LICENCE).equals("1")){
+            _onStart();
+        }else{
+            new Handler().postDelayed(new Runnable(){
+
+                public void run() {
+                    dialogLicence = new MyDialog(MainActivity.this, R.layout.license) ;
+                    View view  = new View(MainActivity.this);
+                    dialogLicence.show(view);
+                }
+
+            }, 100L);
+
+        }
+
+    }
+
+    private void _onStart(){
         //todo закоментировать
         //boolean isWork = db.isWorkTime();
 
 
-       // db.deleteValue(DataBaseHelper.TIME_NOTIFY);
+        // db.deleteValue(DataBaseHelper.TIME_NOTIFY);
 
-      //  buttonReload = (ImageButton)findViewById(R.id.buttonReload);
+        //  buttonReload = (ImageButton)findViewById(R.id.buttonReload);
         buttonMenu = (ImageButton)findViewById(R.id.buttonMenu);
         title = (TextView)findViewById(R.id.title);
         forecastLinearLayout = (LinearLayout)findViewById(R.id.forecastLinearLayout);
         frLayoutCurrent = (FrameLayout)findViewById(R.id.frLayoutCurrent);
 
-       // currentWeather = new CurrentWeather(this, frLayoutCurrent);
+        // currentWeather = new CurrentWeather(this, frLayoutCurrent);
 
         forecast =  new Forecast(this, forecastLinearLayout);
 
         mapFragments = new HashMap<>();
 
         buttonMenu.setOnClickListener(this);
-       // buttonReload.setOnClickListener(this);
+        // buttonReload.setOnClickListener(this);
         fragmetMap = new HashMap<>();
         pager = (ViewPager) findViewById(R.id.pager);
         pagerAdapter = new MyFragmentPagerAdapter(getSupportFragmentManager());
@@ -130,7 +154,7 @@ public class MainActivity extends FragmentActivity implements Communicator, View
 
 
         if(mapSetting.get(DataBaseHelper.IS_ALARM)!=null && mapSetting.get(DataBaseHelper.IS_ALARM).equals("1")){
-           alarmOn();
+            alarmOn();
         }
         if(mapSetting.get(DataBaseHelper.MORNING_ALARM)!=null && mapSetting.get(DataBaseHelper.MORNING_ALARM).equals("1")){
             morningAlarm();
@@ -147,17 +171,17 @@ public class MainActivity extends FragmentActivity implements Communicator, View
         //Fade fade = new Fade(Fade.IN);
         //fade.setDuration(1000);
         fragmentWeather = new CurrentWeather();
-    //fragmentWeather.setEnterTransition(fade);
+        //fragmentWeather.setEnterTransition(fade);
 
         fragmentImageAction  = new FragmentImageAction();
         fragmentTransaction = getFragmentManager().beginTransaction();
         //fragmentTransaction.setCustomAnimations(R.anim.fade_out, R.anim.fade_in);
         fragmentTransaction.add(R.id.frLayoutCurrent, fragmentWeather);
         fragmentTransaction.commit();
-       // new ScroolObserv(this, scrollView);
+        // new ScroolObserv(this, scrollView);
 
         //todo закоментировать
-       // new MyRestTest();
+        // new MyRestTest();
     }
 
     public void changeFragmentBar(int i){
@@ -294,18 +318,9 @@ public class MainActivity extends FragmentActivity implements Communicator, View
             return true;
         }
         if(id == R.id.action_license){
-            //Activity activity = this;
             MyDialog myDialog = new MyDialog(this, R.layout.license) ;
-
-            View view  = item.getActionView();
-
-
+            View view  = new View(this);
             myDialog.show(view);
-
-
-            /*
-            intent = new Intent(this, ActivityLicense.class);
-            startActivityForResult(intent,1);*/
             return true;
         }
 
@@ -410,46 +425,31 @@ public class MainActivity extends FragmentActivity implements Communicator, View
             case R.id.buttonMenu:
                 PopupMenu popupMenu = new PopupMenu(this, v);
                 popupMenu.inflate(R.menu.menu_main);
-
                 popupMenu.show();
-
-                final Activity activity = this;
-
-                popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-
-                    @Override
-                    public boolean onMenuItemClick(MenuItem item) {
-
-                        int id = item.getItemId();
-                        Intent intent;
-                        if (id == R.id.action_settings) {
-                            intent = new Intent(mainActivity, ActivitySetting.class);
-                            startActivityForResult(intent,0);
-                            return true;
-                        }
-                        if (id == R.id.action_reload) {
-                            reloadAll();
-                            return true;
-                        }
-                        if(id == R.id.action_license){
-                            MyDialog myDialog = new MyDialog(activity, R.layout.license) ;
-                            myDialog.show(_v);
-                            return true;
-                        }
-
-
-
-
-
-
-
-                        return false;
-                    }
-                });
+                popupMenu.setOnMenuItemClickListener(this);
                 break;
         }
     }
 
+    @Override
+    public void dialogOnOk() {
+        mapSetting.put(db.LICENCE, "1");
+        db.saveSetting();
+        _onStart();
+    }
+
+    @Override
+    public void dialogOnCancel() {
+        mapSetting.put(db.LICENCE, "0");
+        morningAlarmCancel();
+        alarmCancel();
+        db.saveSetting();
+        finish();
+    }
+    @Override
+    public Activity getActivity(){
+        return this;
+    }
 
 
     /**

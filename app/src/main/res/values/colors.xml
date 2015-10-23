@@ -29,7 +29,7 @@
     <item name="hh21" type="color">#430057ff</item>
 
 
-    <item name="grayText" type="color">#fab5b7c6</item>
+    <item name="grayText" type="color">#ff48494e</item>
 
     <item name="redBorderDark" type="color">#ffff0000</item>
     <item name="redTitleActive" type="color">#ff9e0003</item>
@@ -37,11 +37,11 @@
 
     <item name="borderColor" type="color">#8ca4b5</item>
     <item name="listBorder" type="color">#198ca4b5</item>
-    <item name="btnPressColor" type="color">#facacdda</item>
+    <item name="btnPressColor" type="color">#ffa4a4b2</item>
     <item name="transparent" type="color">#00000000</item>
 
-    <item name="gradientStartDialog" type="color">#cfe7e7e7</item>
-    <item name="gradientEndDialog" type="color">#e9ffffff</item>
+    <item name="gradientStartDialog" type="color">#ffe7e7e7</item>
+    <item name="gradientEndDialog" type="color">#e9bdcfdd</item>
 
 
     <item name="menuPressStart" type="color">#ffdcdce7</item>

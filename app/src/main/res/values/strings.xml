@@ -6,10 +6,22 @@
     <string name="action_settings">Settings</string>
     <string name="app_error">Непредвиденная ошибка</string>
     <string name="app_license">Weather Cheater Licence</string>
-    <string name="web" translatable="false"><![CDATA[<html ><meta charset=\"utf-8\"><body style=\"background:black \"><p style=\"color:#A0A0A0;text-indent: 20px; text-align: justify;\">{content}</p></body></html> ]]></string>
-    <string name="license_text">Your location data </string>
+    <string name="web" translatable="false"><![CDATA[<html ><meta charset=\"utf-8\"><body style=\"background:white; padding: 10px; margin: 0 \"><p style=\"color:#565C67;text-indent: 20px; text-align: justify;\">{content}</p>
+    <p>address requests: </p>
+    <p>{link}</p></body></html>
+    <p>{link_}</p></body></html>
+
+    ]]></string>
+
+
+    <string name="license_text">In calculating the distance to the precipitation, as well as getting the weather, your location will be used periodically below the specified server. Just to work correctly, you must have enabled and to determine your location on the network.</string>
+
+    <string name="licence_link1" translatable="false" ><![CDATA[<a>http://openweathermap.org</a>]]></string>
+    <string name="licence_link2" translatable="false"><![CDATA[<a>http://178.62.44.54/php/parserain.php</a>]]></string>
+
     <string name="accept">Accept </string>
-    <string name="decline">Decline </string>
+    <string name="decline">Refuse </string>
+
 
 
 </resources>

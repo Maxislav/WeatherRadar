@@ -52,6 +52,10 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     public static final String BORISPOL_TIME = "borispolTime"; // Время запроса борисполя
     public static final String MORNING_ALARM = "morningAlarm"; // 0 || 1
 
+    public static final String LICENCE = "licence"; // 0 || 1
+
+
+
     Calendar fromNotSleep, toNotSleep;
 
     final static String NEW_FORMAT = "yyyy-MM-dd HH:mm:ss.SSS";

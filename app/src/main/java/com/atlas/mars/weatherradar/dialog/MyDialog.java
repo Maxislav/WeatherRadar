@@ -10,6 +10,7 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 
+import com.atlas.mars.weatherradar.ActivityLicense;
 import com.atlas.mars.weatherradar.R;
 
 /**
@@ -26,9 +27,11 @@ public class MyDialog implements View.OnClickListener{
     LayoutInflater inflater;
     PopupWindow pw;
     LinearLayout contentDialog;
+    OnEvents onEvents;
 
-    public MyDialog(Activity activity,  Integer resId){
-        this.activity = activity;
+    public MyDialog(OnEvents onEvents,  Integer resId){
+        this.activity = (Activity)onEvents.getActivity();
+        this.onEvents = onEvents;
         inflater = (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         this.resId = resId;
     }
@@ -57,6 +60,7 @@ public class MyDialog implements View.OnClickListener{
         contentDialog = (LinearLayout)viewDialog.findViewById(R.id.contentDialog);
         FrameLayout row = (FrameLayout)inflater.inflate(resId, null);
         contentDialog.addView(row);
+        new ActivityLicense(activity, row);
     }
 
     public void show(View view){
@@ -86,8 +90,10 @@ public class MyDialog implements View.OnClickListener{
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.btn_ok:
+                onEvents.dialogOnOk();
                 break;
             case R.id.btn_cancel:
+                onEvents.dialogOnCancel();
                 break;
         }
         pw.dismiss();
