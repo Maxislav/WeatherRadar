@@ -8,4 +8,8 @@
     <string name="app_license">Weather Cheater Licence</string>
     <string name="web" translatable="false"><![CDATA[<html ><meta charset=\"utf-8\"><body style=\"background:black \"><p style=\"color:#A0A0A0;text-indent: 20px; text-align: justify;\">{content}</p></body></html> ]]></string>
     <string name="license_text">Your location data </string>
+    <string name="accept">Accept </string>
+    <string name="decline">Decline </string>
+
+
 </resources>

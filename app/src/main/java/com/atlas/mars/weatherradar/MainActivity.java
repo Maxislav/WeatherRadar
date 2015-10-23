@@ -1,5 +1,6 @@
 package com.atlas.mars.weatherradar;
 
+import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
@@ -30,6 +31,7 @@ import android.widget.Toast;
 
 import com.atlas.mars.weatherradar.alarm.MorningBroadCast;
 import com.atlas.mars.weatherradar.alarm.SampleBootReceiver;
+import com.atlas.mars.weatherradar.dialog.MyDialog;
 import com.atlas.mars.weatherradar.fragments.BoridpolRadar;
 import com.atlas.mars.weatherradar.fragments.InfraRed;
 import com.atlas.mars.weatherradar.fragments.MyFragment;
@@ -266,6 +268,8 @@ public class MainActivity extends FragmentActivity implements Communicator, View
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
+
+
         return true;
     }
     @Override
@@ -273,6 +277,9 @@ public class MainActivity extends FragmentActivity implements Communicator, View
         onOptionsItemSelected(item);
         return false;
     }
+
+
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
@@ -287,8 +294,18 @@ public class MainActivity extends FragmentActivity implements Communicator, View
             return true;
         }
         if(id == R.id.action_license){
+            //Activity activity = this;
+            MyDialog myDialog = new MyDialog(this, R.layout.license) ;
+
+            View view  = item.getActionView();
+
+
+            myDialog.show(view);
+
+
+            /*
             intent = new Intent(this, ActivityLicense.class);
-            startActivityForResult(intent,1);
+            startActivityForResult(intent,1);*/
             return true;
         }
 
@@ -380,6 +397,8 @@ public class MainActivity extends FragmentActivity implements Communicator, View
 
     @Override
     public void onClick(View v) {
+        final View _v = v;
+        final MainActivity mainActivity = this;
         switch (v.getId()){
             case R.id.buttonReload:
 
@@ -391,8 +410,42 @@ public class MainActivity extends FragmentActivity implements Communicator, View
             case R.id.buttonMenu:
                 PopupMenu popupMenu = new PopupMenu(this, v);
                 popupMenu.inflate(R.menu.menu_main);
-                popupMenu.setOnMenuItemClickListener(this);
+
                 popupMenu.show();
+
+                final Activity activity = this;
+
+                popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+
+                    @Override
+                    public boolean onMenuItemClick(MenuItem item) {
+
+                        int id = item.getItemId();
+                        Intent intent;
+                        if (id == R.id.action_settings) {
+                            intent = new Intent(mainActivity, ActivitySetting.class);
+                            startActivityForResult(intent,0);
+                            return true;
+                        }
+                        if (id == R.id.action_reload) {
+                            reloadAll();
+                            return true;
+                        }
+                        if(id == R.id.action_license){
+                            MyDialog myDialog = new MyDialog(activity, R.layout.license) ;
+                            myDialog.show(_v);
+                            return true;
+                        }
+
+
+
+
+
+
+
+                        return false;
+                    }
+                });
                 break;
         }
     }
