@@ -125,6 +125,12 @@ public class MyService extends Service implements OnLocation {
     }
 
     void someTask() {
+
+        //todo тестовый вызов нотификатион
+/*        HashMap <String, Integer> map = new HashMap();
+        map.put("dist", 10);
+        onNotification(map);*/
+
         //todo не удалять. Задача для активити
         Intent updIntent = new Intent();
         updIntent.setAction(MainActivity.LOCATION);
@@ -159,9 +165,17 @@ public class MyService extends Service implements OnLocation {
         playSound();
         String message = "Distance: " + map.get("dist") + "Km" + " " + getIntensity(map.get("intensity"));
 
+        Intent notificationIntent = new Intent(this, MainActivity.class);
+        notificationIntent.putExtra("dist", map.get("dist"));
+        notificationIntent.putExtra("were_from", "my_service");
+
+        notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        PendingIntent intent = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
         Notification notification = new Notification.Builder(this).setContentTitle("Rain alarm")
                 .setContentText(message)
                 .setSmallIcon(R.drawable.notification_ico)
+                .setContentIntent(intent)
                 .build();
         notification.flags = Notification.DEFAULT_LIGHTS | Notification.FLAG_AUTO_CANCEL;
 
@@ -170,13 +184,6 @@ public class MyService extends Service implements OnLocation {
         //todo раскоментировать для вибрации
         vibrator.vibrate(pattern, -1);
 
-
-        Intent notificationIntent = new Intent(this, MainActivity.class);
-        notificationIntent.putExtra("item_id", "1001");
-
-        notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        PendingIntent intent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
-        notification.contentIntent = intent;
         nm.notify(1, notification);
         timeStampDateBase();
         Log.d(TAG, "onNotification " + (new Date(System.currentTimeMillis())));

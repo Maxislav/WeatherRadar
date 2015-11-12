@@ -13,7 +13,6 @@ import android.net.NetworkInfo;
 import android.os.IBinder;
 import android.util.Log;
 import android.widget.RemoteViews;
-import android.widget.TextView;
 
 import com.atlas.mars.weatherradar.DataBaseHelper;
 import com.atlas.mars.weatherradar.MainActivity;
@@ -23,10 +22,8 @@ import com.atlas.mars.weatherradar.location.MyLocationListenerNet;
 import com.atlas.mars.weatherradar.location.OnLocation;
 
 import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by mars on 9/22/15.
@@ -145,21 +142,30 @@ public class MorningService extends Service implements OnLocation, DayForecastRa
                 R.layout.notification_morning);
 
 
+        Intent notificationIntent = new Intent(this, MainActivity.class);
+        notificationIntent.putExtra("time", HH+"ч");
+        notificationIntent.putExtra("were_from", "morning_service");
+
+        notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        PendingIntent intent = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+
+
         NotificationManager nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         Notification notification = new Notification.Builder(this).setContentTitle("Rain alarm")
                 .setContentText(city+". Возможен дождь в "+HH+"ч")
                 //.setContent(remoteViews)
-
+                .setContentIntent(intent)
                 .setSmallIcon(R.drawable.notification_rain)
                 .build();
         notification.flags = Notification.DEFAULT_LIGHTS | Notification.FLAG_AUTO_CANCEL;
        // remoteViews.setTextViewText(R.id.contentT,cs);
 
-        Intent notificationIntent = new Intent(this, MainActivity.class);
-        notificationIntent.putExtra("item_id", "1002");
+      /*  Intent notificationIntent = new Intent(this, MainActivity.class);
+        notificationIntent.putExtra("item_id", "10052");
         notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         PendingIntent intent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
-        notification.contentIntent = intent;
+        notification.contentIntent = intent;*/
         nm.notify(2, notification);
 
     }

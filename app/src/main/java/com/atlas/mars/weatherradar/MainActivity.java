@@ -2,7 +2,6 @@ package com.atlas.mars.weatherradar;
 
 import android.app.Activity;
 import android.app.AlarmManager;
-import android.app.Dialog;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.app.NotificationManager;
@@ -18,7 +17,6 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -262,6 +260,8 @@ public class MainActivity extends FragmentActivity implements Communicator, View
         intent1 = createIntent("action 1", "extra 1", SampleBootReceiver.class);
         pIntent1 = PendingIntent.getBroadcast(this, 0, intent1, PendingIntent.FLAG_CANCEL_CURRENT );
         am.cancel(pIntent1);
+
+        //todo разобраться
         //am.set(AlarmManager.RTC_WAKEUP, startAlarm, pIntent1);
         am.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis()+5*1000, pIntent1);
     }
@@ -475,22 +475,25 @@ public class MainActivity extends FragmentActivity implements Communicator, View
     public void onNewIntent(Intent intent) {
         Bundle extras = intent.getExtras();
         if(extras != null){
-            show(extras.getString("item_id"));
-            if(extras.getString("item_id").equals("1001")){
+
+            if(extras.containsKey("dist")){
                 mapFragments.get(0).reloadImg();
-                //boridpolRadar.reloadImg();
+                show(extras.getString("dist") + "km");
             }
-            if(extras.getString("item_id").equals("1002")){
+
+            if(extras.containsKey("time")){
                 if(forecast!=null){
                     forecast.onRegen();
                 }else{
                     forecast =  new Forecast(this, forecastLinearLayout);
                 }
             }
-
-          //  Log.i( "dd","Extra:" + extras.getString("item_id") );
         }
     }
+
+
+
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -500,7 +503,7 @@ public class MainActivity extends FragmentActivity implements Communicator, View
         Bundle extras = getIntent().getExtras();
         if(extras != null){
             show(extras.getString("item_id"));
-            Log.i( "dd","Extra:" + extras.getString("item_id") );
+            Log.d( TAG,"Extra:" + extras.getString("item_id") );
         }
       /*  fragmentTransaction.replace(R.id.frLayoutCurrent, fragmentWeather);
         fragmentTransaction.addToBackStack(null);
