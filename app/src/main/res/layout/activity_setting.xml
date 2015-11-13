@@ -29,7 +29,7 @@
                     android:layout_height="wrap_content"
                     android:button="@drawable/custom_checkbox_design"
                     android:checked="false"
-                    android:text="Утреннее оповещение об осадках"
+                    android:text="@string/morning_alarm_about_rain"
                     android:textColor="@color/white" />
 
                 <LinearLayout
@@ -46,7 +46,7 @@
                     android:layout_height="wrap_content"
                     android:button="@drawable/custom_checkbox_design"
                     android:checked="false"
-                    android:text="Онлайн оповещение о приближении"
+                    android:text="@string/online_alerts_approaching"
                     android:textColor="@color/white" />
 
                 <LinearLayout
@@ -64,7 +64,7 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_weight="1"
-                        android:text="Радиус срабатывания (km)"
+                        android:text="@string/radius_alarm"
                         android:layout_height="wrap_content" />
                     <EditText
                         android:id="@+id/edTextRadius"
@@ -98,7 +98,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="Время возобновления работы после уведомления (HH)" />
+                        android:text="@string/time_restart_after" />
 
                     <EditText
                         android:id="@+id/timeRepeat"
@@ -123,7 +123,7 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Рабочее время" />
+                    android:text="@string/work_time" />
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -288,7 +288,7 @@
 
                         android:clickable="true"
                         android:layout_height="wrap_content"
-                        android:text="Скачать настройки">
+                        android:text="@string/download_settings">
                         </Button>
                     </LinearLayout>
             </LinearLayout>

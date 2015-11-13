@@ -4,7 +4,7 @@
     <string name="app_name">WeatherCheater</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
-    <string name="app_error">Непредвиденная ошибка</string>
+    <string name="app_error">Unknown error</string>
     <string name="app_license">Weather Cheater Licence</string>
     <string name="web" translatable="false"><![CDATA[<html ><meta charset=\"utf-8\"><body style=\"background:white; padding: 10px; margin: 0 \"><p style=\"color:#565C67;text-indent: 20px; text-align: justify;\">{content}</p>
     <p>address requests: </p>
@@ -21,7 +21,14 @@
 
     <string name="accept">Accept </string>
     <string name="decline">Refuse </string>
-
+    <string name="morning_alarm_about_rain">Morning alarm when rain</string>
+    <string name="online_alerts_approaching">Online alerts when approaching</string>
+    <string name="time_restart_after">Time restart the work after notification (HH)</string>
+    <string name="radius_alarm">The radius of operation (km)</string>
+    <string name="work_time">Work time</string>
+    <string name="download_settings">Download settins</string>
+    <string name="save_close">Save and close</string>
+    <string name="close_not_save">Close without saving</string>
 
 
 </resources>

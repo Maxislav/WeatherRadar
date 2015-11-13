@@ -13,5 +13,13 @@
 
     <string name="decline">Отклонить</string>
     <string name="accept">Принять</string>
+    <string name="morning_alarm_about_rain">Утреннее оповещение об осадках</string>
+    <string name="online_alerts_approaching">Онлайн оповещение при приближении</string>
+    <string name="time_restart_after">Время возобновления работы после уведомления (HH)</string>
+    <string name="radius_alarm">Радиус срабатывания (km)</string>
+    <string name="work_time">Рабочее время</string>
+    <string name="download_settings">Скачать настройки</string>
+    <string name="save_close">Сохранить и закрыть</string>
+    <string name="close_not_save">Закрыть без  сохранения</string>
 
 </resources>
