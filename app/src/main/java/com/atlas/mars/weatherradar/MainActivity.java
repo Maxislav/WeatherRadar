@@ -478,7 +478,7 @@ public class MainActivity extends FragmentActivity implements Communicator, View
 
             if(extras.containsKey("dist")){
                 mapFragments.get(0).reloadImg();
-                show(extras.getString("dist") + "km");
+                show(extras.getInt("dist") + " km");
             }
 
             if(extras.containsKey("time")){

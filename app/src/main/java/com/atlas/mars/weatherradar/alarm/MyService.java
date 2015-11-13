@@ -127,7 +127,7 @@ public class MyService extends Service implements OnLocation {
     void someTask() {
 
         //todo тестовый вызов нотификатион
-/*        HashMap <String, Integer> map = new HashMap();
+       /* HashMap <String, Integer> map = new HashMap();
         map.put("dist", 10);
         onNotification(map);*/
 
