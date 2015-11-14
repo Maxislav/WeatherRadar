@@ -126,8 +126,8 @@ public class MyService extends Service implements OnLocation {
 
     void someTask() {
 
-        //todo тестовый вызов нотификатион
-       /* HashMap <String, Integer> map = new HashMap();
+      /*  //todo тестовый вызов нотификатион
+        HashMap <String, Integer> map = new HashMap();
         map.put("dist", 10);
         onNotification(map);*/
 
@@ -165,17 +165,17 @@ public class MyService extends Service implements OnLocation {
         playSound();
         String message = "Distance: " + map.get("dist") + "Km" + " " + getIntensity(map.get("intensity"));
 
-        Intent notificationIntent = new Intent(this, MainActivity.class);
-        notificationIntent.putExtra("dist", map.get("dist"));
-        notificationIntent.putExtra("were_from", "my_service");
+        Intent intent1 = new Intent(this, MainActivity.class);
+        intent1.putExtra("dist", map.get("dist"));
+        intent1.putExtra("were_from", "my_service");
 
-        notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        PendingIntent intent = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        intent1.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        PendingIntent pendengIntent = PendingIntent.getActivity(this, 0, intent1,   PendingIntent.FLAG_ONE_SHOT  );
 
         Notification notification = new Notification.Builder(this).setContentTitle("Rain alarm")
                 .setContentText(message)
                 .setSmallIcon(R.drawable.notification_ico)
-                .setContentIntent(intent)
+                .setContentIntent(pendengIntent)
                 .build();
         notification.flags = Notification.DEFAULT_LIGHTS | Notification.FLAG_AUTO_CANCEL;
 

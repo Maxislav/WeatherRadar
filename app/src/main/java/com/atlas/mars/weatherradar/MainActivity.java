@@ -263,7 +263,7 @@ public class MainActivity extends FragmentActivity implements Communicator, View
 
         //todo разобраться
         //am.set(AlarmManager.RTC_WAKEUP, startAlarm, pIntent1);
-        am.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis()+5*1000, pIntent1);
+        am.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis()+10*1000, pIntent1);
     }
 
     void alarmCancel(){
@@ -487,6 +487,7 @@ public class MainActivity extends FragmentActivity implements Communicator, View
                 }else{
                     forecast =  new Forecast(this, forecastLinearLayout);
                 }
+                show(extras.getString("dist") + " km");
             }
         }
     }

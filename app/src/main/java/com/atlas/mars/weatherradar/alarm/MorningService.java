@@ -142,12 +142,12 @@ public class MorningService extends Service implements OnLocation, DayForecastRa
                 R.layout.notification_morning);
 
 
-        Intent notificationIntent = new Intent(this, MainActivity.class);
-        notificationIntent.putExtra("time", HH+"ч");
-        notificationIntent.putExtra("were_from", "morning_service");
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.putExtra("time", HH + "ч");
+        intent.putExtra("were_from", "morning_service");
 
-        notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        PendingIntent intent = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
 
 
@@ -155,7 +155,7 @@ public class MorningService extends Service implements OnLocation, DayForecastRa
         Notification notification = new Notification.Builder(this).setContentTitle("Rain alarm")
                 .setContentText(city+". Возможен дождь в "+HH+"ч")
                 //.setContent(remoteViews)
-                .setContentIntent(intent)
+                .setContentIntent(pendingIntent)
                 .setSmallIcon(R.drawable.notification_rain)
                 .build();
         notification.flags = Notification.DEFAULT_LIGHTS | Notification.FLAG_AUTO_CANCEL;
