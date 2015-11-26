@@ -2,6 +2,7 @@ package com.atlas.mars.weatherradar;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -12,6 +13,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebView;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -52,14 +54,14 @@ public class Forecast implements OnLocation {
     Loader loader;
     ToastShow toast;
     private boolean isDoing = false;
-    private static  int onTaskResult = 0;
+    private static int onTaskResult = 0;
 
     Forecast(Activity activity, LinearLayout fr) {
 
         this.activity = activity;
-        toast = (ToastShow)activity;
+        toast = (ToastShow) activity;
         this.fr = fr;
-        parent = (FrameLayout)fr.getParent().getParent();
+        parent = (FrameLayout) fr.getParent().getParent();
         loader = new Loader(activity, parent);
 
         _onStart();
@@ -68,52 +70,54 @@ public class Forecast implements OnLocation {
         //  onInflate();
     }
 
-    private void _onStart(){
-        if(isNetworkAvailable()){
+    private void _onStart() {
+        if (isNetworkAvailable()) {
             locationManagerNet = (LocationManager) activity.getSystemService(Context.LOCATION_SERVICE);
             locationListenerNet = new MyLocationListenerNet(this);
-            if(locationManagerNet.getAllProviders().contains(LocationManager.NETWORK_PROVIDER)){
+            if (locationManagerNet.getAllProviders().contains(LocationManager.NETWORK_PROVIDER)) {
                 locationManagerNet.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListenerNet);
                 loader.show();
-            }else{
+            } else {
                 onForecastAccept(null);
             }
-        }else{
+        } else {
             onForecastAccept(null);
         }
     }
 
 
-    public void onRegen(){
+    public void onRegen() {
         fr.removeAllViews();
         _onStart();
     }
 
 
-    void onInflate(final LinearLayout layoytDay,  final HashMap<String, String> map) {
+    void onInflate(final LinearLayout layoytDay, final HashMap<String, String> map) {
         layoytDay.post(new Runnable() {
             final HashMap<String, String> hashMap = map;
+
             @Override
             public void run() {
                 LayoutInflater inflater = (LayoutInflater) (activity.getLayoutInflater());
                 int width = (int) (80 * Density.density);
                 LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(width, ViewGroup.LayoutParams.MATCH_PARENT);
                 View view = inflater.inflate(R.layout.forecast_container, null, false);
+                inflateWebDrip(view, map);
                 layoytDay.addView(view);
-               // ((TextView) view.findViewById(R.id.textDate)).setText( firstUpperCase(hashMap.get("dayWeek")) +" "+hashMap.get("date"));
+                // ((TextView) view.findViewById(R.id.textDate)).setText( firstUpperCase(hashMap.get("dayWeek")) +" "+hashMap.get("date"));
 
                 ((TextView) view.findViewById(R.id.textTime)).setText(hashMap.get("time"));
                 ((TextView) view.findViewById(R.id.textTemp)).setText(hashMap.get("temp"));
-                ImageView imageView = (ImageView)view.findViewById(R.id.image);
-               // new IconForecast(imageView,hashMap.get("icon") );
+                ImageView imageView = (ImageView) view.findViewById(R.id.image);
+                // new IconForecast(imageView,hashMap.get("icon") );
                 getIcon(imageView, hashMap.get("icon"));
 
-                layoutParams.setMargins(2,0,2,0);
+                layoutParams.setMargins(2, 0, 2, 0);
                 view.setLayoutParams(layoutParams);
-                ViewGroup viewGroup  = (ViewGroup)view;
-                LinearLayout childView = (LinearLayout)viewGroup.getChildAt(0);
+                ViewGroup viewGroup = (ViewGroup) view;
+                LinearLayout childView = (LinearLayout) viewGroup.getChildAt(0);
                 //childView.setBackgroundColor(activity.getResources().getColor(getColorHour(hashMap.get("HH"))));
-                GradientDrawable shape =  new GradientDrawable();
+                GradientDrawable shape = new GradientDrawable();
                 shape.setCornerRadius(8);
                 shape.setColor(activity.getResources().getColor(getColorHour(hashMap.get("HH"))));
                 childView.setBackground(shape);
@@ -123,42 +127,73 @@ public class Forecast implements OnLocation {
 
     }
 
+    void inflateWebDrip(View view, HashMap<String,String> map){
+        WebView browser = (WebView)view.findViewById(R.id.webViewDrips);
+        browser.setBackgroundColor(Color.TRANSPARENT);
+        String drip = "";
 
-    private void getIcon(ImageView imageView, String icon){
+        if (map.get("rain")!=null && !map.get("rain").isEmpty()){
+            float f = Float.parseFloat(map.get("rain"));
+            f = f*5;
+            for(int i =0; i<f; i++ ){
+                drip+= "<img style=\"-webkit-user-select: none; width: 8px; height:13px; margin: 1.5px\" src=\"drip.png\">";
+            }
 
-        int resId=activity.getResources().getIdentifier("i"+icon, "drawable", activity.getPackageName());
-        if(resId!=0){
+        }
+
+
+
+        String web = "<html><head><meta name=\"viewport\" content=\"width=device-width, minimum-scale=0.1\"><title>drip.png (20×32)</title><style type=\"text/css\"></style></head><body style=\"margin: 0px;\">" +
+               "<div style=\"border-bottom-right-radius: 80%; overflow: hidden; height: 65px; width: 100%; box-shadow: 2px 2px 5px rgba(0,0,0,0.2);\">"+
+                drip+
+                "</div>"+
+                "</body></html>";
+
+
+
+       // CharSequence formatted = Phrase.from(web).put("content", put)
+       // browser.loadData(web, "text/html; charset=UTF-8", null);
+        browser.loadDataWithBaseURL("file:///android_asset/", web, "text/html","UTF-8", null);
+    }
+
+
+    private void getIcon(ImageView imageView, String icon) {
+
+        int resId = activity.getResources().getIdentifier("i" + icon, "drawable", activity.getPackageName());
+        if (resId != 0) {
             imageView.setBackgroundResource(resId);
-        }else{
+        } else {
             Log.d(TAG, "Icon not exist " + icon);
-            new IconForecast(imageView,icon );
+            new IconForecast(imageView, icon);
         }
 
     }
 
-    private Integer getColorHour(final String HH){
-       switch (HH){
-           case "00":
-               return R.color.hh00;
-           case "03":
-               return R.color.hh03;
-           case "06":
-               return R.color.hh06;
-           case "09":
-               return R.color.hh09;
-           case "12":
-               return R.color.hh12;
-           case "15":
-               return R.color.hh15;
-           case "18":
-               return R.color.hh18;
-           case "21":
-               return R.color.hh21;
-           default:
-               return R.color.hh15;
-       }
+    private Integer getColorHour(final String HH) {
+        switch (HH) {
+            case "00":
+                return R.color.hh00;
+            case "03":
+                return R.color.hh03;
+            case "06":
+                return R.color.hh06;
+            case "09":
+                return R.color.hh09;
+            case "12":
+                return R.color.hh12;
+            case "15":
+                return R.color.hh15;
+            case "18":
+                return R.color.hh18;
+            case "21":
+                return R.color.hh21;
+            default:
+                return R.color.hh15;
+        }
     }
+
     ForecastGoogleApi forecastGoogleApi;
+
     @Override
     public void onLocationAccept(double lat, double lng) {
         Log.d(TAG, "lat lng: " + lat + " : " + lng);
@@ -167,19 +202,19 @@ public class Forecast implements OnLocation {
             locationManagerNet.removeUpdates(locationListenerNet);
             locationManagerNet = null;
         }
-        if(forecastGoogleApi!=null && forecastGoogleApi.getStatus()==AsyncTask.Status.RUNNING){
+        if (forecastGoogleApi != null && forecastGoogleApi.getStatus() == AsyncTask.Status.RUNNING) {
 
-        }else{
-            onStartWeatherTask(lat,lng);
+        } else {
+            onStartWeatherTask(lat, lng);
         }
 
     }
 
-    private void onStartWeatherTask(double lat, double lng){
-        if(lat!=0 && lng != 0 && !isDoing){
+    private void onStartWeatherTask(double lat, double lng) {
+        if (lat != 0 && lng != 0 && !isDoing) {
             forecastGoogleApi = new ForecastGoogleApi();
-            forecastGoogleApi.execute(MathOperation.round(lat, 4),MathOperation.round(lng,4));
-        }else{
+            forecastGoogleApi.execute(MathOperation.round(lat, 4), MathOperation.round(lng, 4));
+        } else {
             forecastGoogleApi = new ForecastGoogleApi();
             forecastGoogleApi.execute();
         }
@@ -189,25 +224,25 @@ public class Forecast implements OnLocation {
     void onForecastAccept(ObjectNode root) {
         List<HashMap> listMap = new ArrayList<>();
 
-        if(root ==null ) {
+        if (root == null) {
             toast.show("City not found");
             return;
         }
 
         int cod = 200;
-        try{
-            cod= root.path("cod").asInt();
-        }catch (Exception e){
+        try {
+            cod = root.path("cod").asInt();
+        } catch (Exception e) {
             cod = 404;
             toast.show("Error forecast task");
             Log.d(TAG, e.toString(), e);
         }
-        if(cod==404){
+        if (cod == 404) {
             toast.show("City not found. Try Kiev get");
-            if(onTaskResult == 0){
+            if (onTaskResult == 0) {
                 onTaskResult++;
-                onStartWeatherTask(0,0);
-            }else{
+                onStartWeatherTask(0, 0);
+            } else {
                 toast.show("Error forecast task");
             }
             return;
@@ -217,19 +252,30 @@ public class Forecast implements OnLocation {
         SimpleDateFormat dayMonth = new SimpleDateFormat("dd.MM"); //2015-08-03 18:00:00
         SimpleDateFormat time = new SimpleDateFormat("HH:mm"); //2015-08-03 18:00:00
         SimpleDateFormat HH = new SimpleDateFormat("HH"); //2015-08-03 18:00:00
-        SimpleDateFormat dayWeek =new SimpleDateFormat("EE");
+        SimpleDateFormat dayWeek = new SimpleDateFormat("EE");
 
         //  SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); //2015-08-03 18:00:00
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH);
-        if(list!=null){
+        if (list != null) {
             for (JsonNode jsonNode : list) {
                 HashMap<String, String> map = new HashMap<>();
                 String dt_txt = jsonNode.path("dt_txt").asText();
                 String temp = Integer.toString(jsonNode.get("main").path("temp").asInt());
-                String main =  jsonNode.get("weather").get(0).path("main").asText();
-                String icon =  jsonNode.get("weather").get(0).path("icon").asText();
+                String main = jsonNode.get("weather").get(0).path("main").asText();
+                String icon = jsonNode.get("weather").get(0).path("icon").asText();
+                String rain = "", snow = "";
+                if(jsonNode.get("rain")!=null){
+                    rain = jsonNode.get("rain").path("3h").asText();
+                }
+                if(jsonNode.get("snow")!=null){
+                    snow = jsonNode.get("snow").path("3h").asText();
+                }
 
-                String description =  jsonNode.get("weather").get(0).path("description").asText();
+                String description = jsonNode.get("weather").get(0).path("description").asText();
+
+                map.put("rain", rain);
+                map.put("snow", snow);
+
                 map.put("temp", temp);
                 map.put("main", main);
                 map.put("description", description);
@@ -246,7 +292,7 @@ public class Forecast implements OnLocation {
                     map.put("time", time.format(date));
                     map.put("HH", HH.format(date));
                     map.put("dayWeek", dayWeek.format(date));
-                    map.put("dayWeekNum",Integer.toString(cal.get(Calendar.DAY_OF_WEEK)));
+                    map.put("dayWeekNum", Integer.toString(cal.get(Calendar.DAY_OF_WEEK)));
 
 
                 } catch (ParseException e) {
@@ -257,92 +303,63 @@ public class Forecast implements OnLocation {
             }
         }
 
-        if(0<listMap.size()){
+        if (0 < listMap.size()) {
             infladeDay(listMap);
-        }else{
+        } else {
             toast.show("City not found");
         }
 
 
     }
 
-    void infladeDay(List<HashMap> listMap){
+    void infladeDay(List<HashMap> listMap) {
         String dayWeekNum = listMap.get(0).get("dayWeekNum").toString();
-         dayWeekNum = listMap.get(0).get("dayWeekNum").toString();
-        int i =0, count = listMap.size();
+        dayWeekNum = listMap.get(0).get("dayWeekNum").toString();
+        int i = 0, count = listMap.size();
 
         HashMap<String, List> mapDays = new HashMap<>();
 
         List<List> listList = new ArrayList<>();
 
 
-        for(HashMap<String, String> map : listMap){
+        for (HashMap<String, String> map : listMap) {
             String dN = map.get("dayWeekNum");
             List<HashMap> ll = mapDays.get(dN) == null ? new ArrayList<>() : mapDays.get(dN);
             ll.add(map);
-
-
-            if(mapDays.get(dN)==null){
-              /*  List<HashMap> ll = new ArrayList<>();
-                ll.add(map);*/
+            if (mapDays.get(dN) == null) {
                 mapDays.put(dN, ll);
                 listList.add(ll);
-
-            }/*else{
-                mapDays.get(dN).add(map);
-                listList.get(listList.size()-1).add(map);
             }
-*/
         }
         final LinearLayout.LayoutParams layoutParamsFrorTitle = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        layoutParamsFrorTitle.setMargins(2,2,2,2);
-        for(List<HashMap> lm : listList){
+        layoutParamsFrorTitle.setMargins(2, 2, 2, 2);
+        for (List<HashMap> lm : listList) {
             LayoutInflater inflater = (LayoutInflater) (activity.getLayoutInflater());
-            final  View view = inflater.inflate(R.layout.coll_week, null, false);
-            final  LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT);
-            //layoutParams.setMargins(2,2,2,2);
+            final View view = inflater.inflate(R.layout.coll_week, null, false);
+            final LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT);
             final LinearLayout daySprite = (LinearLayout) view.findViewById(R.id.daySprite);
             final List<HashMap> _lm = lm;
             fr.post(new Runnable() {
-
-
                 @Override
                 public void run() {
                     fr.addView(view);
                     view.setLayoutParams(layoutParams);
 
 
-                    TextView dayTitle = (TextView)view.findViewById(R.id.dayTitle);
-                   dayTitle.setLayoutParams(layoutParamsFrorTitle);
+                    TextView dayTitle = (TextView) view.findViewById(R.id.dayTitle);
+                    dayTitle.setLayoutParams(layoutParamsFrorTitle);
                     //firstUpperCase(hashMap.get("dayWeek")) +" "+hashMap.get("date")
                     dayTitle.setText(firstUpperCase(_lm.get(0).get("dayWeek").toString()) + " " + _lm.get(0).get("date").toString());
 
                 }
             });
-            for (HashMap<String,String> map : lm){
+            for (HashMap<String, String> map : lm) {
                 onInflate(daySprite, map);
             }
-
-            /*for (HashMap<String,String> map : lm){
-                onInflate(daySprite, map);
-            }*/
-
-
-
         }
-
-
-
-
-        Log.d(TAG, "od" +listList.toString());
-        Log.d(TAG, "od" +mapDays.toString());
-
-
-
-
+        Log.d(TAG, "od" + listList.toString());
+        Log.d(TAG, "od" + mapDays.toString());
     }
-
-
 
 
     private class ForecastGoogleApi extends AsyncTask<Double, Void, ObjectNode> {
@@ -359,10 +376,10 @@ public class Forecast implements OnLocation {
         protected ObjectNode doInBackground(Double... params) {
             URL url;
             String path;
-            if(params.length==2){
-                path  = "http://api.openweathermap.org/data/2.5/forecast?lat=" + params[0] + "&lon=" + params[1] +"&APPID="+BuildConfig.APPID+ "&units=metric";
-            }else{
-                path  = "http://api.openweathermap.org/data/2.5/forecast?q=Kiev,UA&units=metric";
+            if (params.length == 2) {
+                path = "http://api.openweathermap.org/data/2.5/forecast?lat=" + params[0] + "&lon=" + params[1] + "&APPID=" + BuildConfig.APPID + "&units=metric";
+            } else {
+                path = "http://api.openweathermap.org/data/2.5/forecast?q=Kiev,UA&units=metric";
             }
 
             StringBuilder sb = new StringBuilder();
@@ -370,7 +387,7 @@ public class Forecast implements OnLocation {
                 //http://api.openweathermap.org/data/2.5/forecast?lat=35&lon=139
                 url = new URL(path);
                 urlConnection = (HttpURLConnection) url.openConnection();
-             //   urlConnection.setDoOutput(true);
+                //   urlConnection.setDoOutput(true);
                 Scanner inStream = new Scanner(urlConnection.getInputStream());
                 while (inStream.hasNextLine()) {
                     sb.append(inStream.nextLine());
@@ -406,8 +423,9 @@ public class Forecast implements OnLocation {
             onForecastAccept(result);
         }
     }
-    private String firstUpperCase(String word){
-        if(word == null || word.isEmpty()) return "";//или return word;
+
+    private String firstUpperCase(String word) {
+        if (word == null || word.isEmpty()) return "";//или return word;
         return word.substring(0, 1).toUpperCase() + word.substring(1);
     }
    /* private double round(double d, int prec) {

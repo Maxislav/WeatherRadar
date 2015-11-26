@@ -68,12 +68,13 @@
 
                 <FrameLayout
                     android:layout_width="match_parent"
-                    android:layout_height="145dp"
+                    android:layout_height="155dp"
                     android:background="@drawable/tiles_repat">
 
                     <HorizontalScrollView
                         android:layout_width="match_parent"
                         android:layout_height="match_parent">
+
 
                         <LinearLayout
                             android:id="@+id/forecastLinearLayout"
