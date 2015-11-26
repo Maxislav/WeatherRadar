@@ -126,8 +126,8 @@ public class MyService extends Service implements OnLocation {
 
     void someTask() {
 
-      /*  //todo тестовый вызов нотификатион
-        HashMap <String, Integer> map = new HashMap();
+        //todo тестовый вызов нотификатион
+       /* HashMap <String, Integer> map = new HashMap();
         map.put("dist", 10);
         onNotification(map);*/
 
@@ -159,6 +159,7 @@ public class MyService extends Service implements OnLocation {
 
         if (!db.permitNotify()) {
             Log.d(TAG, "Blocked notify");
+            //todo раскоментировать
             return;
         }
         // Log.d(TAG, db.getTimeNotify().toString());

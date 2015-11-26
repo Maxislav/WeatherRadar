@@ -479,6 +479,7 @@ public class MainActivity extends FragmentActivity implements Communicator, View
             if(extras.containsKey("dist")){
                 mapFragments.get(0).reloadImg();
                 show(extras.getInt("dist") + " km");
+
             }
 
             if(extras.containsKey("time")){
@@ -487,7 +488,7 @@ public class MainActivity extends FragmentActivity implements Communicator, View
                 }else{
                     forecast =  new Forecast(this, forecastLinearLayout);
                 }
-                show(extras.getString("dist") + " km");
+                show(extras.getString("time"));
             }
         }
     }
