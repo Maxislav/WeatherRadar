@@ -10,6 +10,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -127,33 +128,38 @@ public class Forecast implements OnLocation {
 
     }
 
-    void inflateWebDrip(View view, HashMap<String,String> map){
-        WebView browser = (WebView)view.findViewById(R.id.webViewDrips);
+    void inflateWebDrip(View view, final HashMap<String, String> map) {
+        WebView browser = (WebView) view.findViewById(R.id.webViewDrips);
         browser.setBackgroundColor(Color.TRANSPARENT);
         String drip = "";
 
-        if (map.get("rain")!=null && !map.get("rain").isEmpty()){
+        if (map.get("rain") != null && !map.get("rain").isEmpty()) {
             float f = Float.parseFloat(map.get("rain"));
-            f = f*5;
-            for(int i =0; i<f; i++ ){
-                drip+= "<img style=\"-webkit-user-select: none; width: 8px; height:13px; margin: 1.5px\" src=\"drip.png\">";
+            f = f * 10;
+            for (int i = 0; i < f; i++) {
+                drip += "<img style=\"-webkit-user-select: none; width: 7px; height:13px; margin: 1.5px\" src=\"drip.png\">";
             }
-
+            view.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    toast.show("Rain 3h: " + map.get("rain"), Gravity.TOP | Gravity.CLIP_HORIZONTAL);
+                }
+            });
+            String web = "<html><head><meta name=\"viewport\" content=\"width=device-width, minimum-scale=0.1\"><title>drip.png (20×32)</title><style type=\"text/css\"></style></head><body style=\"margin: 0px;\">" +
+                    "<div style=\"border-bottom-right-radius: 60%; overflow: hidden; height: 65px; width: 100%; box-shadow: 2px 2px 10px rgba(0,0,0,0.2);\">" +
+                    drip +
+                    "</div>" +
+                    "</body></html>";
+            browser.loadDataWithBaseURL("file:///android_asset/", web, "text/html", "UTF-8", null);
+            //Todo касание и отображение тоста
+            /*browser.setOnTouchListener(new WebView.OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    toast.show("Rain 3h: " + map.get("rain"), Gravity.TOP | Gravity.CLIP_HORIZONTAL);
+                    return false;
+                }
+            });*/
         }
-
-
-
-        String web = "<html><head><meta name=\"viewport\" content=\"width=device-width, minimum-scale=0.1\"><title>drip.png (20×32)</title><style type=\"text/css\"></style></head><body style=\"margin: 0px;\">" +
-               "<div style=\"border-bottom-right-radius: 80%; overflow: hidden; height: 65px; width: 100%; box-shadow: 2px 2px 5px rgba(0,0,0,0.2);\">"+
-                drip+
-                "</div>"+
-                "</body></html>";
-
-
-
-       // CharSequence formatted = Phrase.from(web).put("content", put)
-       // browser.loadData(web, "text/html; charset=UTF-8", null);
-        browser.loadDataWithBaseURL("file:///android_asset/", web, "text/html","UTF-8", null);
     }
 
 
@@ -264,10 +270,10 @@ public class Forecast implements OnLocation {
                 String main = jsonNode.get("weather").get(0).path("main").asText();
                 String icon = jsonNode.get("weather").get(0).path("icon").asText();
                 String rain = "", snow = "";
-                if(jsonNode.get("rain")!=null){
+                if (jsonNode.get("rain") != null) {
                     rain = jsonNode.get("rain").path("3h").asText();
                 }
-                if(jsonNode.get("snow")!=null){
+                if (jsonNode.get("snow") != null) {
                     snow = jsonNode.get("snow").path("3h").asText();
                 }
 

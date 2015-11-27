@@ -365,7 +365,15 @@ public class MainActivity extends FragmentActivity implements Communicator, View
 
     @Override
     public void show(String txt) {
-        Toast.makeText(getApplicationContext(), txt, Toast.LENGTH_SHORT).show();
+        Toast toast = Toast.makeText(getApplicationContext(), txt, Toast.LENGTH_SHORT);
+        toast.show();
+    }
+
+    @Override
+    public void show(String txt, int gravity) {
+        Toast toast = Toast.makeText(getApplicationContext(), txt, Toast.LENGTH_SHORT);
+        toast.setGravity(gravity, 0, 100);
+        toast.show();
     }
 
     @Override

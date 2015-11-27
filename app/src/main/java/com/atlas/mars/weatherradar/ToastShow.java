@@ -5,4 +5,5 @@ package com.atlas.mars.weatherradar;
  */
 public interface ToastShow {
     void show(String txt);
+    void show(String txt, int gravity);
 }
