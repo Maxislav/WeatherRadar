@@ -83,6 +83,7 @@ public class MainActivity extends FragmentActivity implements Communicator, View
     final static String OLOO = BuildConfig.BorispolParseRain;
     FragmentTransaction fragmentTransaction;
     Fragment fragmentWeather, fragmentImageAction;
+    boolean isFromNotification = false;
 
     Forecast forecast;
 
@@ -473,8 +474,6 @@ public class MainActivity extends FragmentActivity implements Communicator, View
         }
     }
 
-
-
     public void setCityName(String name){
         title.setText(name);
     }
@@ -487,7 +486,7 @@ public class MainActivity extends FragmentActivity implements Communicator, View
             if(extras.containsKey("dist")){
                 mapFragments.get(0).reloadImg();
                 show(extras.getInt("dist") + " km");
-
+                isFromNotification = true;
             }
 
             if(extras.containsKey("time")){
@@ -497,12 +496,10 @@ public class MainActivity extends FragmentActivity implements Communicator, View
                     forecast =  new Forecast(this, forecastLinearLayout);
                 }
                 show(extras.getString("time"));
+                isFromNotification = true;
             }
         }
     }
-
-
-
 
     @Override
     protected void onResume() {
@@ -527,6 +524,9 @@ public class MainActivity extends FragmentActivity implements Communicator, View
     @Override
     protected void onPause() {
         unregisterReceiver(myReceiver);
+        if(isFromNotification){
+            finish();
+        }
         super.onPause();
     }
 
