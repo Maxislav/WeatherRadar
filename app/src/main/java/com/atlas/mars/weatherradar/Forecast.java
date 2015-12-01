@@ -163,7 +163,7 @@ public class Forecast implements OnLocation {
             float f = Float.parseFloat(map.get("snow"));
             f = f * 10;
             for (int i = 0; i < f; i++) {
-                drip += "<img style=\"-webkit-user-select: none; width: 13px; height:13px; margin: 2px -2px\" src=\"snow.png\">";
+                drip += "<img style=\"-webkit-user-select: none; width: 12px; height:13px; margin: 2px 0px\" src=\"snow.png\">";
             }
 
 
