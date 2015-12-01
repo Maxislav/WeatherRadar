@@ -524,9 +524,9 @@ public class MainActivity extends FragmentActivity implements Communicator, View
     @Override
     protected void onPause() {
         unregisterReceiver(myReceiver);
-        if(isFromNotification){
+       /* if(isFromNotification){
             finish();
-        }
+        }*/
         super.onPause();
     }
 

@@ -132,25 +132,21 @@ public class Forecast implements OnLocation {
         WebView browser = (WebView) view.findViewById(R.id.webViewDrips);
         browser.setBackgroundColor(Color.TRANSPARENT);
         String drip = "";
+        boolean isNeedCreate = false;
+
+        String rain3h = null, snow3h = null;
 
         if (map.get("rain") != null && !map.get("rain").isEmpty()) {
+            isNeedCreate = true;
+            rain3h = map.get("rain");
             float f = Float.parseFloat(map.get("rain"));
             f = f * 10;
             for (int i = 0; i < f; i++) {
                 drip += "<img style=\"-webkit-user-select: none; width: 7px; height:13px; margin: 1.5px\" src=\"drip.png\">";
             }
-            view.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    toast.show("Rain 3h: " + map.get("rain"), Gravity.TOP | Gravity.CLIP_HORIZONTAL);
-                }
-            });
-            String web = "<html><head><meta name=\"viewport\" content=\"width=device-width, minimum-scale=0.1\"><title>drip.png (20×32)</title><style type=\"text/css\"></style></head><body style=\"margin: 0px;\">" +
-                    "<div style=\"border-bottom-right-radius: 60%; overflow: hidden; height: 65px; width: 100%; box-shadow: 2px 2px 10px rgba(0,0,0,0.2);\">" +
-                    drip +
-                    "</div>" +
-                    "</body></html>";
-            browser.loadDataWithBaseURL("file:///android_asset/", web, "text/html", "UTF-8", null);
+
+
+          //  browser.loadDataWithBaseURL("file:///android_asset/", web, "text/html", "UTF-8", null);
             //Todo касание и отображение тоста
             /*browser.setOnTouchListener(new WebView.OnTouchListener() {
                 @Override
@@ -160,6 +156,56 @@ public class Forecast implements OnLocation {
                 }
             });*/
         }
+
+        if (map.get("snow") != null && !map.get("snow").isEmpty()) {
+            isNeedCreate = true;
+            snow3h = map.get("snow");
+            float f = Float.parseFloat(map.get("snow"));
+            f = f * 10;
+            for (int i = 0; i < f; i++) {
+                drip += "<img style=\"-webkit-user-select: none; width: 13px; height:13px; margin: 2px -2px\" src=\"snow.png\">";
+            }
+
+
+
+
+
+        }
+
+        if(isNeedCreate){
+            String web = "<html><head><meta name=\"viewport\" content=\"width=device-width, minimum-scale=0.1\"><title>drip.png (20×32)</title><style type=\"text/css\"></style></head><body style=\"margin: 0px;\">" +
+                    "<div style=\"border-bottom-right-radius: 60%; overflow: hidden; height: 65px; width: 100%; box-shadow: 2px 2px 10px rgba(0,0,0,0.2);\">" +
+                    drip +
+                    "</div>" +
+                    "</body></html>";
+            browser.loadDataWithBaseURL("file:///android_asset/", web, "text/html", "UTF-8", null);
+
+            String ts = "";
+
+            if(rain3h!=null){
+                ts+= "Rain 3h: " + rain3h;
+            }
+            if(!ts.isEmpty()){
+                ts+=" ";
+            }
+
+            if(snow3h!=null){
+                ts+= "Snow 3h: " + snow3h;
+            }
+            onShowToast3h(view, ts);
+        }
+
+    }
+
+    void onShowToast3h(View view, final String text){
+        view.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+
+                toast.show(text, Gravity.TOP | Gravity.CLIP_HORIZONTAL);
+            }
+        });
     }
 
 
