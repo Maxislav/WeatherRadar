@@ -53,6 +53,12 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     public static final String MORNING_ALARM = "morningAlarm"; // 0 || 1
 
     public static final String LICENCE = "licence"; // 0 || 1
+    public static final String TIMESTAMP_CURRENT_WEATHER = "tsCurrentWeather";  // 2015-07-29 19:12:40.878  //время прогноза
+    public static final String CURRENT_WEATHER_ICON = "currentWeatherIcon";  //
+    public static final String CURRENT_WEATHER_HUMIDITY = "currentWeatherHumidity";  //
+    public static final String CURRENT_WEATHER_TEMP = "currentWeatherTemp";  //
+    public static final String CURRENT_WEATHER_WIND = "currentWeatherWind";  //
+    public static final String CURRENT_WEATHER_CITY = "currentWeatherCity";  //
 
 
 
@@ -369,5 +375,25 @@ public class DataBaseHelper extends SQLiteOpenHelper {
             calendarWakeUp.add(c.DAY_OF_MONTH, 1);
         }
         return calendarWakeUp.getTimeInMillis();
+    }
+
+    public String getTimeStamp(){
+        Calendar calendar = Calendar.getInstance();
+        java.util.Date now = calendar.getTime();
+        java.sql.Timestamp currentTimestamp = new java.sql.Timestamp(now.getTime());
+        return currentTimestamp.toString();
+    }
+
+
+    public Date stringToDate(String timeText){
+        DateFormat formatter = new SimpleDateFormat(NEW_FORMAT);
+        //String timeNotify = mapSetting.get(TIME_NOTIFY) != null ? mapSetting.get(TIME_NOTIFY) : null;
+        Date dateNotify = null;
+        try{
+            dateNotify=   formatter.parse(timeText);;
+        }catch (Exception e){
+            Log.e(TAG, e.toString());
+        }
+       return dateNotify;
     }
 }

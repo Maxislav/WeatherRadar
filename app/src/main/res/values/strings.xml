@@ -14,7 +14,8 @@
     ]]></string>
 
 
-    <string name="license_text">In calculating the distance to the precipitation, as well as getting the weather, your location will be used periodically below the specified server. Just to work correctly, you must have enabled and to determine your location on the network.</string>
+    <string name="license_text">In calculating the distance to the rainfall, as well as for the purpose of receiving the weather forecast, your location will be periodically employed by the below specified servers. Also, for the app to function properly, you must have enabled the location over the network service.
+    </string>
 
     <string name="licence_link1" translatable="false" ><![CDATA[<a>http://openweathermap.org</a>]]></string>
     <string name="licence_link2" translatable="false"><![CDATA[<a>http://178.62.44.54/php/parserain.php</a>]]></string>

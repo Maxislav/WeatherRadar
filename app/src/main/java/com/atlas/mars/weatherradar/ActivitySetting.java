@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.TextView;
@@ -36,7 +37,7 @@ import java.util.Scanner;
 /**
  * Created by Администратор on 7/8/15.
  */
-public class ActivitySetting extends AppCompatActivity implements TimePicker.OnTimeChangedListener, View.OnClickListener {
+public class ActivitySetting extends AppCompatActivity implements TimePicker.OnTimeChangedListener, View.OnClickListener, CheckBox.OnCheckedChangeListener {
     final String TAG = "ActivitySettingLog";
     DataBaseHelper db;
     HashMap <String, String> mapSetting;
@@ -161,6 +162,9 @@ public class ActivitySetting extends AppCompatActivity implements TimePicker.OnT
         }
 
         inflateUrlSetting(mapSetting);
+
+
+        isMorningAlarm.setOnCheckedChangeListener(this);
 
     }
 
@@ -294,6 +298,10 @@ public class ActivitySetting extends AppCompatActivity implements TimePicker.OnT
         inflateUrlSetting(map);
     }
 
+    @Override
+    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+            Log.d(TAG, buttonView.getId()+"");
+    }
 
 
     private class LoadTask extends AsyncTask<String, Void, HashMap<String, String>> {

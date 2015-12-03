@@ -23,6 +23,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Date;
 import java.util.Scanner;
 
 /**
@@ -38,6 +39,7 @@ public class CurrentWeather extends Fragment implements OnLocation {
     final String TAG = "CurrentWeatherLogs";
     public LocationManager locationManagerNet;
     public LocationListener locationListenerNet;
+    DataBaseHelper db;
 
 
     TextView textViewTitle, textViewTemp, textViewWind, textViewHumidity;
@@ -64,6 +66,7 @@ public class CurrentWeather extends Fragment implements OnLocation {
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
+        db = new DataBaseHelper(activity);
         this.activity = activity;
         mainActivity = (MainActivity) activity;
     }
@@ -77,7 +80,7 @@ public class CurrentWeather extends Fragment implements OnLocation {
     @Override
     public void onPause() {
         isDoing = false;
-        if(locationManagerNet!=null){
+        if (locationManagerNet != null) {
             locationManagerNet.removeUpdates(locationListenerNet);
             locationManagerNet = null;
         }
@@ -96,10 +99,42 @@ public class CurrentWeather extends Fragment implements OnLocation {
 
     public void _onStart() {
 
-        locationManagerNet = (LocationManager) activity.getSystemService(Context.LOCATION_SERVICE);
-        locationListenerNet = new MyLocationListenerNet(this);
-        locationManagerNet.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListenerNet);
+        if (weatherTsskIsNeeded()) {
+            Log.d(TAG, "Прошло 5 минут");
+            locationManagerNet = (LocationManager) activity.getSystemService(Context.LOCATION_SERVICE);
+            locationListenerNet = new MyLocationListenerNet(this);
+            locationManagerNet.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListenerNet);
 
+        } else {
+            Log.d(TAG, "Еще не прошло 5 минут");
+
+            textViewTemp.setText(db.mapSetting.get(db.CURRENT_WEATHER_TEMP));
+            textViewHumidity.setText(db.mapSetting.get(db.CURRENT_WEATHER_HUMIDITY));
+            textViewWind.setText(db.mapSetting.get(db.CURRENT_WEATHER_WIND));
+            textViewTitle.setText(db.mapSetting.get(db.CURRENT_WEATHER_CITY));
+            setIcon(imageCurrentWeather, db.mapSetting.get(db.CURRENT_WEATHER_ICON));
+
+
+        }
+    }
+
+
+    private boolean weatherTsskIsNeeded() {
+        String textDate = db.mapSetting.get(db.TIMESTAMP_CURRENT_WEATHER);
+        boolean a = true;
+        Date dateWeather;
+        if (textDate == null) {
+            a = true;
+        } else {
+            dateWeather = db.stringToDate(textDate);
+            if (System.currentTimeMillis() < dateWeather.getTime() + (5 * 60 * 1000)) {
+                a = false;
+            } else {
+                a = true;
+            }
+
+        }
+        return a;
     }
 
 
@@ -132,26 +167,23 @@ public class CurrentWeather extends Fragment implements OnLocation {
         }
 
         int cod = 200;
-        try{
-            cod= root.path("cod").asInt();
-        }catch (Exception e){
+        try {
+            cod = root.path("cod").asInt();
+        } catch (Exception e) {
             cod = 404;
             mainActivity.show("Error current weather task");
             Log.d(TAG, e.toString(), e);
         }
-        if(cod==404){
+        if (cod == 404) {
             mainActivity.show("City not found. Try Kiev get");
-            if(onTaskResult == 0){
+            if (onTaskResult == 0) {
                 onTaskResult++;
-                onStartWeatherTask(0,0);
-            }else{
+                onStartWeatherTask(0, 0);
+            } else {
                 mainActivity.show("Error forecast task");
             }
             return;
         }
-
-
-
 
 
         String icon = root.get("weather").get(0).path("icon").asText();
@@ -172,6 +204,15 @@ public class CurrentWeather extends Fragment implements OnLocation {
 
         Log.d(TAG, root.toString());
 
+
+        db.mapSetting.put(db.CURRENT_WEATHER_HUMIDITY, humidity);
+        db.mapSetting.put(db.CURRENT_WEATHER_ICON, icon);
+        db.mapSetting.put(db.CURRENT_WEATHER_TEMP, strtTemp);
+        db.mapSetting.put(db.CURRENT_WEATHER_WIND, wind);
+        db.mapSetting.put(db.CURRENT_WEATHER_CITY, nameCity);
+
+        db.mapSetting.put(db.TIMESTAMP_CURRENT_WEATHER, db.getTimeStamp());
+        db.saveSetting();
     }
 
 
@@ -204,7 +245,7 @@ public class CurrentWeather extends Fragment implements OnLocation {
             String path;
 
             if (params.length == 2) {
-                path = "http://api.openweathermap.org/data/2.5/weather?lat=" + params[0] + "&lon=" + params[1] +"&APPID="+BuildConfig.APPID+ "&units=metric";
+                path = "http://api.openweathermap.org/data/2.5/weather?lat=" + params[0] + "&lon=" + params[1] + "&APPID=" + BuildConfig.APPID + "&units=metric";
                 ;
             } else {
                 path = "http://api.openweathermap.org/data/2.5/weather?q=Kiev,UA&units=metric";
@@ -253,8 +294,6 @@ public class CurrentWeather extends Fragment implements OnLocation {
         }
 
     }
-
-
 
 
 }
