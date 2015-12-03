@@ -59,6 +59,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     public static final String CURRENT_WEATHER_TEMP = "currentWeatherTemp";  //
     public static final String CURRENT_WEATHER_WIND = "currentWeatherWind";  //
     public static final String CURRENT_WEATHER_CITY = "currentWeatherCity";  //
+    public static final String TIMESTAMP_FORECAST = "timestampForecast";  //
 
 
 

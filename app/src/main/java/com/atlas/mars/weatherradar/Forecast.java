@@ -56,8 +56,10 @@ public class Forecast implements OnLocation {
     ToastShow toast;
     private boolean isDoing = false;
     private static int onTaskResult = 0;
+    DataBaseHelper db;
 
     Forecast(Activity activity, LinearLayout fr) {
+        db = new DataBaseHelper(activity);
 
         this.activity = activity;
         toast = (ToastShow) activity;
@@ -361,6 +363,8 @@ public class Forecast implements OnLocation {
             toast.show("City not found");
         }
 
+        db.mapSetting.put(db.TIMESTAMP_FORECAST,  db.getTimeStamp());
+        db.saveSetting();
 
     }
 

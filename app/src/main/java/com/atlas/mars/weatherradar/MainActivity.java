@@ -39,6 +39,7 @@ import com.atlas.mars.weatherradar.fragments.InfraRed;
 import com.atlas.mars.weatherradar.fragments.MyFragment;
 import com.atlas.mars.weatherradar.fragments.Visible;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -128,11 +129,9 @@ public class MainActivity extends FragmentActivity implements Communicator, View
         buttonMenu = (ImageButton)findViewById(R.id.buttonMenu);
         title = (TextView)findViewById(R.id.title);
         forecastLinearLayout = (LinearLayout)findViewById(R.id.forecastLinearLayout);
-        frLayoutCurrent = (FrameLayout)findViewById(R.id.frLayoutCurrent);
 
-        // currentWeather = new CurrentWeather(this, frLayoutCurrent);
-
-        forecast =  new Forecast(this, forecastLinearLayout);
+//        frLayoutCurrent = (FrameLayout)findViewById(R.id.frLayoutCurrent);
+//        forecast =  new Forecast(this, forecastLinearLayout);
 
         mapFragments = new HashMap<>();
 
@@ -445,6 +444,8 @@ public class MainActivity extends FragmentActivity implements Communicator, View
         mapSetting.put(db.LICENCE, "1");
         db.saveSetting();
         _onStart();
+        frLayoutCurrent = (FrameLayout)findViewById(R.id.frLayoutCurrent);
+        forecast =  new Forecast(this, forecastLinearLayout);
     }
 
     @Override
@@ -504,6 +505,21 @@ public class MainActivity extends FragmentActivity implements Communicator, View
     @Override
     protected void onResume() {
         super.onResume();
+        if(updateForecastIsNeeded()){
+            if(mapSetting.get(db.LICENCE)!=null && mapSetting.get(db.LICENCE).equals("1")){
+                if(forecast!=null){
+                    forecast.onRegen();
+                }else{
+                    frLayoutCurrent = (FrameLayout)findViewById(R.id.frLayoutCurrent);
+                    forecast =  new Forecast(this, forecastLinearLayout);
+                }
+            }
+        }
+        if(mapSetting.get(db.LICENCE)!=null && mapSetting.get(db.LICENCE).equals("1") && forecast == null){
+            frLayoutCurrent = (FrameLayout)findViewById(R.id.frLayoutCurrent);
+            forecast =  new Forecast(this, forecastLinearLayout);
+        }
+
         //  startService(new Intent(this, MyService.class));
         onCreateMyReceiver();
         //setMyTitle(pager.getCurrentItem());
@@ -512,6 +528,9 @@ public class MainActivity extends FragmentActivity implements Communicator, View
             show(extras.getString("item_id"));
             Log.d( TAG,"Extra:" + extras.getString("item_id") );
         }
+
+
+
       /*  fragmentTransaction.replace(R.id.frLayoutCurrent, fragmentWeather);
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();*/
@@ -521,6 +540,24 @@ public class MainActivity extends FragmentActivity implements Communicator, View
 
        // currentWeather.onResum();
     }
+
+    boolean updateForecastIsNeeded(){
+        boolean a = true;
+        String stringDateForecast = db.mapSetting.get(db.TIMESTAMP_FORECAST);
+        Date dateForecast;
+        if(stringDateForecast!=null){
+            dateForecast = db.stringToDate(db.mapSetting.get(db.TIMESTAMP_FORECAST));
+            if(dateForecast.getTime()+(2*60*1000)<System.currentTimeMillis()){
+                a = true;
+            }else {
+                a = false;
+            }
+        }else {
+            a = true;
+        }
+        return a;
+    }
+
     @Override
     protected void onPause() {
         unregisterReceiver(myReceiver);
