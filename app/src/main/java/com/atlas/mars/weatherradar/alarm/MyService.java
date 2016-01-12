@@ -171,12 +171,12 @@ public class MyService extends Service implements OnLocation {
         intent1.putExtra("were_from", "my_service");
 
         intent1.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        PendingIntent pendengIntent = PendingIntent.getActivity(this, 0, intent1,   PendingIntent.FLAG_ONE_SHOT  );
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent1,   PendingIntent.FLAG_ONE_SHOT  );
 
         Notification notification = new Notification.Builder(this).setContentTitle("Rain alarm")
                 .setContentText(message)
                 .setSmallIcon(R.drawable.notification_ico)
-                .setContentIntent(pendengIntent)
+                .setContentIntent(pendingIntent)
                 .build();
         notification.flags = Notification.DEFAULT_LIGHTS | Notification.FLAG_AUTO_CANCEL;
 

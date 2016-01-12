@@ -547,7 +547,7 @@ public class MainActivity extends FragmentActivity implements Communicator, View
         Date dateForecast;
         if(stringDateForecast!=null){
             dateForecast = db.stringToDate(db.mapSetting.get(db.TIMESTAMP_FORECAST));
-            if(dateForecast.getTime()+(2*60*1000)<System.currentTimeMillis()){
+            if(dateForecast.getTime()+(60*60*1000)<System.currentTimeMillis()){
                 a = true;
             }else {
                 a = false;

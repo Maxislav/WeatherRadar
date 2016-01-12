@@ -88,6 +88,7 @@ public class GoogleWeatherTask extends AsyncTask<Double, Void, HashMap<String, B
                     if(arrayNode.get(i).get("rain")!=null){
                         rain = arrayNode.get(i).get("rain").path("3h").asText();
                     }
+
                     if(descriptionMain.equals("Rain") || descriptionMain.equals("Snow")){
                         map.put("rain",true);
                         break;
