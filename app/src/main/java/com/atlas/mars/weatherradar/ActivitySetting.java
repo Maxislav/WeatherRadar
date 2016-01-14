@@ -13,11 +13,14 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
@@ -31,13 +34,15 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Scanner;
 
 /**
  * Created by Администратор on 7/8/15.
  */
-public class ActivitySetting extends AppCompatActivity implements TimePicker.OnTimeChangedListener, View.OnClickListener, CheckBox.OnCheckedChangeListener {
+public class ActivitySetting extends AppCompatActivity implements TimePicker.OnTimeChangedListener, View.OnClickListener, CheckBox.OnCheckedChangeListener, AdapterView.OnItemSelectedListener {
     final String TAG = "ActivitySettingLog";
     DataBaseHelper db;
     HashMap <String, String> mapSetting;
@@ -52,6 +57,8 @@ public class ActivitySetting extends AppCompatActivity implements TimePicker.OnT
     FrameLayout globalLayout;
     static ObjectMapper mapper = new ObjectMapper();
     PackageInfo pInfo;
+    Spinner citySpinner;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         fromHour = 8;
@@ -95,6 +102,22 @@ public class ActivitySetting extends AppCompatActivity implements TimePicker.OnT
 
         setTimeFromTo();
         inflateSetting();
+
+        citySpinner = (Spinner)findViewById(R.id.citySpinner);
+
+        //ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.array_cities, android.R.layout.simple_spinner_item);
+        //List<String> options =
+       // Resources res = ;
+        String[] planets = getResources().getStringArray(R.array.array_cities);
+        List<String> options =  Arrays.asList(planets);
+
+        ArrayAdapter<String> adapter = new CustomArrayAdapter(this, R.layout.spinner_item, options);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        citySpinner.setAdapter(adapter);
+        citySpinner.setSelection(0);
+
+        citySpinner.setOnItemSelectedListener(this);
+
     }
     void  setTimeFromTo(){
 
@@ -301,6 +324,16 @@ public class ActivitySetting extends AppCompatActivity implements TimePicker.OnT
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
             Log.d(TAG, buttonView.getId()+"");
+    }
+
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        Log.d(TAG, ""+ position );
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
+
     }
 
 

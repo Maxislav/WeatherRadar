@@ -39,14 +39,12 @@
         <item name="android:textColor">@color/color_edit_text</item>
     </style>
 
-
-
-
     <style name="itemTextStyle.AppTheme" parent="@android:style/TextAppearance.Widget.IconMenu.Item">
         <item name="android:textColor">@drawable/color_item_popup</item>
     </style>
 
-
-
+    <style name="SpinnerTheme" parent="itemTextStyle.AppTheme">
+        <item name="android:background">@color/redBorderDark</item>
+    </style>
 
 </resources>
