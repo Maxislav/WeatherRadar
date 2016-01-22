@@ -30,13 +30,15 @@
     <string name="download_settings">Download settins</string>
     <string name="save_close">Save and close</string>
     <string name="close_not_save">Close without saving</string>
-    <string name="city_spinner">City</string>
+    <string name="city_spinner">Location</string>
 
+    <string name="by_network">By network</string>
     <string name="city_kiev">Kiev</string>
     <string name="city_brovary">Brovary</string>
     <string name="city_borispol">Borispol</string>
 
     <string-array name="array_cities">
+        <item>@string/by_network</item>
         <item>@string/city_kiev</item>
         <item>@string/city_brovary</item>
         <item>@string/city_borispol</item>

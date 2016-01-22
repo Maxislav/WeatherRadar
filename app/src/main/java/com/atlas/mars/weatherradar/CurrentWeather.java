@@ -107,14 +107,11 @@ public class CurrentWeather extends Fragment implements OnLocation {
 
         } else {
             Log.d(TAG, "Еще не прошло 5 минут");
-
             textViewTemp.setText(db.mapSetting.get(db.CURRENT_WEATHER_TEMP));
             textViewHumidity.setText(db.mapSetting.get(db.CURRENT_WEATHER_HUMIDITY));
             textViewWind.setText(db.mapSetting.get(db.CURRENT_WEATHER_WIND));
             textViewTitle.setText(db.mapSetting.get(db.CURRENT_WEATHER_CITY));
             setIcon(imageCurrentWeather, db.mapSetting.get(db.CURRENT_WEATHER_ICON));
-
-
         }
     }
 

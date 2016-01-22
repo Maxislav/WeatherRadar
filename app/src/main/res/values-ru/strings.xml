@@ -21,9 +21,10 @@
     <string name="download_settings">Скачать настройки</string>
     <string name="save_close">Сохранить и закрыть</string>
     <string name="close_not_save">Закрыть без  сохранения</string>
-    <string name="city_spinner">Город</string>
+    <string name="city_spinner">Местоположение</string>
     <string name="city_borispol">Борисполь</string>
     <string name="city_brovary">Бровары</string>
     <string name="city_kiev">Киев</string>
+    <string name="by_network">Определять по сети</string>
 
 </resources>

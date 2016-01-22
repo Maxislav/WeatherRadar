@@ -14,7 +14,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -58,12 +57,15 @@ public class ActivitySetting extends AppCompatActivity implements TimePicker.OnT
     static ObjectMapper mapper = new ObjectMapper();
     PackageInfo pInfo;
     Spinner citySpinner;
+    int spinerSelection = 1;
+    List<Model> cityCollection;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         fromHour = 8;
         fromMin = 0; toHour = 22;
         toMin=0;
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_setting);
         db = new DataBaseHelper(this);
@@ -104,21 +106,66 @@ public class ActivitySetting extends AppCompatActivity implements TimePicker.OnT
         inflateSetting();
 
         citySpinner = (Spinner)findViewById(R.id.citySpinner);
-
-        //ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.array_cities, android.R.layout.simple_spinner_item);
-        //List<String> options =
-       // Resources res = ;
         String[] planets = getResources().getStringArray(R.array.array_cities);
         List<String> options =  Arrays.asList(planets);
 
-        ArrayAdapter<String> adapter = new CustomArrayAdapter(this, R.layout.spinner_item, options);
+/*
+        List<Boolean> listOptions = new ArrayList<>();
+
+        for (String option : options) {
+            HashMap<String, Boolean> map = new HashMap<>();
+            listOptions.add( map.put(option, false));
+        }*/
+
+        //ArrayAdapter<String> adapter = new CustomArrayAdapter(this, R.layout.spinner_item, options);
+        cityCollection = getCityCollection();
+        CustomArrayAdapter adapter = new CustomArrayAdapter(this, R.layout.spinner_item, cityCollection);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         citySpinner.setAdapter(adapter);
-        citySpinner.setSelection(0);
 
+        if(mapSetting.get(db.MY_LOCATION)!=null){
+            spinerSelection = Integer.parseInt(mapSetting.get(db.MY_LOCATION));
+        }
+        citySpinner.setSelection(spinerSelection);
         citySpinner.setOnItemSelectedListener(this);
 
     }
+
+    List<Model>  getCityCollection(){
+        int i = 0;
+        String[] planets = getResources().getStringArray(R.array.array_cities);
+        List<String> options =  Arrays.asList(planets);
+        List<Model> listOptions = new ArrayList<>();
+        for (String option : options) {
+            Model model = new Model(option,i == spinerSelection );
+            listOptions.add( model );
+            i++;
+        }
+        return listOptions;
+    }
+
+    public class Model{
+
+        String name;
+        boolean select = false;
+
+        Model(String name, boolean select){
+            this.name = name;
+            this.select = select;
+        }
+        public String getName(){
+            return this.name;
+        }
+
+        public void setSelect(boolean select){
+            this.select = select;
+        }
+
+        public boolean isSelect(){
+            return select;
+        }
+    }
+
     void  setTimeFromTo(){
 
         if(mapSetting.get(DataBaseHelper.TIME_FROM_HOUR)!=null){
@@ -328,6 +375,7 @@ public class ActivitySetting extends AppCompatActivity implements TimePicker.OnT
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+      //  parent.getListCollection();
         Log.d(TAG, ""+ position );
     }
 
