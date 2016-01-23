@@ -109,19 +109,17 @@ public class ActivitySetting extends AppCompatActivity implements TimePicker.OnT
         String[] planets = getResources().getStringArray(R.array.array_cities);
         List<String> options =  Arrays.asList(planets);
 
-/*
-        List<Boolean> listOptions = new ArrayList<>();
 
-        for (String option : options) {
-            HashMap<String, Boolean> map = new HashMap<>();
-            listOptions.add( map.put(option, false));
-        }*/
-
-        //ArrayAdapter<String> adapter = new CustomArrayAdapter(this, R.layout.spinner_item, options);
         cityCollection = getCityCollection();
         CustomArrayAdapter adapter = new CustomArrayAdapter(this, R.layout.spinner_item, cityCollection);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         citySpinner.setAdapter(adapter);
+
+
+      /*  String[] data = {"one", "two", "three", "four", "five"};
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, planets);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        citySpinner.setAdapter(adapter);*/
 
         if(mapSetting.get(db.MY_LOCATION)!=null){
             spinerSelection = Integer.parseInt(mapSetting.get(db.MY_LOCATION));
@@ -137,7 +135,7 @@ public class ActivitySetting extends AppCompatActivity implements TimePicker.OnT
         List<String> options =  Arrays.asList(planets);
         List<Model> listOptions = new ArrayList<>();
         for (String option : options) {
-            Model model = new Model(option,i == spinerSelection );
+            Model model = new Model(option,i == spinerSelection, i );
             listOptions.add( model );
             i++;
         }
@@ -148,10 +146,12 @@ public class ActivitySetting extends AppCompatActivity implements TimePicker.OnT
 
         String name;
         boolean select = false;
+        int position;
 
-        Model(String name, boolean select){
+        Model(String name, boolean select, int position){
             this.name = name;
             this.select = select;
+            this.position = position;
         }
         public String getName(){
             return this.name;
@@ -159,6 +159,10 @@ public class ActivitySetting extends AppCompatActivity implements TimePicker.OnT
 
         public void setSelect(boolean select){
             this.select = select;
+        }
+
+        public  int getPosition(){
+            return  position;
         }
 
         public boolean isSelect(){
@@ -376,7 +380,19 @@ public class ActivitySetting extends AppCompatActivity implements TimePicker.OnT
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
       //  parent.getListCollection();
+        Log.d(TAG, ""+ parent );
         Log.d(TAG, ""+ position );
+        setSpinerSelection(cityCollection, position);
+    }
+
+    void setSpinerSelection(List <Model> list, int position){
+        for (Model model : list) {
+          if(model.getPosition() == position){
+              model.setSelect(true);
+          }else{
+              model.setSelect(false);
+          }
+        }
     }
 
     @Override
