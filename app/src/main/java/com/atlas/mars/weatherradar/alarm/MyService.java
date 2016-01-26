@@ -137,7 +137,17 @@ public class MyService extends Service implements OnLocation {
         updIntent.putExtra("distance", "Wake Up");
         sendBroadcast(updIntent);
 
-        if (isNetworkAvailable() && db.isWorkTime()) {
+        if(db.mapSetting.get(db.MY_LOCATION)!=null && !db.mapSetting.get(db.MY_LOCATION).equals("0")){
+            /**
+             * условие запроса по имени населенного пункта
+             */
+
+            LocationFromAsset la = new LocationFromAsset(this, db.mapSetting.get(db.MY_LOCATION));
+
+
+
+
+        }else if (isNetworkAvailable() && db.isWorkTime()) {
             locationManagerNet = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
             locationListenerNet = new MyLocationListenerNet(this);
             locationManagerNet.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListenerNet);
