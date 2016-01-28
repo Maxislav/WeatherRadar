@@ -73,7 +73,7 @@ public class BorispolRest {
 
             @Override
             public void failure(RetrofitError error) {
-                map.put("isIntensity", intensity);
+                map.put("isIntensity", 5);
                 onCallback(map);
                 Log.e(TAG, "RetrofitError error", error);
             }
@@ -84,17 +84,12 @@ public class BorispolRest {
         public String color;
         Integer intensity;
         Integer dist;
-
         public Integer getDist() {
             return dist;
         }
-
-
-
         public String getColor() {
             return color;
         }
-
         public Integer getIntensity() {
             return intensity;
         }
