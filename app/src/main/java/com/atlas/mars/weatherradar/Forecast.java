@@ -264,6 +264,11 @@ public class Forecast implements OnLocation {
 
     }
 
+    @Override
+    public void onLocationAccept(String cityId) {
+
+    }
+
     private void onStartWeatherTask(double lat, double lng) {
         if (lat != 0 && lng != 0 && !isDoing) {
             forecastGoogleApi = new ForecastGoogleApi();

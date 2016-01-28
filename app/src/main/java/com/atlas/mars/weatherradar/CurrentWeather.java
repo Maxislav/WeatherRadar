@@ -144,6 +144,11 @@ public class CurrentWeather extends Fragment implements OnLocation {
         onStartWeatherTask(lat, lng);
     }
 
+    @Override
+    public void onLocationAccept(String cityId) {
+
+    }
+
 
     void onStartWeatherTask(double lat, double lng) {
         if (!isDoing) {

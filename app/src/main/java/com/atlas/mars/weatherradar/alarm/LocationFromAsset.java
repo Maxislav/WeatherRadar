@@ -2,6 +2,7 @@ package com.atlas.mars.weatherradar.alarm;
 
 import android.content.Context;
 import android.content.res.AssetManager;
+import android.util.Log;
 
 import com.atlas.mars.weatherradar.location.OnLocation;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -37,11 +38,13 @@ public class LocationFromAsset{
 
 
         ObjectNode root = null;
+        String cityId = null;
         try {
 
             JSONArray obj = new JSONArray(jsonLocation);
             JSONObject item = obj.getJSONObject(iPosition);
-
+            cityId = item.getString("id");
+            Log.d(TAG, "cityId: "+ cityId);
 
             /*root = (ObjectNode) mapper.readTree(jsonLocation);
             JsonNode jsonNode = (JsonNode)root.get(iPosition);
@@ -52,7 +55,7 @@ public class LocationFromAsset{
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
+        onCallback(cityId);
 
     }
 
@@ -60,8 +63,8 @@ public class LocationFromAsset{
 
 
 
-    void onCallback(){
-        onLocation.onLocationAccept(1, 2);
+    void onCallback(String id){
+        onLocation.onLocationAccept(id);
     }
 
 

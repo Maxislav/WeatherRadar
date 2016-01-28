@@ -83,6 +83,11 @@ public class MorningService extends Service implements OnLocation, DayForecastRa
     }
 
     @Override
+    public void onLocationAccept(String cityId) {
+
+    }
+
+    @Override
     public void Success(List<HashMap> list, String name) {
         if(list==null) {
             this.stopSelf();

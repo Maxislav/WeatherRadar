@@ -25,11 +25,12 @@ public class BorispolTask extends AsyncTask<Double, Void, HashMap<String, Intege
     MyService myService;
     int alarmMinDist = MyService.alarmMinDist;
 
-    BorispolTask(MyService myService) {
+    public BorispolTask(MyService myService) {
         super();
         this.myService = myService;
-
     }
+
+
 
     @Override
     protected HashMap<String, Integer> doInBackground(Double... params) {

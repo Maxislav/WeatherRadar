@@ -25,6 +25,7 @@ import com.atlas.mars.weatherradar.DataBaseHelper;
 import com.atlas.mars.weatherradar.MainActivity;
 import com.atlas.mars.weatherradar.MathOperation;
 import com.atlas.mars.weatherradar.R;
+import com.atlas.mars.weatherradar.Rest.BorispolRest;
 import com.atlas.mars.weatherradar.location.MyLocationListenerNet;
 import com.atlas.mars.weatherradar.location.OnLocation;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -49,7 +50,7 @@ public class MyService extends Service implements OnLocation {
     Notification notification;
     Intent intent;
     DataBaseHelper db;
-    static int alarmMinDist = 40;
+    public static int alarmMinDist = 40;
     HashMap<String, String> mapSetting;
     AssetManager assets;
     SoundPool sp;
@@ -121,6 +122,16 @@ public class MyService extends Service implements OnLocation {
         if(taskNeeded == 0){
           //  alarmRestart();
             onStop();
+        }
+    }
+
+    @Override
+    public void onLocationAccept(String cityId) {
+        if (isNetworkAvailable()) {
+            if(db.getStartBorispol()){
+                taskNeeded++;
+                BorispolRest br = new BorispolRest(this, cityId);
+            }
         }
     }
 
@@ -207,7 +218,7 @@ public class MyService extends Service implements OnLocation {
     }
 
 
-    void onBorispolTaskResult(HashMap<String, Integer> map) {
+    public void onBorispolTaskResult(HashMap<String, Integer> map) {
 
         if (map.get("dist") != null && map.get("dist") < alarmMinDist) {
             onNotification(map);
