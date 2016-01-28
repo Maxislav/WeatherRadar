@@ -68,7 +68,7 @@ public class BorispolRest {
                     }
                     map.put("isIntensity", intensity);
                 }
-                onCallback(map);
+                 onCallback(map);
             }
 
             @Override
