@@ -1,0 +1,222 @@
+package com.atlas.mars.weatherradar.Rest;
+
+import android.util.Log;
+
+import com.atlas.mars.weatherradar.BuildConfig;
+import com.atlas.mars.weatherradar.MathOperation;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+
+import retrofit.Callback;
+import retrofit.RestAdapter;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
+import retrofit.http.GET;
+import retrofit.http.Query;
+
+/**
+ * Created by mars on 1/29/16.
+ */
+public class ForecastFiveDay {
+    private final String TAG = "ForecastFiveDayLog";
+    OnAccept onAccept;
+    String cityId;
+    String lat, lng;
+    List<HashMap<String, String>> list;
+
+    public ForecastFiveDay(OnAccept onAccept, String cityId) {
+        this.onAccept = onAccept;
+        this.cityId = cityId;
+        list = new ArrayList<>();
+        restByCityId();
+    }
+
+    public ForecastFiveDay(OnAccept onAccept, double lat, double lng) {
+        this.onAccept = onAccept;
+        this.lat = String.valueOf(MathOperation.round(lat, 4));
+        this.lng = String.valueOf(MathOperation.round(lng, 4));
+
+        restByLatLng();
+    }
+
+    private interface MyApiEndpointInterface {
+        @GET("/")
+        void getForecastById(@Query("id") String cityId, @Query("APPID") String appid, @Query("units") String units, Callback<Result> cb);
+
+        @GET("/")
+        void getForecastByLatLng(@Query("lat") String lat, @Query("lon") String lon, @Query("APPID") String appid, @Query("units") String units, Callback<Result> cb);
+    }
+
+    void restByCityId() {
+        RestAdapter restAdapter = new RestAdapter.Builder()
+                .setEndpoint(BuildConfig.FORECAST_URL)
+                .build();
+        MyApiEndpointInterface apiService =
+                restAdapter.create(MyApiEndpointInterface.class);
+        apiService.getForecastById(cityId, BuildConfig.APPID, "metric", new Callback<Result>() {
+
+            @Override
+            public void success(Result result, Response response) {
+                Log.d(TAG, "jds");
+                Success(result);
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                Log.e(TAG, "RetrofitError error", error);
+            }
+        });
+
+    }
+
+
+    void restByLatLng() {
+
+    }
+
+    void Success(Result result) {
+        list = new ArrayList<>();
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH);
+        SimpleDateFormat dayMonth = new SimpleDateFormat("dd.MM"); //2015-08-03 18:00:00
+        SimpleDateFormat time = new SimpleDateFormat("HH:mm"); //2015-08-03 18:00:00
+        SimpleDateFormat HH = new SimpleDateFormat("HH"); //2015-08-03 18:00:00
+        SimpleDateFormat dayWeek = new SimpleDateFormat("EE");
+        for (Item item : result.getList()) {
+            HashMap<String, String> map = new HashMap<>();
+            map.put("icon", item.getWeather().getIcon());
+            Calendar cal = new GregorianCalendar();
+
+            if(item.getRain()!=null){
+                Log.d(TAG,item.getRain().get3h()+"");
+            }
+            if(item.getSnow()!=null){
+                Log.d(TAG,item.getSnow().get3h()+"");
+            }
+
+
+            try {
+                Date date = format.parse(item.getDt_txt());
+                map.put("date", dayMonth.format(date));
+                map.put("time", time.format(date));
+                map.put("HH", HH.format(date));
+                map.put("dayWeek", dayWeek.format(date));
+                map.put("dayWeekNum", Integer.toString(cal.get(Calendar.DAY_OF_WEEK)));
+            } catch (ParseException e) {
+                Log.e(TAG, e.toString(), e);
+                // e.printStackTrace();
+            }
+
+            map.put("dt_txt", item.getDt_txt());
+            list.add(map);
+        }
+
+        onAccept.accept(list);
+    }
+
+
+    public interface OnAccept {
+        void accept(List<HashMap<String, String>> list);
+    }
+
+    public class Param {
+
+    }
+
+    private class Result {
+        public List<Item> getList() {
+            return list;
+        }
+
+        public List<Item> list;
+    }
+
+    /**
+     * list
+     */
+    private class Item {
+       public String dt;
+        public String dt_txt;
+
+        public String getDt_txt() {
+            return dt_txt;
+        }
+
+        public Main main;
+        public List<Weather> weather;
+
+        public Weather getWeather() {
+            return weather.get(0);
+        }
+
+        public String getDt() {
+            return dt + "000";
+        }
+
+        public Main getMain() {
+            return main;
+        }
+        public Rain getRain() {
+            return rain;
+        }
+
+        Rain rain;
+
+        public Snow getSnow() {
+            return snow;
+        }
+
+        Snow snow;
+    }
+
+    private class Rain {
+        public String get3h() {
+            return d3h;
+        }
+
+        @JsonProperty("3h")
+        public String d3h;
+
+
+    }
+
+    private class Snow {
+        public String get3h() {
+            return d3h;
+        }
+
+        @JsonProperty("3h")
+        public String d3h;
+
+    }
+
+    private class Main {
+        public double getTemp() {
+            return temp;
+        }
+
+        double temp;
+
+        public String getHumidity() {
+            return humidity;
+        }
+
+        String humidity;
+    }
+
+    private class Weather {
+        String icon;
+
+        public String getIcon() {
+            return icon;
+        }
+    }
+}

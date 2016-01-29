@@ -36,10 +36,9 @@ public class LocationFromAsset{
         this.onLocation = (OnLocation)context;
         iPosition = Integer.parseInt(sPosition);
         onStart(context);
-
-
-
     }
+
+
 
     void onStart(Context context){
         String jsonLocation = null;

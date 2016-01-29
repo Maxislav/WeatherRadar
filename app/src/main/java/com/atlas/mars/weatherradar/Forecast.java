@@ -20,6 +20,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.atlas.mars.weatherradar.Rest.ForecastFiveDay;
+import com.atlas.mars.weatherradar.alarm.LocationFromAsset;
 import com.atlas.mars.weatherradar.loader.Loader;
 import com.atlas.mars.weatherradar.location.MyLocationListenerNet;
 import com.atlas.mars.weatherradar.location.OnLocation;
@@ -45,7 +47,7 @@ import java.util.Scanner;
 /**
  * Created by mars on 8/3/15.
  */
-public class Forecast implements OnLocation {
+public class Forecast implements OnLocation, ForecastFiveDay.OnAccept {
     final String TAG = "ForecastLogs";
     Activity activity;
     LinearLayout fr;
@@ -74,18 +76,34 @@ public class Forecast implements OnLocation {
     }
 
     private void _onStart() {
+
+        String myLocation = db.mapSetting.get(db.MY_LOCATION);
+
         if (isNetworkAvailable()) {
-            locationManagerNet = (LocationManager) activity.getSystemService(Context.LOCATION_SERVICE);
-            locationListenerNet = new MyLocationListenerNet(this);
-            if (locationManagerNet.getAllProviders().contains(LocationManager.NETWORK_PROVIDER)) {
-                locationManagerNet.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListenerNet);
+            if (myLocation != null && !myLocation.equals("0")) {
                 loader.show();
-            } else {
-                onForecastAccept(null);
+                new LocationFromAsset(activity, this,  myLocation);
+
+            }else{
+                locationManagerNet = (LocationManager) activity.getSystemService(Context.LOCATION_SERVICE);
+                locationListenerNet = new MyLocationListenerNet(this);
+                if (locationManagerNet.getAllProviders().contains(LocationManager.NETWORK_PROVIDER)) {
+                    locationManagerNet.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListenerNet);
+                    loader.show();
+                } else {
+                    onForecastAccept(null);
+                }
             }
+
+
+
         } else {
             onForecastAccept(null);
         }
+    }
+    @Override
+    public void accept(List<HashMap<String, String>> list) {
+            Log.d(TAG, "diid"+list);
     }
 
 
@@ -167,11 +185,6 @@ public class Forecast implements OnLocation {
             for (int i = 0; i < f; i++) {
                 drip += "<img style=\"-webkit-user-select: none; width: 12px; height:13px; margin: 2px 0px\" src=\"snow.png\">";
             }
-
-
-
-
-
         }
 
         if(isNeedCreate){
@@ -266,8 +279,10 @@ public class Forecast implements OnLocation {
 
     @Override
     public void onLocationAccept(String cityId) {
-
+        new ForecastFiveDay(this, cityId);
     }
+
+
 
     private void onStartWeatherTask(double lat, double lng) {
         if (lat != 0 && lng != 0 && !isDoing) {
@@ -421,6 +436,7 @@ public class Forecast implements OnLocation {
         Log.d(TAG, "od" + listList.toString());
         Log.d(TAG, "od" + mapDays.toString());
     }
+
 
 
     private class ForecastGoogleApi extends AsyncTask<Double, Void, ObjectNode> {
