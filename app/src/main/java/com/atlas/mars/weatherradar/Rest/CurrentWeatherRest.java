@@ -3,6 +3,7 @@ package com.atlas.mars.weatherradar.Rest;
 import android.util.Log;
 
 import com.atlas.mars.weatherradar.BuildConfig;
+import com.atlas.mars.weatherradar.MathOperation;
 
 import java.util.List;
 
@@ -21,14 +22,22 @@ public class CurrentWeatherRest {
     OnAccept onAccept;
     String cityId;
     Param param;
+    String lat, lng;
 
 
     public CurrentWeatherRest(OnAccept onAccept, String cityId) {
         this.onAccept = onAccept;
         this.cityId = cityId;
         param = new Param();
+        restById();
+    }
 
-        myTask();
+    public CurrentWeatherRest(OnAccept onAccept, double lat, double lng) {
+        this.onAccept = onAccept;
+        this.lat = String.valueOf(MathOperation.round(lat, 4));
+        this.lng = String.valueOf(MathOperation.round(lng, 4));
+        param = new Param();
+        restByLatLng();
     }
 
     private interface Constant {
@@ -37,40 +46,80 @@ public class CurrentWeatherRest {
 
     private interface MyApiEndpointInterface {
         @GET("/")
-        void getCurrentWeather(@Query("id") String cityId, @Query("APPID") String appid, @Query("units") String units, Callback<Result> cb);
+        void getCurrentWeatherById(@Query("id") String cityId, @Query("APPID") String appid, @Query("units") String units, Callback<Result> cb);
+        @GET("/")
+        void getCurrentWeatherByLatLng(@Query("lat") String lat, @Query("lon") String lon, @Query("APPID") String appid, @Query("units") String units, Callback<Result> cb);
     }
 
     public interface OnAccept {
         void accept(Param param);
     }
 
-    void myTask() {
+    void restById() {
         RestAdapter restAdapter = new RestAdapter.Builder()
                 .setEndpoint(Constant.URL)
                 .build();
         MyApiEndpointInterface apiService =
                 restAdapter.create(MyApiEndpointInterface.class);
-
-        apiService.getCurrentWeather(cityId, BuildConfig.APPID, "metric", new Callback<Result>() {
+        apiService.getCurrentWeatherById(cityId, BuildConfig.APPID, "metric", new Callback<Result>() {
             @Override
             public void success(Result result, Response response) {
-                param.setName(result.getName());
-                param.setIcon(result.getWeather().getIcon());
-                param.setHumidity(result.getMain().getHumidity());
-                param.setTemp(result.getMain().getTemp());
-                param.setSpeed(result.getWind().getSpeed());
-                param.setDeg(result.getWind().getDeg());
-                param.setWind(result.getWind().getSpeed(), result.getWind().getDeg());
-                onAccept.accept(param);
+                Success (result);
             }
             @Override
             public void failure(RetrofitError error) {
+                param.setResult(false);
+                onAccept.accept(param);
                 Log.e(TAG, "RetrofitError error", error);
             }
         });
     }
 
+    void restByLatLng() {
+        RestAdapter restAdapter = new RestAdapter.Builder()
+                .setEndpoint(Constant.URL)
+                .build();
+        MyApiEndpointInterface apiService =
+                restAdapter.create(MyApiEndpointInterface.class);
+        apiService.getCurrentWeatherByLatLng(lat, lng, BuildConfig.APPID, "metric", new Callback<Result>() {
+            @Override
+            public void success(Result result, Response response) {
+                Success (result);
+            }
+            @Override
+            public void failure(RetrofitError error) {
+                param.setResult(false);
+                onAccept.accept(param);
+                Log.e(TAG, "RetrofitError error", error);
+            }
+        });
+    }
+
+    void Success(Result result){
+        param.setName(result.getName());
+        param.setIcon(result.getWeather().getIcon());
+        param.setHumidity(result.getMain().getHumidity());
+        param.setTemp(result.getMain().getTemp());
+        param.setSpeed(result.getWind().getSpeed());
+        param.setDeg(result.getWind().getDeg());
+        param.setWind(result.getWind().getSpeed(), result.getWind().getDeg());
+        param.setResult(true);
+        onAccept.accept(param);
+    }
+
+
+
     public class Param {
+        public boolean isResult() {
+            return result;
+        }
+
+        public void setResult(boolean result) {
+            this.result = result;
+        }
+
+        boolean result = false;
+
         public String getName() {
             return name;
         }

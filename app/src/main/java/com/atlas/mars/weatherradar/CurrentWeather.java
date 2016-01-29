@@ -5,7 +5,6 @@ import android.app.Fragment;
 import android.content.Context;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -19,14 +18,8 @@ import com.atlas.mars.weatherradar.Rest.CurrentWeatherRest;
 import com.atlas.mars.weatherradar.alarm.LocationFromAsset;
 import com.atlas.mars.weatherradar.location.MyLocationListenerNet;
 import com.atlas.mars.weatherradar.location.OnLocation;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 
-import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.Date;
-import java.util.Scanner;
 
 /**
  * Created by mars on 8/6/15.
@@ -46,8 +39,7 @@ public class CurrentWeather extends Fragment implements OnLocation, CurrentWeath
 
     TextView textViewTitle, textViewTemp, textViewWind, textViewHumidity;
     ImageView imageCurrentWeather;
-    CurrentWeatherTask currentWeatherTask;
-    static boolean isDoing = false;
+    //CurrentWeatherTask currentWeatherTask;
 
     private static int onTaskResult = 0;
 
@@ -81,14 +73,11 @@ public class CurrentWeather extends Fragment implements OnLocation, CurrentWeath
 
     @Override
     public void onPause() {
-        isDoing = false;
         if (locationManagerNet != null) {
             locationManagerNet.removeUpdates(locationListenerNet);
             locationManagerNet = null;
         }
-
         super.onPause();
-
     }
 /* CurrentWeather(MainActivity mainActivity, FrameLayout frLayoutCurrent){
         this.mainActivity = mainActivity;
@@ -111,8 +100,6 @@ public class CurrentWeather extends Fragment implements OnLocation, CurrentWeath
                 locationListenerNet = new MyLocationListenerNet(this);
                 locationManagerNet.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListenerNet);
             }
-
-
         } else {
             Log.d(TAG, "Еще не прошло 5 минут");
             textViewTemp.setText(db.mapSetting.get(db.CURRENT_WEATHER_TEMP));
@@ -149,7 +136,7 @@ public class CurrentWeather extends Fragment implements OnLocation, CurrentWeath
             locationManagerNet.removeUpdates(locationListenerNet);
             locationManagerNet = null;
         }
-        onStartWeatherTask(lat, lng);
+        new CurrentWeatherRest(this, lat, lng);
     }
 
     @Override
@@ -159,6 +146,8 @@ public class CurrentWeather extends Fragment implements OnLocation, CurrentWeath
 
     @Override
     public void accept(CurrentWeatherRest.Param param) {
+        if(!param.isResult()) return;
+
         setIcon(imageCurrentWeather, param.getIcon());
         textViewTemp.setText( String.valueOf(MathOperation.round(param.getTemp(), 1)));
         textViewHumidity.setText(param.getHumidity());
@@ -178,7 +167,7 @@ public class CurrentWeather extends Fragment implements OnLocation, CurrentWeath
     }
 
 
-    void onStartWeatherTask(double lat, double lng) {
+    /*void onStartWeatherTask(double lat, double lng) {
         if (!isDoing) {
             if (lat != 0 && lng != 0) {
                 currentWeatherTask = new CurrentWeatherTask();
@@ -188,9 +177,9 @@ public class CurrentWeather extends Fragment implements OnLocation, CurrentWeath
                 currentWeatherTask.execute();
             }
         }
-    }
+    }*/
 
-    void onAccept(ObjectNode root) {
+    /*void onAccept(ObjectNode root) {
 
         if (root == null) {
             return;
@@ -243,7 +232,7 @@ public class CurrentWeather extends Fragment implements OnLocation, CurrentWeath
 
         db.mapSetting.put(db.TIMESTAMP_CURRENT_WEATHER, db.getTimeStamp());
         db.saveSetting();
-    }
+    }*/
 
 
     private void setIcon(ImageView imageView, String icon) {
@@ -258,7 +247,7 @@ public class CurrentWeather extends Fragment implements OnLocation, CurrentWeath
     }
 
 
-    private class CurrentWeatherTask extends AsyncTask<Double, Void, ObjectNode> {
+    /*private class CurrentWeatherTask extends AsyncTask<Double, Void, ObjectNode> {
         ObjectMapper mapper = new ObjectMapper();
         HttpURLConnection urlConnection;
 
@@ -276,7 +265,6 @@ public class CurrentWeather extends Fragment implements OnLocation, CurrentWeath
 
             if (params.length == 2) {
                 path = "http://api.openweathermap.org/data/2.5/weather?lat=" + params[0] + "&lon=" + params[1] + "&APPID=" + BuildConfig.APPID + "&units=metric";
-                ;
             } else {
                 path = "http://api.openweathermap.org/data/2.5/weather?q=Kiev,UA&units=metric";
             }
@@ -323,7 +311,7 @@ public class CurrentWeather extends Fragment implements OnLocation, CurrentWeath
 
         }
 
-    }
+    }*/
 
 
 }
