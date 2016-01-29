@@ -26,7 +26,6 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Scanner;
 
 /**
@@ -159,7 +158,22 @@ public class CurrentWeather extends Fragment implements OnLocation, CurrentWeath
     }
 
     @Override
-    public void accept(HashMap<String, ?> map) {
+    public void accept(CurrentWeatherRest.Param param) {
+        setIcon(imageCurrentWeather, param.getIcon());
+        textViewTemp.setText( String.valueOf(MathOperation.round(param.getTemp(), 1)));
+        textViewHumidity.setText(param.getHumidity());
+        textViewWind.setText(param.getWind());
+        textViewTitle.setText(param.getName());
+
+        db.mapSetting.put(db.CURRENT_WEATHER_HUMIDITY, param.getHumidity());
+        db.mapSetting.put(db.CURRENT_WEATHER_ICON, param.getIcon());
+        db.mapSetting.put(db.CURRENT_WEATHER_TEMP, String.valueOf(MathOperation.round(param.getTemp(), 1)));
+        db.mapSetting.put(db.CURRENT_WEATHER_WIND, param.getWind());
+        db.mapSetting.put(db.CURRENT_WEATHER_CITY, param.getName());
+
+        db.mapSetting.put(db.TIMESTAMP_CURRENT_WEATHER, db.getTimeStamp());
+        db.saveSetting();
+
 
     }
 
@@ -204,7 +218,7 @@ public class CurrentWeather extends Fragment implements OnLocation, CurrentWeath
 
         String icon = root.get("weather").get(0).path("icon").asText();
         String nameCity = root.path("name").asText();
-        textViewTitle.setText(nameCity);
+
         //mainActivity.setCityName(nameCity);
 
         int temp = root.get("main").path("temp").asInt();
@@ -213,10 +227,10 @@ public class CurrentWeather extends Fragment implements OnLocation, CurrentWeath
         String wind = root.get("wind").path("speed").asText() + "m/s " + root.get("wind").path("deg").asText();
 
         setIcon(imageCurrentWeather, icon);
-
         textViewTemp.setText(strtTemp);
         textViewHumidity.setText(humidity);
         textViewWind.setText(wind);
+        textViewTitle.setText(nameCity);
 
         Log.d(TAG, root.toString());
 
