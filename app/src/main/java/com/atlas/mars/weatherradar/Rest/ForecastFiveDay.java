@@ -4,7 +4,9 @@ import android.util.Log;
 
 import com.atlas.mars.weatherradar.BuildConfig;
 import com.atlas.mars.weatherradar.MathOperation;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.gson.annotations.SerializedName;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -31,7 +33,7 @@ public class ForecastFiveDay {
     OnAccept onAccept;
     String cityId;
     String lat, lng;
-    List<HashMap<String, String>> list;
+    List<HashMap> list;
 
     public ForecastFiveDay(OnAccept onAccept, String cityId) {
         this.onAccept = onAccept;
@@ -96,10 +98,10 @@ public class ForecastFiveDay {
             Calendar cal = new GregorianCalendar();
 
             if(item.getRain()!=null){
-                Log.d(TAG,item.getRain().get3h()+"");
+                Log.d(TAG,item.getRain().getD3h()+"");
             }
             if(item.getSnow()!=null){
-                Log.d(TAG,item.getSnow().get3h()+"");
+                Log.d(TAG,item.getSnow().getD3h()+"");
             }
 
 
@@ -124,7 +126,7 @@ public class ForecastFiveDay {
 
 
     public interface OnAccept {
-        void accept(List<HashMap<String, String>> list);
+        void accept(List<HashMap> list);
     }
 
     public class Param {
@@ -178,22 +180,29 @@ public class ForecastFiveDay {
     }
 
     private class Rain {
-        public String get3h() {
+
+
+
+      //  @JsonProperty(value = "3h")
+        public String getD3h() {
             return d3h;
         }
 
-        @JsonProperty("3h")
+
+        @SerializedName(value="3h")
         public String d3h;
 
 
     }
 
+    @JsonIgnoreProperties(ignoreUnknown = true)
     private class Snow {
-        public String get3h() {
+
+        public String getD3h() {
             return d3h;
         }
 
-        @JsonProperty("3h")
+        @SerializedName("3h")
         public String d3h;
 
     }

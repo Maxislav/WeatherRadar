@@ -102,8 +102,20 @@ public class Forecast implements OnLocation, ForecastFiveDay.OnAccept {
         }
     }
     @Override
-    public void accept(List<HashMap<String, String>> list) {
-            Log.d(TAG, "diid"+list);
+    public void onLocationAccept(String cityId) {
+        new ForecastFiveDay(this, cityId);
+    }
+
+    @Override
+    public void accept(List<HashMap> list) {
+          //  Log.d(TAG, "diid"+list);
+        if (0 < list.size()) {
+            infladeDay(list);
+        } else {
+            toast.show("City not found");
+        }
+        loader.hide();
+
     }
 
 
@@ -277,10 +289,7 @@ public class Forecast implements OnLocation, ForecastFiveDay.OnAccept {
 
     }
 
-    @Override
-    public void onLocationAccept(String cityId) {
-        new ForecastFiveDay(this, cityId);
-    }
+
 
 
 
