@@ -111,6 +111,8 @@ public class Forecast implements OnLocation, ForecastFiveDay.OnAccept {
           //  Log.d(TAG, "diid"+list);
         if (0 < list.size()) {
             infladeDay(list);
+            db.mapSetting.put(db.TIMESTAMP_FORECAST,  db.getTimeStamp());
+            db.saveSetting();
         } else {
             toast.show("City not found");
         }
