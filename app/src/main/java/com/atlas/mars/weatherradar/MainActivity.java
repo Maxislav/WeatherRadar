@@ -159,35 +159,69 @@ public class MainActivity extends FragmentActivity implements Communicator, View
         }
 
         Log.d(TAG, BuildConfig.BorispolParseRain);
-       /* am = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-        intent1 = createIntent("action 1", "extra 1");
-        pIntent1 = PendingIntent.getBroadcast(this, 0, intent1, PendingIntent.FLAG_CANCEL_CURRENT );
-        am.cancel(pIntent1);
-        am.set(AlarmManager.RTC_WAKEUP, startAlarm, pIntent1);
-*/
-        //am.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 5000, pIntent1);
-        //Fade fade = new Fade(Fade.IN);
-        //fade.setDuration(1000);
-        fragmentWeather = new CurrentWeather();
-        //fragmentWeather.setEnterTransition(fade);
 
+
+        /**
+         * Текущая погода
+         */
+        fragmentWeather = new CurrentWeather();
         fragmentImageAction  = new FragmentImageAction();
         fragmentTransaction = getFragmentManager().beginTransaction();
-        //fragmentTransaction.setCustomAnimations(R.anim.fade_out, R.anim.fade_in);
         fragmentTransaction.add(R.id.frLayoutCurrent, fragmentWeather);
         fragmentTransaction.commit();
-        // new ScroolObserv(this, scrollView);
 
         //todo закоментировать
         // new MyRestTest();
     }
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if(updateForecastIsNeeded()){
+            if(mapSetting.get(db.LICENCE)!=null && mapSetting.get(db.LICENCE).equals("1")){
+                if(forecast!=null){
+                    forecast.onRegen();
+                }else{
+                    frLayoutCurrent = (FrameLayout)findViewById(R.id.frLayoutCurrent);
+                    forecast =  new Forecast(this, forecastLinearLayout);
+                }
+            }
+        }
+        if(mapSetting.get(db.LICENCE)!=null && mapSetting.get(db.LICENCE).equals("1") && forecast == null){
+            frLayoutCurrent = (FrameLayout)findViewById(R.id.frLayoutCurrent);
+            forecast =  new Forecast(this, forecastLinearLayout);
+        }
 
+        //  startService(new Intent(this, MyService.class));
+        onCreateMyReceiver();
+        //setMyTitle(pager.getCurrentItem());
+        Bundle extras = getIntent().getExtras();
+        if(extras != null){
+            show(extras.getString("item_id"));
+            Log.d( TAG,"Extra:" + extras.getString("item_id") );
+        }
+
+
+
+      /*  fragmentTransaction.replace(R.id.frLayoutCurrent, fragmentWeather);
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();*/
+        // fragmentWeather.onResume();
+        //  fTrans.add(R.id.frgmCont, frag1);
+
+
+        // currentWeather.onResum();
+    }
+
+    /**
+     * Смена лайаута текущей погоды
+     * @param i
+     */
     public void changeFragmentBar(int i){
+
         fragmentTransaction = getFragmentManager().beginTransaction();
         fragmentTransaction.setCustomAnimations( R.anim.fade_in ,R.anim.fade_out );
         switch (i){
             case 0:
-
                 fragmentTransaction.replace(R.id.frLayoutCurrent, fragmentWeather);
                 fragmentTransaction.addToBackStack(null);
                 fragmentTransaction.commit();
@@ -502,44 +536,7 @@ public class MainActivity extends FragmentActivity implements Communicator, View
         }
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        if(updateForecastIsNeeded()){
-            if(mapSetting.get(db.LICENCE)!=null && mapSetting.get(db.LICENCE).equals("1")){
-                if(forecast!=null){
-                    forecast.onRegen();
-                }else{
-                    frLayoutCurrent = (FrameLayout)findViewById(R.id.frLayoutCurrent);
-                    forecast =  new Forecast(this, forecastLinearLayout);
-                }
-            }
-        }
-        if(mapSetting.get(db.LICENCE)!=null && mapSetting.get(db.LICENCE).equals("1") && forecast == null){
-            frLayoutCurrent = (FrameLayout)findViewById(R.id.frLayoutCurrent);
-            forecast =  new Forecast(this, forecastLinearLayout);
-        }
 
-        //  startService(new Intent(this, MyService.class));
-        onCreateMyReceiver();
-        //setMyTitle(pager.getCurrentItem());
-        Bundle extras = getIntent().getExtras();
-        if(extras != null){
-            show(extras.getString("item_id"));
-            Log.d( TAG,"Extra:" + extras.getString("item_id") );
-        }
-
-
-
-      /*  fragmentTransaction.replace(R.id.frLayoutCurrent, fragmentWeather);
-        fragmentTransaction.addToBackStack(null);
-        fragmentTransaction.commit();*/
-       // fragmentWeather.onResume();
-      //  fTrans.add(R.id.frgmCont, frag1);
-
-
-       // currentWeather.onResum();
-    }
 
     boolean updateForecastIsNeeded(){
         boolean a = true;

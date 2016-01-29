@@ -15,6 +15,8 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.atlas.mars.weatherradar.Rest.CurrentWeatherRest;
+import com.atlas.mars.weatherradar.alarm.LocationFromAsset;
 import com.atlas.mars.weatherradar.location.MyLocationListenerNet;
 import com.atlas.mars.weatherradar.location.OnLocation;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -24,12 +26,13 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Scanner;
 
 /**
  * Created by mars on 8/6/15.
  */
-public class CurrentWeather extends Fragment implements OnLocation {
+public class CurrentWeather extends Fragment implements OnLocation, CurrentWeatherRest.OnAccept {
 
     //private final String TAG =  "CurrentWeather"
     MainActivity mainActivity;
@@ -98,12 +101,18 @@ public class CurrentWeather extends Fragment implements OnLocation {
     }*/
 
     public void _onStart() {
+        String myLocation = db.mapSetting.get(db.MY_LOCATION);
 
         if (weatherTsskIsNeeded()) {
             Log.d(TAG, "Прошло 5 минут");
-            locationManagerNet = (LocationManager) activity.getSystemService(Context.LOCATION_SERVICE);
-            locationListenerNet = new MyLocationListenerNet(this);
-            locationManagerNet.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListenerNet);
+            if (myLocation != null && !myLocation.equals("0")) {
+                new LocationFromAsset(activity, this, myLocation);
+            } else {
+                locationManagerNet = (LocationManager) activity.getSystemService(Context.LOCATION_SERVICE);
+                locationListenerNet = new MyLocationListenerNet(this);
+                locationManagerNet.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListenerNet);
+            }
+
 
         } else {
             Log.d(TAG, "Еще не прошло 5 минут");
@@ -146,6 +155,11 @@ public class CurrentWeather extends Fragment implements OnLocation {
 
     @Override
     public void onLocationAccept(String cityId) {
+        new CurrentWeatherRest(this, cityId);
+    }
+
+    @Override
+    public void accept(HashMap<String, ?> map) {
 
     }
 

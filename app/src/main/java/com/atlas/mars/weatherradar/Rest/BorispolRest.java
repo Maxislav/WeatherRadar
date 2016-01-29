@@ -68,7 +68,7 @@ public class BorispolRest {
                     }
                     map.put("isIntensity", intensity);
                 }
-                 onCallback(map);
+                onCallback(map);
             }
 
             @Override
@@ -84,12 +84,15 @@ public class BorispolRest {
         public String color;
         Integer intensity;
         Integer dist;
+
         public Integer getDist() {
             return dist;
         }
+
         public String getColor() {
             return color;
         }
+
         public Integer getIntensity() {
             return intensity;
         }

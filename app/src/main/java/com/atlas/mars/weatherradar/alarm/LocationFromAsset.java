@@ -24,14 +24,28 @@ public class LocationFromAsset{
     int iPosition;
     static ObjectMapper mapper = new ObjectMapper();
 
+
+    public LocationFromAsset (Context context, OnLocation onLocation, String sPosition){
+        this.onLocation = onLocation;
+        iPosition = Integer.parseInt(sPosition);
+        onStart(context);
+
+    }
+
     public LocationFromAsset (Context context, String sPosition){
         this.onLocation = (OnLocation)context;
         iPosition = Integer.parseInt(sPosition);
+        onStart(context);
 
+
+
+    }
+
+    void onStart(Context context){
         String jsonLocation = null;
         try {
             jsonLocation = AssetJSONFile("cities.json", context);
-          //  jsonLocation = jsonLocation.replaceAll("\\n", "");
+            //  jsonLocation = jsonLocation.replaceAll("\\n", "");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -56,7 +70,6 @@ public class LocationFromAsset{
             e.printStackTrace();
         }
         onCallback(cityId);
-
     }
 
 
