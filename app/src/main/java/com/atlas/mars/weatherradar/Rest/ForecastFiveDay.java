@@ -96,21 +96,29 @@ public class ForecastFiveDay {
             HashMap<String, String> map = new HashMap<>();
             map.put("icon", item.getWeather().getIcon());
             Calendar cal = new GregorianCalendar();
-
+            String snow="", rain="";
             if(item.getRain()!=null){
+                rain = item.getRain().getD3h()+"";
                 Log.d(TAG,item.getRain().getD3h()+"");
             }
             if(item.getSnow()!=null){
+                snow = item.getSnow().getD3h()+"";
                 Log.d(TAG,item.getSnow().getD3h()+"");
             }
+            double dTemp = item.getMain().getTemp();
 
+            map.put("snow", snow);
+            map.put("rain", rain);
+            map.put("temp", (0<dTemp ? "+": "")+ String.valueOf(MathOperation.round(item.getMain().getTemp(),1)));
 
             try {
                 Date date = format.parse(item.getDt_txt());
+                cal.setTime(date);
                 map.put("date", dayMonth.format(date));
                 map.put("time", time.format(date));
                 map.put("HH", HH.format(date));
                 map.put("dayWeek", dayWeek.format(date));
+
                 map.put("dayWeekNum", Integer.toString(cal.get(Calendar.DAY_OF_WEEK)));
             } catch (ParseException e) {
                 Log.e(TAG, e.toString(), e);
