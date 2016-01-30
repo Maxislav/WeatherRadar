@@ -103,7 +103,7 @@ public class Forecast implements OnLocation, ForecastFiveDay.OnAccept {
     }
     @Override
     public void onLocationAccept(String cityId) {
-        new ForecastFiveDay(this, cityId);
+        new ForecastFiveDay(this, cityId, null);
     }
 
     @Override
@@ -114,7 +114,7 @@ public class Forecast implements OnLocation, ForecastFiveDay.OnAccept {
             locationManagerNet.removeUpdates(locationListenerNet);
             locationManagerNet = null;
         }
-        new ForecastFiveDay(this, lat, lng);
+        new ForecastFiveDay(this, lat, lng, null);
 
     }
 

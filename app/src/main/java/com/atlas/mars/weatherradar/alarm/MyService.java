@@ -95,46 +95,10 @@ public class MyService extends Service implements OnLocation {
         //locationManagerGps.removeUpdates(locationListenerGps);
     }
 
-    @Override
-    public void onLocationAccept(double lat, double lng) {
-        if (locationManagerNet != null) {
-            locationManagerNet.removeUpdates(locationListenerNet);
-        }
-        if (isNetworkAvailable()) {
-            if(db.getStartBorispol()){
-                taskNeeded++;
-                borispolTask = new BorispolTask(this);
-                try {
-                    borispolTask.execute(lat, lng);
-                }catch (Exception e){
-                    rainBorispol = true;
-                    Log.e(TAG, e.toString(), e);
-                }
-            }
 
-            if(db.getStartForecast()){
-                taskNeeded++;
-                googleWeatherTask = new GoogleWeatherTask(this);
-                googleWeatherTask.execute(MathOperation.round(lat, 2), MathOperation.round(lng,2));
-            }
-        }
-
-        if(taskNeeded == 0){
-          //  alarmRestart();
-            onStop();
-        }
-    }
-
-    @Override
-    public void onLocationAccept(String cityId) {
-        if (isNetworkAvailable()) {
-            if(db.getStartBorispol()){
-                taskNeeded++;
-                BorispolRest br = new BorispolRest(this, cityId);
-            }
-        }
-    }
-
+    /**
+     * Старт всего
+     */
     void someTask() {
 
         //todo тестовый вызов нотификатион
@@ -147,17 +111,11 @@ public class MyService extends Service implements OnLocation {
         updIntent.setAction(MainActivity.LOCATION);
         updIntent.putExtra("distance", "Wake Up");
         sendBroadcast(updIntent);
-
         if(db.mapSetting.get(db.MY_LOCATION)!=null && !db.mapSetting.get(db.MY_LOCATION).equals("0")){
             /**
              * условие запроса по имени населенного пункта
              */
-
             LocationFromAsset la = new LocationFromAsset(this, db.mapSetting.get(db.MY_LOCATION));
-
-
-
-
         }else if (isNetworkAvailable() && db.isWorkTime()) {
             locationManagerNet = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
             locationListenerNet = new MyLocationListenerNet(this);
@@ -168,6 +126,48 @@ public class MyService extends Service implements OnLocation {
 
 
     }
+    @Override
+    public void onLocationAccept(String cityId) {
+        if (isNetworkAvailable()) {
+            if(db.getStartBorispol()){
+                taskNeeded++;
+                new BorispolRest(this, cityId);
+            }
+        }
+    }
+
+    @Override
+    public void onLocationAccept(double lat, double lng) {
+        if (locationManagerNet != null) {
+            locationManagerNet.removeUpdates(locationListenerNet);
+        }
+        if (isNetworkAvailable()) {
+            if(db.getStartBorispol()){
+                taskNeeded++;
+                new BorispolRest(this, lat, lng);
+                /*borispolTask = new BorispolTask(this);
+                try {
+                    borispolTask.execute(lat, lng);
+                }catch (Exception e){
+                    rainBorispol = true;
+                    Log.e(TAG, e.toString(), e);
+                }*/
+            }
+
+            if(db.getStartForecast()){
+                taskNeeded++;
+                googleWeatherTask = new GoogleWeatherTask(this);
+                googleWeatherTask.execute(MathOperation.round(lat, 2), MathOperation.round(lng,2));
+            }
+        }
+
+        if(taskNeeded == 0){
+            //  alarmRestart();
+            onStop();
+        }
+    }
+
+
 
     void onStop() {
         if(mapSetting.get(DataBaseHelper.IS_ALARM)!=null && mapSetting.get(DataBaseHelper.IS_ALARM).equals("1")){
