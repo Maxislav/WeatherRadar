@@ -68,7 +68,7 @@ public class ForecastFiveDay {
 
             @Override
             public void success(Result result, Response response) {
-                Log.d(TAG, "jds");
+                Log.d(TAG, "getForecastById result ok");
                 Success(result);
             }
 
@@ -80,9 +80,25 @@ public class ForecastFiveDay {
 
     }
 
-
     void restByLatLng() {
+        RestAdapter restAdapter = new RestAdapter.Builder()
+                .setEndpoint(BuildConfig.FORECAST_URL)
+                .build();
+        MyApiEndpointInterface apiService =
+                restAdapter.create(MyApiEndpointInterface.class);
+        apiService.getForecastByLatLng(lat, lng, BuildConfig.APPID, "metric", new Callback<Result>() {
 
+            @Override
+            public void success(Result result, Response response) {
+                Log.d(TAG, "restByLatLng result ok");
+                Success(result);
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                Log.e(TAG, "RetrofitError error", error);
+            }
+        });
     }
 
     void Success(Result result) {

@@ -88,22 +88,34 @@ public class Forecast implements OnLocation, ForecastFiveDay.OnAccept {
                 locationManagerNet = (LocationManager) activity.getSystemService(Context.LOCATION_SERVICE);
                 locationListenerNet = new MyLocationListenerNet(this);
                 if (locationManagerNet.getAllProviders().contains(LocationManager.NETWORK_PROVIDER)) {
-                    locationManagerNet.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListenerNet);
                     loader.show();
-                } else {
-                    onForecastAccept(null);
+                    locationManagerNet.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListenerNet);
+                }else {
+                    /**
+                     * Локация недоступна
+                     */
+                    toast.show("Location not available in setting");
                 }
             }
-
-
-
-        } else {
-            onForecastAccept(null);
+        }else{
+            toast.show("NetworkAvailable=false");
         }
     }
     @Override
     public void onLocationAccept(String cityId) {
         new ForecastFiveDay(this, cityId);
+    }
+
+    @Override
+    public void onLocationAccept(double lat, double lng) {
+        Log.d(TAG, "onLocationAccept lat lng: " + lat + " : " + lng);
+
+        if (locationManagerNet != null) {
+            locationManagerNet.removeUpdates(locationListenerNet);
+            locationManagerNet = null;
+        }
+        new ForecastFiveDay(this, lat, lng);
+
     }
 
     @Override
@@ -158,8 +170,6 @@ public class Forecast implements OnLocation, ForecastFiveDay.OnAccept {
                 childView.setBackground(shape);
             }
         });
-
-
     }
 
     void inflateWebDrip(View view, final HashMap<String, String> map) {
@@ -273,132 +283,6 @@ public class Forecast implements OnLocation, ForecastFiveDay.OnAccept {
         }
     }
 
-    ForecastGoogleApi forecastGoogleApi;
-
-    @Override
-    public void onLocationAccept(double lat, double lng) {
-        Log.d(TAG, "lat lng: " + lat + " : " + lng);
-
-        if (locationManagerNet != null) {
-            locationManagerNet.removeUpdates(locationListenerNet);
-            locationManagerNet = null;
-        }
-        if (forecastGoogleApi != null && forecastGoogleApi.getStatus() == AsyncTask.Status.RUNNING) {
-
-        } else {
-            onStartWeatherTask(lat, lng);
-        }
-
-    }
-
-
-
-
-
-    private void onStartWeatherTask(double lat, double lng) {
-        if (lat != 0 && lng != 0 && !isDoing) {
-            forecastGoogleApi = new ForecastGoogleApi();
-            forecastGoogleApi.execute(MathOperation.round(lat, 4), MathOperation.round(lng, 4));
-        } else {
-            forecastGoogleApi = new ForecastGoogleApi();
-            forecastGoogleApi.execute();
-        }
-
-    }
-
-    void onForecastAccept(ObjectNode root) {
-        List<HashMap> listMap = new ArrayList<>();
-
-        if (root == null) {
-            toast.show("City not found");
-            return;
-        }
-
-        int cod = 200;
-        try {
-            cod = root.path("cod").asInt();
-        } catch (Exception e) {
-            cod = 404;
-            toast.show("Error forecast task");
-            Log.d(TAG, e.toString(), e);
-        }
-        if (cod == 404) {
-            toast.show("City not found. Try Kiev get");
-            if (onTaskResult == 0) {
-                onTaskResult++;
-                onStartWeatherTask(0, 0);
-            } else {
-                toast.show("Error forecast task");
-            }
-            return;
-        }
-
-        ArrayNode list = (ArrayNode) root.get("list");
-        SimpleDateFormat dayMonth = new SimpleDateFormat("dd.MM"); //2015-08-03 18:00:00
-        SimpleDateFormat time = new SimpleDateFormat("HH:mm"); //2015-08-03 18:00:00
-        SimpleDateFormat HH = new SimpleDateFormat("HH"); //2015-08-03 18:00:00
-        SimpleDateFormat dayWeek = new SimpleDateFormat("EE");
-
-        //  SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); //2015-08-03 18:00:00
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH);
-        if (list != null) {
-            for (JsonNode jsonNode : list) {
-                HashMap<String, String> map = new HashMap<>();
-                String dt_txt = jsonNode.path("dt_txt").asText();
-                String temp = Integer.toString(jsonNode.get("main").path("temp").asInt());
-                String main = jsonNode.get("weather").get(0).path("main").asText();
-                String icon = jsonNode.get("weather").get(0).path("icon").asText();
-                String rain = "", snow = "";
-                if (jsonNode.get("rain") != null) {
-                    rain = jsonNode.get("rain").path("3h").asText();
-                }
-                if (jsonNode.get("snow") != null) {
-                    snow = jsonNode.get("snow").path("3h").asText();
-                }
-
-                String description = jsonNode.get("weather").get(0).path("description").asText();
-
-                map.put("rain", rain);
-                map.put("snow", snow);
-
-                map.put("temp", temp);
-                map.put("main", main);
-                map.put("description", description);
-                map.put("icon", icon);
-                Calendar cal = new GregorianCalendar();
-                try {
-                    Date date = format.parse(dt_txt);
-                    dayMonth.format(date);
-                    time.format(date);
-
-                    cal.setTime(date);
-
-                    map.put("date", dayMonth.format(date));
-                    map.put("time", time.format(date));
-                    map.put("HH", HH.format(date));
-                    map.put("dayWeek", dayWeek.format(date));
-                    map.put("dayWeekNum", Integer.toString(cal.get(Calendar.DAY_OF_WEEK)));
-
-
-                } catch (ParseException e) {
-                    Log.e(TAG, e.toString(), e);
-                    e.printStackTrace();
-                }
-                listMap.add(map);
-            }
-        }
-
-        if (0 < listMap.size()) {
-            infladeDay(listMap);
-        } else {
-            toast.show("City not found");
-        }
-
-        db.mapSetting.put(db.TIMESTAMP_FORECAST,  db.getTimeStamp());
-        db.saveSetting();
-
-    }
-
     void infladeDay(List<HashMap> listMap) {
         String dayWeekNum = listMap.get(0).get("dayWeekNum").toString();
         dayWeekNum = listMap.get(0).get("dayWeekNum").toString();
@@ -450,7 +334,7 @@ public class Forecast implements OnLocation, ForecastFiveDay.OnAccept {
 
 
 
-    private class ForecastGoogleApi extends AsyncTask<Double, Void, ObjectNode> {
+    /*private class ForecastGoogleApi extends AsyncTask<Double, Void, ObjectNode> {
         ObjectMapper mapper = new ObjectMapper();
         HttpURLConnection urlConnection;
 
@@ -510,7 +394,7 @@ public class Forecast implements OnLocation, ForecastFiveDay.OnAccept {
             loader.hide();
             onForecastAccept(result);
         }
-    }
+    }*/
 
     private String firstUpperCase(String word) {
         if (word == null || word.isEmpty()) return "";//или return word;
