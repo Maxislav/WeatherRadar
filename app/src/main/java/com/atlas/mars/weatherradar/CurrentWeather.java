@@ -73,7 +73,7 @@ public class CurrentWeather extends Fragment implements OnLocation, CurrentWeath
 
     @Override
     public void onPause() {
-        if (locationManagerNet != null) {
+        if (locationManagerNet != null && locationListenerNet!=null) {
             locationManagerNet.removeUpdates(locationListenerNet);
             locationManagerNet = null;
         }
@@ -139,7 +139,7 @@ public class CurrentWeather extends Fragment implements OnLocation, CurrentWeath
 
     @Override
     public void onLocationAccept(double lat, double lng) {
-        if (locationManagerNet != null) {
+        if (locationManagerNet != null && locationListenerNet!=null) {
             locationManagerNet.removeUpdates(locationListenerNet);
             locationManagerNet = null;
         }
