@@ -97,8 +97,15 @@ public class CurrentWeather extends Fragment implements OnLocation, CurrentWeath
                 new LocationFromAsset(activity, this, myLocation);
             } else {
                 locationManagerNet = (LocationManager) activity.getSystemService(Context.LOCATION_SERVICE);
-                locationListenerNet = new MyLocationListenerNet(this);
-                locationManagerNet.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListenerNet);
+                if (locationManagerNet.getAllProviders().contains(LocationManager.NETWORK_PROVIDER) && locationManagerNet.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
+                    locationListenerNet = new MyLocationListenerNet(this);
+                    locationManagerNet.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListenerNet);
+                }else {
+                    ((ToastShow) activity).show("Location is not available in setting");
+                    //activity.show
+                    ///toast.show("Location not available in setting");
+                }
+
             }
         } else {
             Log.d(TAG, "Еще не прошло 5 минут");

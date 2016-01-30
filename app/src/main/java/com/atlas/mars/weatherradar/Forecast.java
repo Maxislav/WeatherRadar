@@ -86,15 +86,17 @@ public class Forecast implements OnLocation, ForecastFiveDay.OnAccept {
 
             }else{
                 locationManagerNet = (LocationManager) activity.getSystemService(Context.LOCATION_SERVICE);
-                locationListenerNet = new MyLocationListenerNet(this);
-                if (locationManagerNet.getAllProviders().contains(LocationManager.NETWORK_PROVIDER)) {
+
+                if (locationManagerNet.getAllProviders().contains(LocationManager.NETWORK_PROVIDER) && locationManagerNet.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
+                    locationListenerNet = new MyLocationListenerNet(this);
                     loader.show();
                     locationManagerNet.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListenerNet);
                 }else {
                     /**
                      * Локация недоступна
                      */
-                    toast.show("Location not available in setting");
+                    //locationManagerNet.removeUpdates(locationListenerNet);
+                    toast.show("Location is not available in setting");
                 }
             }
         }else{
