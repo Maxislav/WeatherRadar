@@ -26,6 +26,7 @@ import com.atlas.mars.weatherradar.MainActivity;
 import com.atlas.mars.weatherradar.MathOperation;
 import com.atlas.mars.weatherradar.R;
 import com.atlas.mars.weatherradar.Rest.BorispolRest;
+import com.atlas.mars.weatherradar.Rest.ForecastFiveDay;
 import com.atlas.mars.weatherradar.location.MyLocationListenerNet;
 import com.atlas.mars.weatherradar.location.OnLocation;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -133,6 +134,9 @@ public class MyService extends Service implements OnLocation {
                 taskNeeded++;
                 new BorispolRest(this, cityId);
             }
+            if(db.getStartForecast()){
+                new ForecastFiveDay(this, cityId, 3);
+            }
         }
     }
 
@@ -156,13 +160,64 @@ public class MyService extends Service implements OnLocation {
 
             if(db.getStartForecast()){
                 taskNeeded++;
-                googleWeatherTask = new GoogleWeatherTask(this);
-                googleWeatherTask.execute(MathOperation.round(lat, 2), MathOperation.round(lng,2));
+                new ForecastFiveDay(this, lat, lng, 3);
+                //googleWeatherTask = new GoogleWeatherTask(this);
+                //googleWeatherTask.execute(MathOperation.round(lat, 2), MathOperation.round(lng,2));
             }
         }
 
         if(taskNeeded == 0){
             //  alarmRestart();
+            onStop();
+        }
+    }
+
+    public void onBorispolTaskResult(HashMap<String, Integer> map) {
+
+        if (map.get("dist") != null && map.get("dist") < alarmMinDist) {
+            onNotification(map);
+        }
+
+        if(map.get("isIntensity")!=null && 0 <map.get("isIntensity")){
+            rainBorispol = true;
+        }
+
+        if(map.get("error")!=null && map.get("error")==1){
+            rainBorispol = true;
+        }
+        mapSetting.put(DataBaseHelper.BORISPOL_TIME, getTimeStamp());
+        db.saveSetting();
+
+        Log.d(TAG, "onBorispolTaskResult " + (new Date(System.currentTimeMillis())));
+
+        allTaskResult();
+    }
+
+    public void onForecastFiveDayResult(HashMap<String, Boolean> map){
+        rainGoogle = map.get("rain");
+        mapSetting.put(DataBaseHelper.FORECAST_TIME, getTimeStamp());
+        db.saveSetting();
+        allTaskResult();
+    }
+
+
+   /* void onGoogleWeatherTaskResult(HashMap<String, Boolean> map) {
+        rainGoogle = map.get("rain");
+        mapSetting.put(DataBaseHelper.FORECAST_TIME, getTimeStamp());
+        db.saveSetting();
+        allTaskResult();
+    }*/
+
+    void allTaskResult() {
+        taskEnd++;
+        if (taskNeeded <= taskEnd) {
+            if(rainBorispol || rainGoogle){
+                mapSetting.put(DataBaseHelper.FORECAST_RAIN, "1");
+            }else {
+                mapSetting.put(DataBaseHelper.FORECAST_RAIN, "0");
+            }
+            db.saveSetting();
+            // alarmRestart();
             onStop();
         }
     }
@@ -218,47 +273,7 @@ public class MyService extends Service implements OnLocation {
     }
 
 
-    public void onBorispolTaskResult(HashMap<String, Integer> map) {
 
-        if (map.get("dist") != null && map.get("dist") < alarmMinDist) {
-            onNotification(map);
-        }
-
-        if(map.get("isIntensity")!=null && 0 <map.get("isIntensity")){
-            rainBorispol = true;
-        }
-
-        if(map.get("error")!=null && map.get("error")==1){
-            rainBorispol = true;
-        }
-        mapSetting.put(DataBaseHelper.BORISPOL_TIME, getTimeStamp());
-        db.saveSetting();
-
-        Log.d(TAG, "onBorispolTaskResult " + (new Date(System.currentTimeMillis())));
-
-        allTaskResult();
-    }
-
-    void onGoogleWeatherTaskResult(HashMap<String, Boolean> map) {
-        rainGoogle = map.get("rain");
-        mapSetting.put(DataBaseHelper.FORECAST_TIME, getTimeStamp());
-        db.saveSetting();
-        allTaskResult();
-    }
-
-    void allTaskResult() {
-        taskEnd++;
-        if (taskNeeded <= taskEnd) {
-            if(rainBorispol || rainGoogle){
-                mapSetting.put(DataBaseHelper.FORECAST_RAIN, "1");
-            }else {
-                mapSetting.put(DataBaseHelper.FORECAST_RAIN, "0");
-            }
-            db.saveSetting();
-           // alarmRestart();
-            onStop();
-        }
-    }
 
     private void alarmRestart(){
 

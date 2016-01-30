@@ -4,6 +4,7 @@ import android.util.Log;
 
 import com.atlas.mars.weatherradar.BuildConfig;
 import com.atlas.mars.weatherradar.MathOperation;
+import com.atlas.mars.weatherradar.alarm.MyService;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.gson.annotations.SerializedName;
@@ -35,6 +36,7 @@ public class ForecastFiveDay {
     String lat, lng;
     List<HashMap> list;
     Integer cnt;
+    MyService myService;
 
     public ForecastFiveDay(OnAccept onAccept, String cityId, Integer cnt) {
         this.onAccept = onAccept;
@@ -49,7 +51,35 @@ public class ForecastFiveDay {
         this.cnt = cnt;
         this.lat = String.valueOf(MathOperation.round(lat, 4));
         this.lng = String.valueOf(MathOperation.round(lng, 4));
+        restByLatLng();
+    }
 
+    /**
+     * Для фонового процесса по сити ид
+     * @param myService
+     * @param cityId
+     * @param cnt
+     */
+    public ForecastFiveDay(MyService myService, String cityId, Integer cnt) {
+        this.myService = myService;
+        this.cityId = cityId;
+        this.cnt = cnt;
+        list = new ArrayList<>();
+        restByCityId();
+    }
+
+    /**
+     * Для фонового процесса по координатам
+     * @param myService
+     * @param lat
+     * @param lng
+     * @param cnt
+     */
+    public ForecastFiveDay(MyService myService, double lat, double lng, Integer cnt) {
+        this.myService = myService;
+        this.cnt = cnt;
+        this.lat = String.valueOf(MathOperation.round(lat, 4));
+        this.lng = String.valueOf(MathOperation.round(lng, 4));
         restByLatLng();
     }
 
@@ -72,12 +102,19 @@ public class ForecastFiveDay {
             @Override
             public void success(Result result, Response response) {
                 Log.d(TAG, "getForecastById result ok");
-                Success(result);
+                if(myService!=null){
+                    onResultForService (result);
+                }else {
+                    Success(result);
+                }
             }
 
             @Override
             public void failure(RetrofitError error) {
-                Log.e(TAG, "RetrofitError error", error);
+               // Log.e(TAG, "RetrofitError error", error);
+                if(myService!=null) {
+                    onResultForService(null);
+                }
             }
         });
 
@@ -94,14 +131,38 @@ public class ForecastFiveDay {
             @Override
             public void success(Result result, Response response) {
                 Log.d(TAG, "restByLatLng result ok");
-                Success(result);
+                if(myService!=null){
+                    onResultForService (result);
+                }else {
+                    Success(result);
+                }
             }
 
             @Override
             public void failure(RetrofitError error) {
+                if(myService!=null) {
+                    onResultForService(null);
+                }
                 Log.e(TAG, "RetrofitError error", error);
             }
         });
+    }
+    void onResultForService(Result result){
+        HashMap<String, Boolean> map = new HashMap<>();
+        map.put("rain", true);
+        if(result!=null){
+            map.put("rain", false);
+            for (Item item : result.getList()) {
+                if(item.getRain()!=null && !item.getRain().getD3h().isEmpty()){
+                    map.put("rain", true);
+                }
+                if(item.getSnow()!=null && !item.getSnow().getD3h().isEmpty()){
+                    map.put("rain", true);
+                }
+            }
+        }
+
+        myService.onForecastFiveDayResult(map);
     }
 
     void Success(Result result) {
@@ -141,13 +202,11 @@ public class ForecastFiveDay {
                 map.put("dayWeekNum", Integer.toString(cal.get(Calendar.DAY_OF_WEEK)));
             } catch (ParseException e) {
                 Log.e(TAG, e.toString(), e);
-                // e.printStackTrace();
             }
 
             map.put("dt_txt", item.getDt_txt());
             list.add(map);
         }
-
         onAccept.accept(list);
     }
 
@@ -156,15 +215,13 @@ public class ForecastFiveDay {
         void accept(List<HashMap> list);
     }
 
-    public class Param {
 
-    }
+
 
     private class Result {
         public List<Item> getList() {
             return list;
         }
-
         public List<Item> list;
     }
 

@@ -107,8 +107,6 @@ public class GoogleWeatherTask extends AsyncTask<Double, Void, HashMap<String, B
     }
     @Override
     protected void onPostExecute(HashMap result) {
-        //Log.d(TAG, result);
-        myService.onGoogleWeatherTaskResult(result);
-       // myService.onBorispolTaskResult(result);
+          //  myService.onGoogleWeatherTaskResult(result);
     }
 }
