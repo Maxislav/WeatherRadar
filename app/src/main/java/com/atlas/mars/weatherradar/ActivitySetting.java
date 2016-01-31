@@ -109,11 +109,14 @@ public class ActivitySetting extends AppCompatActivity implements TimePicker.OnT
         inflateSetting();
 
         citySpinner = (Spinner) findViewById(R.id.citySpinner);
-        String[] planets = getResources().getStringArray(R.array.array_cities);
-        List<String> options = Arrays.asList(planets);
+        //String[] planets = getResources().getStringArray(R.array.array_cities);
+
+        Cities cities = new Cities(this);
+        String[] planets = cities.getCities();
+       // List<String> options = Arrays.asList(planets);
 
 
-        cityCollection = getCityCollection();
+        cityCollection = getCityCollection(planets);
         adapter = new CustomArrayAdapter(this, R.layout.spinner_item, cityCollection);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         citySpinner.setAdapter(adapter);
@@ -126,9 +129,9 @@ public class ActivitySetting extends AppCompatActivity implements TimePicker.OnT
 
     }
 
-    List<Model> getCityCollection() {
+    List<Model> getCityCollection(String[] planets) {
         int i = 0;
-        String[] planets = getResources().getStringArray(R.array.array_cities);
+        //String[] planets = getResources().getStringArray(R.array.array_cities);
         List<String> options = Arrays.asList(planets);
         List<Model> listOptions = new ArrayList<>();
         for (String option : options) {

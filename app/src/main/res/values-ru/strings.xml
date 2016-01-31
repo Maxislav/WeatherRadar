@@ -26,5 +26,8 @@
     <string name="city_brovary">Бровары</string>
     <string name="city_kiev">Киев</string>
     <string name="by_network">Определять по сети</string>
+    <string name="borispol">Борисполь</string>
+    <string name="brovary">Бровары</string>
+    <string name="kiev">Киев</string>
 
 </resources>

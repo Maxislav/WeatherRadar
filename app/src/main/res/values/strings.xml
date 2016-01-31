@@ -33,6 +33,10 @@
     <string name="city_spinner">Location</string>
 
     <string name="by_network">By network</string>
+    <string name="kiev">Kiev</string>
+    <string name="brovary">Brovary</string>
+    <string name="borispol">Borispol</string>
+
     <string name="city_kiev">Kiev</string>
     <string name="city_brovary">Brovary</string>
     <string name="city_borispol">Borispol</string>
