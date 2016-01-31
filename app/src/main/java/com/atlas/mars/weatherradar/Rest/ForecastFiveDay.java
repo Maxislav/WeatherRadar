@@ -83,17 +83,20 @@ public class ForecastFiveDay {
         restByLatLng();
     }
 
+    private interface Constant{
+        String URL = BuildConfig.URL_API_OPENWEATHERMAP;
+    }
     private interface MyApiEndpointInterface {
-        @GET("/")
+        @GET("/forecast")
         void getForecastById(@Query("id") String cityId,@Query("cnt") Integer cnt, @Query("APPID") String appid, @Query("units") String units, Callback<Result> cb);
 
-        @GET("/")
+        @GET("/forecast")
         void getForecastByLatLng(@Query("lat") String lat, @Query("lon") String lon, @Query("cnt") Integer cnt, @Query("APPID") String appid, @Query("units") String units, Callback<Result> cb);
     }
 
     void restByCityId() {
         RestAdapter restAdapter = new RestAdapter.Builder()
-                .setEndpoint(BuildConfig.FORECAST_URL)
+                .setEndpoint(Constant.URL)
                 .build();
         MyApiEndpointInterface apiService =
                 restAdapter.create(MyApiEndpointInterface.class);
@@ -153,10 +156,10 @@ public class ForecastFiveDay {
         if(result!=null){
             map.put("rain", false);
             for (Item item : result.getList()) {
-                if(item.getRain()!=null && !item.getRain().getD3h().isEmpty()){
+                if(item.getRain()!=null && item.getRain().getD3h()!=null && !item.getRain().getD3h().isEmpty()){
                     map.put("rain", true);
                 }
-                if(item.getSnow()!=null && !item.getSnow().getD3h().isEmpty()){
+                if(item.getSnow()!=null && item.getSnow().getD3h()!=null && !item.getSnow().getD3h().isEmpty()){
                     map.put("rain", true);
                 }
             }
@@ -168,7 +171,8 @@ public class ForecastFiveDay {
     void Success(Result result) {
         list = new ArrayList<>();
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH);
-        SimpleDateFormat dayMonth = new SimpleDateFormat("dd.MM"); //2015-08-03 18:00:00
+        SimpleDateFormat _date = new SimpleDateFormat("dd.MM"); //18.01
+        SimpleDateFormat dayOfMonth = new SimpleDateFormat("dd"); //18
         SimpleDateFormat time = new SimpleDateFormat("HH:mm"); //2015-08-03 18:00:00
         SimpleDateFormat HH = new SimpleDateFormat("HH"); //2015-08-03 18:00:00
         SimpleDateFormat dayWeek = new SimpleDateFormat("EE");
@@ -177,11 +181,11 @@ public class ForecastFiveDay {
             map.put("icon", item.getWeather().getIcon());
             Calendar cal = new GregorianCalendar();
             String snow="", rain="";
-            if(item.getRain()!=null){
+            if(item.getRain()!=null && item.getRain().getD3h()!=null){
                 rain = item.getRain().getD3h()+"";
                 Log.d(TAG,item.getRain().getD3h()+"");
             }
-            if(item.getSnow()!=null){
+            if(item.getSnow()!=null && item.getSnow().getD3h()!=null){
                 snow = item.getSnow().getD3h()+"";
                 Log.d(TAG,item.getSnow().getD3h()+"");
             }
@@ -194,7 +198,8 @@ public class ForecastFiveDay {
             try {
                 Date date = format.parse(item.getDt_txt());
                 cal.setTime(date);
-                map.put("date", dayMonth.format(date));
+                map.put("date", _date.format(date));
+                map.put("dayOfMonth", dayOfMonth.format(date));
                 map.put("time", time.format(date));
                 map.put("HH", HH.format(date));
                 map.put("dayWeek", dayWeek.format(date));

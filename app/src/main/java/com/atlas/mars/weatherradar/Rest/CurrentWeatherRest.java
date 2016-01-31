@@ -41,13 +41,13 @@ public class CurrentWeatherRest {
     }
 
     private interface Constant {
-        public String URL = BuildConfig.CURRENT_WEATHER_URL;
+        public String URL = BuildConfig.URL_API_OPENWEATHERMAP;
     }
 
     private interface MyApiEndpointInterface {
-        @GET("/")
+        @GET("/weather")
         void getCurrentWeatherById(@Query("id") String cityId, @Query("APPID") String appid, @Query("units") String units, Callback<Result> cb);
-        @GET("/")
+        @GET("/weather")
         void getCurrentWeatherByLatLng(@Query("lat") String lat, @Query("lon") String lon, @Query("APPID") String appid, @Query("units") String units, Callback<Result> cb);
     }
 

@@ -31,6 +31,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.atlas.mars.weatherradar.alarm.MorningBroadCast;
+import com.atlas.mars.weatherradar.alarm.MorningService;
 import com.atlas.mars.weatherradar.alarm.SampleBootReceiver;
 import com.atlas.mars.weatherradar.dialog.MyDialog;
 import com.atlas.mars.weatherradar.dialog.OnEvents;
@@ -271,8 +272,9 @@ public class MainActivity extends FragmentActivity implements Communicator, View
 
     void morningAlarm(){
 
-        //todo закоментировать
+        //todo закоментировать тестовый вызов утреннего срвиса
        //startService(new Intent(this, MorningService.class));
+
         long time = db.getMorningWakeUp();
         alarmManagerMorning = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
         morningIntent = createIntent("morningAction", "extraMorning",  MorningBroadCast.class);

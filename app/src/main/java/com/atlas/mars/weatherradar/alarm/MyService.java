@@ -149,20 +149,11 @@ public class MyService extends Service implements OnLocation {
             if(db.getStartBorispol()){
                 taskNeeded++;
                 new BorispolRest(this, lat, lng);
-                /*borispolTask = new BorispolTask(this);
-                try {
-                    borispolTask.execute(lat, lng);
-                }catch (Exception e){
-                    rainBorispol = true;
-                    Log.e(TAG, e.toString(), e);
-                }*/
             }
 
             if(db.getStartForecast()){
                 taskNeeded++;
                 new ForecastFiveDay(this, lat, lng, 3);
-                //googleWeatherTask = new GoogleWeatherTask(this);
-                //googleWeatherTask.execute(MathOperation.round(lat, 2), MathOperation.round(lng,2));
             }
         }
 

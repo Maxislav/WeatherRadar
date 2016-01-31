@@ -17,18 +17,20 @@ import android.widget.RemoteViews;
 import com.atlas.mars.weatherradar.DataBaseHelper;
 import com.atlas.mars.weatherradar.MainActivity;
 import com.atlas.mars.weatherradar.R;
-import com.atlas.mars.weatherradar.Rest.DayForecastRain;
+import com.atlas.mars.weatherradar.Rest.ForecastFiveDay;
 import com.atlas.mars.weatherradar.location.MyLocationListenerNet;
 import com.atlas.mars.weatherradar.location.OnLocation;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
 /**
  * Created by mars on 9/22/15.
  */
-public class MorningService extends Service implements OnLocation, DayForecastRain.Callbackwqw {
+public class MorningService extends Service implements OnLocation, ForecastFiveDay.OnAccept {
     private static final String TAG = "MorningServiceLogs";
     private LocationManager locationManagerNet;
     private LocationListener locationListenerNet;
@@ -43,7 +45,6 @@ public class MorningService extends Service implements OnLocation, DayForecastRa
     public void onCreate() {
         db = new DataBaseHelper(this);
         super.onCreate();
-
     }
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
@@ -56,22 +57,20 @@ public class MorningService extends Service implements OnLocation, DayForecastRa
 
     private void   someTask(){
         if (isNetworkAvailable()){
-            locationManagerNet = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
-            locationListenerNet = new MyLocationListenerNet(this);
-            if(locationManagerNet.getAllProviders().contains(LocationManager.NETWORK_PROVIDER)){
-                locationManagerNet.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListenerNet);
-            }else{
-                new DayForecastRain(this);
+            if(db.mapSetting.get(db.MY_LOCATION)!=null && !db.mapSetting.get(db.MY_LOCATION).equals("0")){
+                new LocationFromAsset(this, db.mapSetting.get(db.MY_LOCATION));
+            }else {
+                locationManagerNet = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
+                if(locationManagerNet.getAllProviders().contains(LocationManager.NETWORK_PROVIDER) && locationManagerNet.isProviderEnabled(LocationManager.NETWORK_PROVIDER)){
+                    locationListenerNet = new MyLocationListenerNet(this);
+                    locationManagerNet.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListenerNet);
+                }else{
+                    // new DayForecastRain(this);
+                }
             }
+
         }
     }
-    private boolean isNetworkAvailable() {
-        ConnectivityManager connectivityManager
-                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
-    }
-
 
     @Override
     public void onLocationAccept(double lat, double lng) {
@@ -79,64 +78,44 @@ public class MorningService extends Service implements OnLocation, DayForecastRa
             locationManagerNet.removeUpdates(locationListenerNet);
             locationManagerNet = null;
         }
-        new DayForecastRain(this, lat, lng);
+       // new DayForecastRain(this, lat, lng);
+        new  ForecastFiveDay(this, lat, lng, 8);
     }
 
     @Override
     public void onLocationAccept(String cityId) {
-
+       new  ForecastFiveDay(this, cityId, 8);
     }
 
     @Override
-    public void Success(List<HashMap> list, String name) {
+    public void accept(List<HashMap> list) {
         if(list==null) {
             this.stopSelf();
             return;
         }
+        SimpleDateFormat formatDayMont = new SimpleDateFormat("dd"); //18
+        String dateOfMonthCur = formatDayMont.format(new Date());
+        String dateOfMonth = "";
+
         Calendar calendarCur = Calendar.getInstance();
         calendarCur.setTimeInMillis(System.currentTimeMillis());
 
-        int dateOfMonthCur = calendarCur.get(Calendar.DAY_OF_MONTH);
+       // int dateOfMonthCur = calendarCur.get(Calendar.DAY_OF_MONTH);
 
-
-        for (HashMap<String, Object> map : list){
-            Long dt = (Long)(map.get("dt"));
-            String main = (String)map.get("main");
-
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTimeInMillis(dt*1000);
-
-            int dateOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
-            if(dateOfMonth==dateOfMonthCur){
-                java.util.Date now = calendar.getTime();
-                java.sql.Timestamp timestamp = new java.sql.Timestamp(now.getTime());
-                if(main.equals("Rain") && now.after(calendarCur.getTime())){
-                    String hh = Integer.toString(calendar.get(Calendar.HOUR_OF_DAY));
-                    notificationCreate(hh, name);
-                    Log.d(TAG,"///////////");
+        for (HashMap<String, String> map : list){
+            dateOfMonth = map.get("dayOfMonth");
+            if(dateOfMonthCur.equals(dateOfMonth)){
+                if(map.get("rain")!=null && !map.get("rain").isEmpty()){
+                    String hh = map.get("time");
+                    notificationCreate(hh, "unknown");
                     break;
                 }
-                Log.d(TAG, timestamp+" : " +main);
             }
         }
-
-        /*if(map==null) {
-            this.stopSelf();
-            return;
-        }
-        for (Map.Entry entry : map.entrySet()) {
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTimeInMillis((Long)entry.getKey()*1000);
-            //Date date =  (Long)entry.getKey()*1000;
-            java.util.Date now = calendar.getTime();
-            java.sql.Timestamp currentTimestamp = new java.sql.Timestamp(now.getTime());
-
-            Log.d(TAG, currentTimestamp +" " +entry.getValue());
-           *//* System.out.println("Key: " + entry.getKey() + " Value: "
-                    + entry.getValue());*//*
-        }*/
         this.stopSelf();
     }
+
+
 
     void notificationCreate(String HH, String city){
        // String contentText = "Возможен дождь в "+HH+"ч";
@@ -174,6 +153,13 @@ public class MorningService extends Service implements OnLocation, DayForecastRa
         nm.notify(2, notification);
 
     }
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    }
+
 }
 
 
