@@ -90,12 +90,18 @@ public class CurrentWeather extends Fragment implements OnLocation, CurrentWeath
 
     public void _onStart() {
         String myLocation = db.mapSetting.get(db.MY_LOCATION);
+        String permitsLocation = db.mapSetting.get(db.LICENCE);
 
         if (weatherTsskIsNeeded()) {
             Log.d(TAG, "Прошло 5 минут");
             if (myLocation != null && !myLocation.equals("0")) {
                 new LocationFromAsset(activity, this, myLocation);
             } else {
+                if(permitsLocation == null || permitsLocation.equals("0")){
+                    ((ToastShow) activity).show("Set agree licence first");
+                    return;
+                }
+
                 locationManagerNet = (LocationManager) activity.getSystemService(Context.LOCATION_SERVICE);
                 if (locationManagerNet.getAllProviders().contains(LocationManager.NETWORK_PROVIDER) && locationManagerNet.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
                     locationListenerNet = new MyLocationListenerNet(this);

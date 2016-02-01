@@ -93,7 +93,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         ContentValues cv = new ContentValues();
         for (int i = 0; i < 3; i++) {
             cv.put(KEY, "url" + (i + 1));
-            cv.put(VALUE, "url" + (i + 1));
+            cv.put(VALUE, "");
             db.insert(TABLE_SETTING, null, cv);
         }
         for (int i = 0; i < 3; i++) {

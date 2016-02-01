@@ -4,7 +4,7 @@
     tools:context=".MainActivity">
     <item android:id="@+id/action_settings" android:title="@string/action_settings"
         android:orderInCategory="100" app:showAsAction="never" />
-    <item android:id="@+id/action_reload" android:title="Reload all"
+    <item android:id="@+id/action_reload" android:title="@string/reload_all_img"
         android:orderInCategory="100" app:showAsAction="never" />
     <item android:id="@+id/action_license" android:title="@string/app_license"
         android:orderInCategory="100" app:showAsAction="never" />

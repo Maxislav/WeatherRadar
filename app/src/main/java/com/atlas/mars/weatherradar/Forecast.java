@@ -63,13 +63,17 @@ public class Forecast implements OnLocation, ForecastFiveDay.OnAccept {
     private void _onStart() {
 
         String myLocation = db.mapSetting.get(db.MY_LOCATION);
+        String permitsLocation = db.mapSetting.get(db.LICENCE);
 
         if (isNetworkAvailable()) {
             if (myLocation != null && !myLocation.equals("0")) {
                 loader.show();
                 new LocationFromAsset(activity, this,  myLocation);
             }else{
-
+                if(permitsLocation == null || permitsLocation.equals("0")){
+                    toast.show("Set agree licence first");
+                    return;
+                }
                 locationManagerNet = (LocationManager) activity.getSystemService(Context.LOCATION_SERVICE);
                 if (locationManagerNet.getAllProviders().contains(LocationManager.NETWORK_PROVIDER) && locationManagerNet.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
                     locationListenerNet = new MyLocationListenerNet(this);
@@ -319,77 +323,11 @@ public class Forecast implements OnLocation, ForecastFiveDay.OnAccept {
         Log.d(TAG, "od" + mapDays.toString());
     }
 
-
-
-    /*private class ForecastGoogleApi extends AsyncTask<Double, Void, ObjectNode> {
-        ObjectMapper mapper = new ObjectMapper();
-        HttpURLConnection urlConnection;
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            isDoing = true;
-        }
-
-        @Override
-        protected ObjectNode doInBackground(Double... params) {
-            URL url;
-            String path;
-            if (params.length == 2) {
-                path = "http://api.openweathermap.org/data/2.5/forecast?lat=" + params[0] + "&lon=" + params[1] + "&APPID=" + BuildConfig.APPID + "&units=metric";
-            } else {
-                path = "http://api.openweathermap.org/data/2.5/forecast?q=Kiev,UA&units=metric";
-            }
-
-            StringBuilder sb = new StringBuilder();
-            try {
-                //http://api.openweathermap.org/data/2.5/forecast?lat=35&lon=139
-                url = new URL(path);
-                urlConnection = (HttpURLConnection) url.openConnection();
-                //   urlConnection.setDoOutput(true);
-                Scanner inStream = new Scanner(urlConnection.getInputStream());
-                while (inStream.hasNextLine()) {
-                    sb.append(inStream.nextLine());
-                }
-            } catch (IOException e) {
-                Log.e(TAG, e.toString(), e);
-                e.printStackTrace();
-            } finally {
-                if (urlConnection != null) {
-                    urlConnection.disconnect();
-                }
-            }
-            ObjectNode root = null;
-            if (0 < sb.length()) {
-                String json = sb.toString();
-                try {
-                    // [{"color":"4793F8","colorRgb":"71 147 248","intensity":6,"dist":75,"xy":"153 164"},{"color":"9BE1FF","colorRgb":"155 225 255","intensity":5,"dist":75,"xy":"159 159"},{"color":"0C59FF","colorRgb":"12 89 255","intensity":7,"dist":78,"xy":"151 161"},{"color":"FF8C9B","colorRgb":"255 140 155","intensity":9,"dist":80,"xy":"151 158"},{"color":"9BEA8F","colorRgb":"155 234 143","intensity":2,"dist":108,"xy":"122 140"}]
-                    root = (ObjectNode) mapper.readTree(json);
-                } catch (IOException e) {
-                    Log.e(TAG, e.toString(), e);
-                    e.printStackTrace();
-                }
-            }
-
-
-            return root;
-        }
-
-        @Override
-        protected void onPostExecute(ObjectNode result) {
-            isDoing = false;
-            loader.hide();
-            onForecastAccept(result);
-        }
-    }*/
-
     private String firstUpperCase(String word) {
         if (word == null || word.isEmpty()) return "";//или return word;
         return word.substring(0, 1).toUpperCase() + word.substring(1);
     }
-   /* private double round(double d, int prec) {
-        return new BigDecimal(d).setScale(prec, RoundingMode.UP).doubleValue();
-    }*/
+
 
     private boolean isNetworkAvailable() {
         ConnectivityManager connectivityManager

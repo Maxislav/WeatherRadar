@@ -13,6 +13,7 @@
 
     ]]></string>
 
+    <string name="reload_all_img">Reload imgs</string>
 
     <string name="license_text">In calculating the distance to the rainfall, as well as for the purpose of receiving the weather forecast, your location will be periodically employed by the below specified servers. Also, for the app to function properly, you must have enabled the location over the network service.
     </string>

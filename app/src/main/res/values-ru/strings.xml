@@ -29,5 +29,6 @@
     <string name="borispol">Борисполь</string>
     <string name="brovary">Бровары</string>
     <string name="kiev">Киев</string>
+    <string name="reload_all_img">Перезагрузить картинки</string>
 
 </resources>
