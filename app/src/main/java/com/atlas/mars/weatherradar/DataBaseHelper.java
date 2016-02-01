@@ -63,7 +63,6 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     public static final String MY_LOCATION = "myLocation";  // int  0, 1, 2 ...
 
 
-
     Calendar fromNotSleep, toNotSleep;
 
     final static String NEW_FORMAT = "yyyy-MM-dd HH:mm:ss.SSS";
@@ -102,7 +101,13 @@ public class DataBaseHelper extends SQLiteOpenHelper {
             cv.put(VALUE, "title" + (i + 1));
             db.insert(TABLE_SETTING, null, cv);
         }
+        cv.put(KEY, LICENCE);
+        cv.put(VALUE, "0");
+        db.insert(TABLE_SETTING, null, cv);
 
+        cv.put(KEY, MY_LOCATION);
+        cv.put(VALUE, "1");
+        db.insert(TABLE_SETTING, null, cv);
     }
 
     @Override
@@ -157,7 +162,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     }
 
 
-    public boolean isWorkTime(){
+    public boolean isWorkTime() {
         long curMills = System.currentTimeMillis();
         Calendar c = new GregorianCalendar();
         fromNotSleep = new GregorianCalendar(c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH));
@@ -169,9 +174,9 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         toNotSleep.add(Calendar.HOUR_OF_DAY, Integer.parseInt(mapSetting.get(TIME_TO_HOUR) != null ? mapSetting.get(TIME_TO_HOUR) : "0"));
         toNotSleep.add(Calendar.MINUTE, Integer.parseInt(mapSetting.get(TIME_TO_MINUTE) != null ? mapSetting.get(TIME_TO_MINUTE) : "0"));
 
-        if(fromNotSleep.getTimeInMillis()<curMills && curMills<toNotSleep.getTimeInMillis()){
+        if (fromNotSleep.getTimeInMillis() < curMills && curMills < toNotSleep.getTimeInMillis()) {
             return true;
-        }else{
+        } else {
             return false;
         }
     }
@@ -271,7 +276,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
             Log.e(TAG, e.toString(), e);
             e.printStackTrace();
         }
-        if (date != null && date.getTime() + ( 3* 3600 * 1000) <= System.currentTimeMillis()) {
+        if (date != null && date.getTime() + (3 * 3600 * 1000) <= System.currentTimeMillis()) {
             return true;
         }
         return false;
@@ -292,7 +297,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
                 Log.e(TAG, e.toString(), e);
                 e.printStackTrace();
             }
-            if (System.currentTimeMillis()< timeNotifyLong + timeRepeatLong ) {
+            if (System.currentTimeMillis() < timeNotifyLong + timeRepeatLong) {
                 return false;
             }
         }
@@ -310,9 +315,9 @@ public class DataBaseHelper extends SQLiteOpenHelper {
                 e.printStackTrace();
                 return true;
             }
-            if(borispolTimeLong+10*60*1000<=System.currentTimeMillis()){ //ессли прошло более 10ми с прошлого запроса к борисполю
+            if (borispolTimeLong + 10 * 60 * 1000 <= System.currentTimeMillis()) { //ессли прошло более 10ми с прошлого запроса к борисполю
                 return true;
-            }else {
+            } else {
                 return false;
             }
         }
@@ -357,7 +362,8 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         // cursor.close();
         sdb.close();
     }
-    public long getMorningWakeUp(){
+
+    public long getMorningWakeUp() {
         Calendar c = Calendar.getInstance();
         c.setTimeInMillis(System.currentTimeMillis());
 
@@ -373,13 +379,13 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         calendarWakeUp.set(Calendar.SECOND, 0);
         calendarWakeUp.set(Calendar.MILLISECOND, 0);
 
-        if(calendarWakeUp.getTimeInMillis() <= c.getTimeInMillis()){
+        if (calendarWakeUp.getTimeInMillis() <= c.getTimeInMillis()) {
             calendarWakeUp.add(c.DAY_OF_MONTH, 1);
         }
         return calendarWakeUp.getTimeInMillis();
     }
 
-    public String getTimeStamp(){
+    public String getTimeStamp() {
         Calendar calendar = Calendar.getInstance();
         java.util.Date now = calendar.getTime();
         java.sql.Timestamp currentTimestamp = new java.sql.Timestamp(now.getTime());
@@ -387,15 +393,16 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     }
 
 
-    public Date stringToDate(String timeText){
+    public Date stringToDate(String timeText) {
         DateFormat formatter = new SimpleDateFormat(NEW_FORMAT);
         //String timeNotify = mapSetting.get(TIME_NOTIFY) != null ? mapSetting.get(TIME_NOTIFY) : null;
         Date dateNotify = null;
-        try{
-            dateNotify=   formatter.parse(timeText);;
-        }catch (Exception e){
+        try {
+            dateNotify = formatter.parse(timeText);
+            ;
+        } catch (Exception e) {
             Log.e(TAG, e.toString());
         }
-       return dateNotify;
+        return dateNotify;
     }
 }

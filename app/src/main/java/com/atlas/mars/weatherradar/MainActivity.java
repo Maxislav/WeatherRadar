@@ -12,7 +12,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -31,7 +30,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.atlas.mars.weatherradar.alarm.MorningBroadCast;
-import com.atlas.mars.weatherradar.alarm.MorningService;
 import com.atlas.mars.weatherradar.alarm.SampleBootReceiver;
 import com.atlas.mars.weatherradar.dialog.MyDialog;
 import com.atlas.mars.weatherradar.dialog.OnEvents;
@@ -102,7 +100,9 @@ public class MainActivity extends FragmentActivity implements Communicator, View
         startAlarm = db.getStartTime();
         mapSetting = DataBaseHelper.mapSetting;
 
-        if(mapSetting.get(db.LICENCE)!=null && mapSetting.get(db.LICENCE).equals("1")){
+        _onStart();
+
+       /* if(mapSetting.get(db.LICENCE)!=null && mapSetting.get(db.LICENCE).equals("1")){
             _onStart();
         }else{
             new Handler().postDelayed(new Runnable(){
@@ -115,7 +115,7 @@ public class MainActivity extends FragmentActivity implements Communicator, View
 
             }, 100L);
 
-        }
+        }*/
 
     }
 
@@ -178,16 +178,14 @@ public class MainActivity extends FragmentActivity implements Communicator, View
     protected void onResume() {
         super.onResume();
         if(updateForecastIsNeeded()){
-            if(mapSetting.get(db.LICENCE)!=null && mapSetting.get(db.LICENCE).equals("1")){
                 if(forecast!=null){
                     forecast.onRegen();
                 }else{
                     frLayoutCurrent = (FrameLayout)findViewById(R.id.frLayoutCurrent);
                     forecast =  new Forecast(this, forecastLinearLayout);
                 }
-            }
         }
-        if(mapSetting.get(db.LICENCE)!=null && mapSetting.get(db.LICENCE).equals("1") && forecast == null){
+        if(forecast == null){
             frLayoutCurrent = (FrameLayout)findViewById(R.id.frLayoutCurrent);
             forecast =  new Forecast(this, forecastLinearLayout);
         }

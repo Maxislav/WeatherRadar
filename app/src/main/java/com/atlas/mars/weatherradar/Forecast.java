@@ -8,7 +8,6 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.os.AsyncTask;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -25,24 +24,10 @@ import com.atlas.mars.weatherradar.alarm.LocationFromAsset;
 import com.atlas.mars.weatherradar.loader.Loader;
 import com.atlas.mars.weatherradar.location.MyLocationListenerNet;
 import com.atlas.mars.weatherradar.location.OnLocation;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 
-import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
-import java.util.Scanner;
 
 /**
  * Created by mars on 8/3/15.
@@ -83,10 +68,9 @@ public class Forecast implements OnLocation, ForecastFiveDay.OnAccept {
             if (myLocation != null && !myLocation.equals("0")) {
                 loader.show();
                 new LocationFromAsset(activity, this,  myLocation);
-
             }else{
-                locationManagerNet = (LocationManager) activity.getSystemService(Context.LOCATION_SERVICE);
 
+                locationManagerNet = (LocationManager) activity.getSystemService(Context.LOCATION_SERVICE);
                 if (locationManagerNet.getAllProviders().contains(LocationManager.NETWORK_PROVIDER) && locationManagerNet.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
                     locationListenerNet = new MyLocationListenerNet(this);
                     loader.show();
@@ -103,6 +87,7 @@ public class Forecast implements OnLocation, ForecastFiveDay.OnAccept {
             toast.show("NetworkAvailable=false");
         }
     }
+
     @Override
     public void onLocationAccept(String cityId) {
         new ForecastFiveDay(this, cityId, null);

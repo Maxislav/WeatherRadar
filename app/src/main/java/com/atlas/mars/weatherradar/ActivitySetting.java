@@ -6,6 +6,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -23,6 +24,8 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
+import com.atlas.mars.weatherradar.dialog.MyDialog;
+import com.atlas.mars.weatherradar.dialog.OnEvents;
 import com.atlas.mars.weatherradar.loader.Loader;
 import com.atlas.mars.weatherradar.timepisker.TimePickerColor;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -41,7 +44,7 @@ import java.util.Scanner;
 /**
  * Created by Администратор on 7/8/15.
  */
-public class ActivitySetting extends AppCompatActivity implements TimePicker.OnTimeChangedListener, View.OnClickListener, CheckBox.OnCheckedChangeListener, AdapterView.OnItemSelectedListener {
+public class ActivitySetting extends AppCompatActivity implements TimePicker.OnTimeChangedListener, View.OnClickListener, CheckBox.OnCheckedChangeListener, AdapterView.OnItemSelectedListener, OnEvents {
     final String TAG = "ActivitySettingLog";
     DataBaseHelper db;
     HashMap<String, String> mapSetting;
@@ -60,6 +63,7 @@ public class ActivitySetting extends AppCompatActivity implements TimePicker.OnT
     int spinerSelection = 1;
     List<Model> cityCollection;
     CustomArrayAdapter adapter;
+    MyDialog dialogLicence;
 
 
     @Override
@@ -141,6 +145,8 @@ public class ActivitySetting extends AppCompatActivity implements TimePicker.OnT
         }
         return listOptions;
     }
+
+
 
     public class Model {
 
@@ -381,7 +387,38 @@ public class ActivitySetting extends AppCompatActivity implements TimePicker.OnT
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        setSpinerSelection(cityCollection, position);
+
+        if(mapSetting.get(db.LICENCE)==null || !mapSetting.get(db.LICENCE).equals("1") && position==0){
+
+            new Handler().postDelayed(new Runnable(){
+                public void run() {
+                    dialogLicence = new MyDialog(ActivitySetting.this, R.layout.license) ;
+                    View view  = new View(ActivitySetting.this);
+                    dialogLicence.show(view);
+                }
+            }, 100L);
+        }else{
+            setSpinerSelection(cityCollection, position);
+        }
+    }
+
+    @Override
+    public void dialogOnOk() {
+       // setSpinerSelection(cityCollection, 0);
+        mapSetting.put(db.LICENCE, "1");
+        db.saveSetting();
+        citySpinner.setSelection(0);
+    }
+
+    @Override
+    public void dialogOnCancel() {
+        citySpinner.setSelection(spinerSelection);
+        //setSpinerSelection(cityCollection, spinerSelection);
+    }
+
+    @Override
+    public Activity getActivity() {
+        return this;
     }
 
     void setSpinerSelection(List<Model> list, int position) {
