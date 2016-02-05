@@ -6,7 +6,6 @@ import com.atlas.mars.weatherradar.BuildConfig;
 import com.atlas.mars.weatherradar.MathOperation;
 import com.atlas.mars.weatherradar.alarm.MyService;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.gson.annotations.SerializedName;
 
 import java.text.ParseException;
@@ -170,6 +169,7 @@ public class ForecastFiveDay {
 
     void Success(Result result) {
         list = new ArrayList<>();
+        String cityName = result.getCity().getName();
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH);
         SimpleDateFormat _date = new SimpleDateFormat("dd.MM"); //18.01
         SimpleDateFormat dayOfMonth = new SimpleDateFormat("dd"); //18
@@ -212,22 +212,37 @@ public class ForecastFiveDay {
             map.put("dt_txt", item.getDt_txt());
             list.add(map);
         }
-        onAccept.accept(list);
+        onAccept.accept(list, cityName);
     }
 
 
     public interface OnAccept {
-        void accept(List<HashMap> list);
+        void accept(List<HashMap> list, String cityName);
     }
 
 
 
 
     private class Result {
+
         public List<Item> getList() {
             return list;
         }
+        public City city;
+
+        public City getCity() {
+            return city;
+        }
+
         public List<Item> list;
+    }
+
+    private  class City{
+        String name;
+        public String getName() {
+            return name;
+        }
+
     }
 
     /**

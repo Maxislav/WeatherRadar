@@ -110,7 +110,7 @@ public class Forecast implements OnLocation, ForecastFiveDay.OnAccept {
     }
 
     @Override
-    public void accept(List<HashMap> list) {
+    public void accept(List<HashMap> list, String cityName) {
           //  Log.d(TAG, "diid"+list);
         if (0 < list.size()) {
             infladeDay(list);

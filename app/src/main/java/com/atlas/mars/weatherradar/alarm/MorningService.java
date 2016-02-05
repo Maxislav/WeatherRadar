@@ -11,7 +11,6 @@ import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.IBinder;
-import android.util.Log;
 import android.widget.RemoteViews;
 
 import com.atlas.mars.weatherradar.DataBaseHelper;
@@ -88,7 +87,7 @@ public class MorningService extends Service implements OnLocation, ForecastFiveD
     }
 
     @Override
-    public void accept(List<HashMap> list) {
+    public void accept(List<HashMap> list, String cityName) {
         if(list==null) {
             this.stopSelf();
             return;
@@ -107,7 +106,7 @@ public class MorningService extends Service implements OnLocation, ForecastFiveD
             if(dateOfMonthCur.equals(dateOfMonth)){
                 if(map.get("rain")!=null && !map.get("rain").isEmpty()){
                     String hh = map.get("time");
-                    notificationCreate(hh, "unknown");
+                    notificationCreate(hh, cityName);
                     break;
                 }
             }
