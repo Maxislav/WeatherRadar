@@ -21,6 +21,7 @@ import java.util.Map;
  */
 public class DataBaseHelper extends SQLiteOpenHelper {
     final String TAG = "DataBaseHelperLogs";
+    final String ALARM = "AlarmLogs";
     SQLiteDatabase sdb;
     private static final int DATABASE_VERSION = 2;
     private static final String DATABASE_NAME = "weather";
@@ -283,6 +284,9 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     }
 
     public boolean getStartBorispol() {
+
+
+
         boolean start = false;
         int timeRepeat = mapSetting.get(TIME_REPEAT) != null ? Integer.parseInt(mapSetting.get(TIME_REPEAT)) : 2;//время возобновления работы после уведомление
         long timeRepeatLong = 3600 * 1000 * timeRepeat;
@@ -298,6 +302,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
                 e.printStackTrace();
             }
             if (System.currentTimeMillis() < timeNotifyLong + timeRepeatLong) {
+                Log.d(ALARM, "GetStartBorispol -> прошло недостаточно  со времени уведомления");
                 return false;
             }
         }
@@ -318,7 +323,10 @@ public class DataBaseHelper extends SQLiteOpenHelper {
             if (borispolTimeLong + 10 * 60 * 1000 <= System.currentTimeMillis()) { //ессли прошло более 10ми с прошлого запроса к борисполю
                 return true;
             } else {
+                //todo раскоментировать
                 return false;
+                //todo закоментировать
+               // return true;
             }
         }
     }

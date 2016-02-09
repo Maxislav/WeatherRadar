@@ -23,7 +23,6 @@ import android.util.Log;
 
 import com.atlas.mars.weatherradar.DataBaseHelper;
 import com.atlas.mars.weatherradar.MainActivity;
-import com.atlas.mars.weatherradar.MathOperation;
 import com.atlas.mars.weatherradar.R;
 import com.atlas.mars.weatherradar.Rest.BorispolRest;
 import com.atlas.mars.weatherradar.Rest.ForecastFiveDay;
@@ -129,12 +128,16 @@ public class MyService extends Service implements OnLocation {
     }
     @Override
     public void onLocationAccept(String cityId) {
+        boolean startBorispol = db.getStartBorispol();
+        boolean startForecast = db.getStartForecast();
+        Log.d(ALARM, "Start Borispol after city Id: " +startBorispol + " ; Start Forecast " + startForecast);
         if (isNetworkAvailable()) {
-            if(db.getStartBorispol()){
+            if(startBorispol){
                 taskNeeded++;
                 new BorispolRest(this, cityId);
             }
-            if(db.getStartForecast()){
+            if(startForecast){
+                taskNeeded++;
                 new ForecastFiveDay(this, cityId, 3);
             }
         }
@@ -142,34 +145,36 @@ public class MyService extends Service implements OnLocation {
 
     @Override
     public void onLocationAccept(double lat, double lng) {
+        boolean startBorispol = db.getStartBorispol();
+        boolean startForecast = db.getStartForecast();
+        Log.d(ALARM, "Start Borispol after lat lng: " +startBorispol + " ; Start Forecast " + startForecast);
         if (locationManagerNet != null) {
             locationManagerNet.removeUpdates(locationListenerNet);
         }
         if (isNetworkAvailable()) {
-            if(db.getStartBorispol()){
+            if(startBorispol){
                 taskNeeded++;
                 new BorispolRest(this, lat, lng);
             }
-
-            if(db.getStartForecast()){
+            if(startForecast){
                 taskNeeded++;
                 new ForecastFiveDay(this, lat, lng, 3);
             }
         }
 
         if(taskNeeded == 0){
-            //  alarmRestart();
             onStop();
         }
     }
 
     public void onBorispolTaskResult(HashMap<String, Integer> map) {
 
+
         if (map.get("dist") != null && map.get("dist") < alarmMinDist) {
             onNotification(map);
         }
 
-        if(map.get("isIntensity")!=null && 0 <map.get("isIntensity")){
+        if(map.get("rainBorispol")!=null && 0 <map.get("rainBorispol")){
             rainBorispol = true;
         }
 
@@ -180,6 +185,7 @@ public class MyService extends Service implements OnLocation {
         db.saveSetting();
 
         Log.d(TAG, "onBorispolTaskResult " + (new Date(System.currentTimeMillis())));
+        Log.d(ALARM, "onBorispolTaskResult " + rainBorispol);
 
         allTaskResult();
     }
@@ -208,7 +214,6 @@ public class MyService extends Service implements OnLocation {
                 mapSetting.put(DataBaseHelper.FORECAST_RAIN, "0");
             }
             db.saveSetting();
-            // alarmRestart();
             onStop();
         }
     }

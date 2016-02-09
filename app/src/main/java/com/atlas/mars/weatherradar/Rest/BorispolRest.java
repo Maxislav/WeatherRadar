@@ -105,9 +105,12 @@ public class BorispolRest {
     void Success(List<CustomObject> customObjects){
         distance = MyService.alarmMinDist;
         for (CustomObject customObject : customObjects) {
+            intensity = customObject.getIntensity();
+            if(0<intensity){
+                map.put("rainBorispol", intensity);
+            }
             if (distance == null || customObject.getDist() < distance) {
                 distance = customObject.getDist();
-                intensity = customObject.getIntensity();
                 map.put("dist", distance);
                 map.put("intensity", intensity);
             }
