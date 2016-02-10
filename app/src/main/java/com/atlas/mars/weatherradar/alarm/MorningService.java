@@ -87,7 +87,7 @@ public class MorningService extends Service implements OnLocation, ForecastFiveD
     }
 
     @Override
-    public void accept(List<HashMap> list, String cityName) {
+    public void accept(List<HashMap> list, String cityName, int statusCode) {
         if(list==null) {
             this.stopSelf();
             return;

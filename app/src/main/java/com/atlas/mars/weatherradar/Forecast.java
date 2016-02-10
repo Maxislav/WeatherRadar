@@ -110,8 +110,12 @@ public class Forecast implements OnLocation, ForecastFiveDay.OnAccept {
     }
 
     @Override
-    public void accept(List<HashMap> list, String cityName) {
+    public void accept(List<HashMap> list, String cityName, int statusCode) {
           //  Log.d(TAG, "diid"+list);
+        if(statusCode!=200){
+            toast.show("Open weather map say Error!");
+            return;
+        }
         if (0 < list.size()) {
             infladeDay(list);
             db.mapSetting.put(db.TIMESTAMP_FORECAST,  db.getTimeStamp());
@@ -120,7 +124,6 @@ public class Forecast implements OnLocation, ForecastFiveDay.OnAccept {
             toast.show("City not found");
         }
         loader.hide();
-
     }
 
 

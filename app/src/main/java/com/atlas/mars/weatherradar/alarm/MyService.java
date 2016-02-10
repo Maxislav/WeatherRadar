@@ -185,13 +185,14 @@ public class MyService extends Service implements OnLocation {
         db.saveSetting();
 
         Log.d(TAG, "onBorispolTaskResult " + (new Date(System.currentTimeMillis())));
-        Log.d(ALARM, "onBorispolTaskResult " + rainBorispol);
+        Log.d(ALARM, "Rain Borispol " + rainBorispol);
 
         allTaskResult();
     }
 
     public void onForecastFiveDayResult(HashMap<String, Boolean> map){
         rainGoogle = map.get("rain");
+        Log.d(ALARM, "Rain forecast " + rainGoogle);
         mapSetting.put(DataBaseHelper.FORECAST_TIME, getTimeStamp());
         db.saveSetting();
         allTaskResult();

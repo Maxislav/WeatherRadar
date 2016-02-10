@@ -34,6 +34,7 @@ public class ForecastFiveDay {
     String cityId;
     String lat, lng;
     List<HashMap> list;
+    HashMap<String, Boolean> map;
     Integer cnt;
     MyService myService;
 
@@ -42,6 +43,7 @@ public class ForecastFiveDay {
         this.cityId = cityId;
         this.cnt = cnt;
         list = new ArrayList<>();
+       // map = new HashMap<>();
         restByCityId();
     }
 
@@ -64,6 +66,7 @@ public class ForecastFiveDay {
         this.cityId = cityId;
         this.cnt = cnt;
         list = new ArrayList<>();
+        map = new HashMap<>();
         restByCityId();
     }
 
@@ -79,6 +82,8 @@ public class ForecastFiveDay {
         this.cnt = cnt;
         this.lat = String.valueOf(MathOperation.round(lat, 4));
         this.lng = String.valueOf(MathOperation.round(lng, 4));
+        list = new ArrayList<>();
+        map = new HashMap<>();
         restByLatLng();
     }
 
@@ -144,31 +149,49 @@ public class ForecastFiveDay {
             public void failure(RetrofitError error) {
                 if(myService!=null) {
                     onResultForService(null);
+                }else{
+                    Success(null);
                 }
                 Log.e(TAG, "RetrofitError error", error);
             }
         });
     }
     void onResultForService(Result result){
-        HashMap<String, Boolean> map = new HashMap<>();
         map.put("rain", true);
-        if(result!=null){
-            map.put("rain", false);
-            for (Item item : result.getList()) {
-                if(item.getRain()!=null && item.getRain().getD3h()!=null && !item.getRain().getD3h().isEmpty()){
-                    map.put("rain", true);
+        if(result == null){
+            myService.onForecastFiveDayResult(map);
+            return;
+        }else{
+            int code = result.getCod();
+            if(code==200){
+                map.put("rain", false);
+                for (Item item : result.getList()) {
+                    if(item.getRain()!=null && item.getRain().getD3h()!=null && !item.getRain().getD3h().isEmpty()){
+                        map.put("rain", true);
+                    }
+                    if(item.getSnow()!=null && item.getSnow().getD3h()!=null && !item.getSnow().getD3h().isEmpty()){
+                        map.put("rain", true);
+                    }
                 }
-                if(item.getSnow()!=null && item.getSnow().getD3h()!=null && !item.getSnow().getD3h().isEmpty()){
-                    map.put("rain", true);
-                }
+            }else{
+                map.put("rain", true);
             }
         }
-
         myService.onForecastFiveDayResult(map);
     }
 
     void Success(Result result) {
         list = new ArrayList<>();
+        if(result == null){
+            onAccept.accept(list, null, 500);
+        }
+        int code = result.getCod();
+
+        if(code!=200){
+            onAccept.accept(list, null, code);
+            return;
+        }
+
         String cityName = result.getCity().getName();
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH);
         SimpleDateFormat _date = new SimpleDateFormat("dd.MM"); //18.01
@@ -212,12 +235,12 @@ public class ForecastFiveDay {
             map.put("dt_txt", item.getDt_txt());
             list.add(map);
         }
-        onAccept.accept(list, cityName);
+        onAccept.accept(list, cityName, code);
     }
 
 
     public interface OnAccept {
-        void accept(List<HashMap> list, String cityName);
+        void accept(List<HashMap> list, String cityName, int code);
     }
 
 
@@ -235,6 +258,12 @@ public class ForecastFiveDay {
         }
 
         public List<Item> list;
+
+        public int getCod() {
+            return cod;
+        }
+        int cod;
+
     }
 
     private  class City{
