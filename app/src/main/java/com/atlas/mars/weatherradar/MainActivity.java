@@ -279,9 +279,10 @@ public class MainActivity extends FragmentActivity implements Communicator, View
         startService(morningIntent);
         pIntent2 =  PendingIntent.getBroadcast(this, 0, morningIntent, PendingIntent.FLAG_CANCEL_CURRENT );
         alarmManagerMorning.cancel(pIntent2);
-        //todo
-        //alarmManagerMorning.set(AlarmManager.RTC_WAKEUP, time, pIntent2);
-        alarmManagerMorning.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis()+1*1000, pIntent2);
+
+        alarmManagerMorning.set(AlarmManager.RTC_WAKEUP, time, pIntent2);
+        //todo для отладки и старта будильника сейчас
+        //alarmManagerMorning.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis()+1*1000, pIntent2);
     }
     void morningAlarmCancel(){
         if(pIntent2!=null && alarmManagerMorning!=null){
