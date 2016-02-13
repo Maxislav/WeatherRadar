@@ -5,7 +5,6 @@ import android.content.res.AssetManager;
 
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -61,7 +60,7 @@ public class Cities {
         String[] planets = new String[jsonArray.length()];
         for (int i = 0 ; i<jsonArray.length();i++){
             try {
-                String name = getStringResourceByName(jsonArray.getJSONObject(i).getString("name"));
+                String name = getStringResourceByName(jsonArray.getJSONObject(i).getString("name"), context);
                 planets[i]= name;
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -78,7 +77,7 @@ public class Cities {
         file.close();
         return new String(formArray);
     }
-    private String getStringResourceByName(String aString) {
+    public static String getStringResourceByName(String aString, Context context) {
         String packageName = context.getPackageName();
         int resId = context.getResources().getIdentifier(aString, "string", packageName);
         return context.getString(resId);

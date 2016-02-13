@@ -13,6 +13,7 @@ import android.net.NetworkInfo;
 import android.os.IBinder;
 import android.widget.RemoteViews;
 
+import com.atlas.mars.weatherradar.Cities;
 import com.atlas.mars.weatherradar.DataBaseHelper;
 import com.atlas.mars.weatherradar.MainActivity;
 import com.atlas.mars.weatherradar.R;
@@ -88,7 +89,7 @@ public class MorningService extends Service implements OnLocation, ForecastFiveD
 
     @Override
     public void accept(List<HashMap> list, String cityName, int statusCode) {
-        if(list==null) {
+        if(list==null || list.size()==0) {
             this.stopSelf();
             return;
         }
@@ -128,6 +129,7 @@ public class MorningService extends Service implements OnLocation, ForecastFiveD
         Intent intent = new Intent(this, MainActivity.class);
         intent.putExtra("time", HH + "ч");
         intent.putExtra("were_from", "morning_service");
+        intent.putExtra("cityName", city);
 
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
@@ -136,7 +138,8 @@ public class MorningService extends Service implements OnLocation, ForecastFiveD
 
         NotificationManager nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         Notification notification = new Notification.Builder(this).setContentTitle("Rain alarm")
-                .setContentText(city+". Возможен дождь в "+HH+"ч")
+
+                .setContentText(city+". "+ Cities.getStringResourceByName("probability_rain", this)+" " +HH+ Cities.getStringResourceByName("hh", this))
                 //.setContent(remoteViews)
                 .setContentIntent(pendingIntent)
                 .setSmallIcon(R.drawable.notification_rain)

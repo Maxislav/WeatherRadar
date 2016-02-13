@@ -30,5 +30,7 @@
     <string name="brovary">Бровары</string>
     <string name="kiev">Киев</string>
     <string name="reload_all_img">Перезагрузить картинки</string>
+    <string name="probability_rain">Возможен дождь в</string>
+    <string name="hh">ч.</string>
 
 </resources>

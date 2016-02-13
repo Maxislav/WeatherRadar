@@ -48,6 +48,8 @@
         <item>@string/city_brovary</item>
         <item>@string/city_borispol</item>
     </string-array>
+    <string name="probability_rain">Chance of rain at</string>
+    <string name="hh">.</string>
 
 
 </resources>

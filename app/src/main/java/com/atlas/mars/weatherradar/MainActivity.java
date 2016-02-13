@@ -279,7 +279,9 @@ public class MainActivity extends FragmentActivity implements Communicator, View
         startService(morningIntent);
         pIntent2 =  PendingIntent.getBroadcast(this, 0, morningIntent, PendingIntent.FLAG_CANCEL_CURRENT );
         alarmManagerMorning.cancel(pIntent2);
-        alarmManagerMorning.set(AlarmManager.RTC_WAKEUP, time, pIntent2);
+        //todo
+        //alarmManagerMorning.set(AlarmManager.RTC_WAKEUP, time, pIntent2);
+        alarmManagerMorning.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis()+1*1000, pIntent2);
     }
     void morningAlarmCancel(){
         if(pIntent2!=null && alarmManagerMorning!=null){
@@ -530,7 +532,7 @@ public class MainActivity extends FragmentActivity implements Communicator, View
                 }else{
                     forecast =  new Forecast(this, forecastLinearLayout);
                 }
-                show(extras.getString("time"));
+                show(Cities.getStringResourceByName("probability_rain", this)+" "+    extras.getString("time") + Cities.getStringResourceByName("hh", this) );
                 isFromNotification = true;
             }
         }

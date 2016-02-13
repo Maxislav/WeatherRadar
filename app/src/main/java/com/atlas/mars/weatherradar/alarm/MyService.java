@@ -220,7 +220,6 @@ public class MyService extends Service implements OnLocation {
     }
 
 
-
     void onStop() {
         if(mapSetting.get(DataBaseHelper.IS_ALARM)!=null && mapSetting.get(DataBaseHelper.IS_ALARM).equals("1")){
             alarmRestart();
