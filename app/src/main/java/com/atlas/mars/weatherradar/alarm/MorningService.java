@@ -118,43 +118,27 @@ public class MorningService extends Service implements OnLocation, ForecastFiveD
 
 
     void notificationCreate(String HH, String city){
-       // String contentText = "Возможен дождь в "+HH+"ч";
-
-       // CharSequence cs = contentText;
-
-        RemoteViews remoteViews = new RemoteViews(getPackageName(),
-                R.layout.notification_morning);
-
-
         Intent intent = new Intent(this, MainActivity.class);
         intent.putExtra("time", HH + "ч");
         intent.putExtra("were_from", "morning_service");
         intent.putExtra("cityName", city);
 
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-
 
 
         NotificationManager nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         Notification notification = new Notification.Builder(this).setContentTitle("Rain alarm")
-
                 .setContentText(city+". "+ Cities.getStringResourceByName("probability_rain", this)+" " +HH+ Cities.getStringResourceByName("hh", this))
-                //.setContent(remoteViews)
                 .setContentIntent(pendingIntent)
                 .setSmallIcon(R.drawable.notification_rain)
+
                 .build();
         notification.flags = Notification.DEFAULT_LIGHTS | Notification.FLAG_AUTO_CANCEL;
-       // remoteViews.setTextViewText(R.id.contentT,cs);
-
-      /*  Intent notificationIntent = new Intent(this, MainActivity.class);
-        notificationIntent.putExtra("item_id", "10052");
-        notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        PendingIntent intent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
-        notification.contentIntent = intent;*/
         nm.notify(2, notification);
 
     }
+
     private boolean isNetworkAvailable() {
         ConnectivityManager connectivityManager
                 = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);

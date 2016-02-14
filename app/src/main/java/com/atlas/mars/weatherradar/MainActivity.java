@@ -280,9 +280,9 @@ public class MainActivity extends FragmentActivity implements Communicator, View
         pIntent2 =  PendingIntent.getBroadcast(this, 0, morningIntent, PendingIntent.FLAG_CANCEL_CURRENT );
         alarmManagerMorning.cancel(pIntent2);
 
-        alarmManagerMorning.set(AlarmManager.RTC_WAKEUP, time, pIntent2);
+        //alarmManagerMorning.set(AlarmManager.RTC_WAKEUP, time, pIntent2);
         //todo для отладки и старта будильника сейчас
-        //alarmManagerMorning.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis()+1*1000, pIntent2);
+        alarmManagerMorning.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis()+1*1000, pIntent2);
     }
     void morningAlarmCancel(){
         if(pIntent2!=null && alarmManagerMorning!=null){
@@ -525,6 +525,8 @@ public class MainActivity extends FragmentActivity implements Communicator, View
                 mapFragments.get(0).reloadImg();
                 show(extras.getInt("dist") + " km");
                 isFromNotification = true;
+                NotificationManager nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+                nm.cancel(1);
             }
 
             if(extras.containsKey("time")){
@@ -535,6 +537,8 @@ public class MainActivity extends FragmentActivity implements Communicator, View
                 }
                 show(Cities.getStringResourceByName("probability_rain", this)+" "+    extras.getString("time") + Cities.getStringResourceByName("hh", this) );
                 isFromNotification = true;
+
+
             }
         }
     }

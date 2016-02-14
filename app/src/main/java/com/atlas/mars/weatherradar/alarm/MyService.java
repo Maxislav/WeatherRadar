@@ -241,7 +241,6 @@ public class MyService extends Service implements OnLocation {
         Intent intent1 = new Intent(this, MainActivity.class);
         intent1.putExtra("dist", map.get("dist"));
         intent1.putExtra("were_from", "my_service");
-
         intent1.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent1,   PendingIntent.FLAG_ONE_SHOT  );
 
@@ -249,6 +248,9 @@ public class MyService extends Service implements OnLocation {
                 .setContentText(message)
                 .setSmallIcon(R.drawable.notification_ico)
                 .setContentIntent(pendingIntent)
+                .addAction(R.drawable.close, "Завершить на сегодня", pendingIntent)
+                .addAction(R.drawable.check, "Продолжить наблюдение", pendingIntent)
+                .setPriority(Notification.PRIORITY_MAX)
                 .build();
         notification.flags = Notification.DEFAULT_LIGHTS | Notification.FLAG_AUTO_CANCEL;
 
