@@ -248,9 +248,9 @@ public class MyService extends Service implements OnLocation {
                 .setContentText(message)
                 .setSmallIcon(R.drawable.notification_ico)
                 .setContentIntent(pendingIntent)
-                .addAction(R.drawable.close, "Завершить на сегодня", pendingIntent)
+                /*.addAction(R.drawable.close, "Завершить на сегодня", pendingIntent)
                 .addAction(R.drawable.check, "Продолжить наблюдение", pendingIntent)
-                .setPriority(Notification.PRIORITY_MAX)
+                .setPriority(Notification.PRIORITY_MAX)*/
                 .build();
         notification.flags = Notification.DEFAULT_LIGHTS | Notification.FLAG_AUTO_CANCEL;
 

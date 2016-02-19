@@ -216,7 +216,7 @@ public class ForecastFiveDay {
 
             map.put("snow", snow);
             map.put("rain", rain);
-            map.put("temp", (0<dTemp ? "+": "")+ String.valueOf(MathOperation.round(item.getMain().getTemp(),1)));
+            map.put("temp", (0<dTemp ? "+": "")+ (int)dTemp);
 
             try {
                 Date date = format.parse(item.getDt_txt());

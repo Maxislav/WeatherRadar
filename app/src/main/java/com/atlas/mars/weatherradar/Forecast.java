@@ -123,7 +123,7 @@ public class Forecast implements OnLocation, ForecastFiveDay.OnAccept {
         } else {
             toast.show("City not found");
         }
-        loader.hide();
+        loader.hide(100);
     }
 
 

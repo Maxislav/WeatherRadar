@@ -47,6 +47,7 @@ public class CurrentWeatherRest {
     private interface MyApiEndpointInterface {
         @GET("/weather")
         void getCurrentWeatherById(@Query("id") String cityId, @Query("APPID") String appid, @Query("units") String units, Callback<Result> cb);
+
         @GET("/weather")
         void getCurrentWeatherByLatLng(@Query("lat") String lat, @Query("lon") String lon, @Query("APPID") String appid, @Query("units") String units, Callback<Result> cb);
     }
@@ -64,8 +65,9 @@ public class CurrentWeatherRest {
         apiService.getCurrentWeatherById(cityId, BuildConfig.APPID, "metric", new Callback<Result>() {
             @Override
             public void success(Result result, Response response) {
-                Success (result);
+                Success(result);
             }
+
             @Override
             public void failure(RetrofitError error) {
                 param.setResult(false);
@@ -84,8 +86,9 @@ public class CurrentWeatherRest {
         apiService.getCurrentWeatherByLatLng(lat, lng, BuildConfig.APPID, "metric", new Callback<Result>() {
             @Override
             public void success(Result result, Response response) {
-                Success (result);
+                Success(result);
             }
+
             @Override
             public void failure(RetrofitError error) {
                 param.setResult(false);
@@ -95,7 +98,7 @@ public class CurrentWeatherRest {
         });
     }
 
-    void Success(Result result){
+    void Success(Result result) {
         param.setName(result.getName());
         param.setIcon(result.getWeather().getIcon());
         param.setHumidity(result.getMain().getHumidity());
@@ -106,7 +109,6 @@ public class CurrentWeatherRest {
         param.setResult(true);
         onAccept.accept(param);
     }
-
 
 
     public class Param {
@@ -138,30 +140,28 @@ public class CurrentWeatherRest {
 
         String icon;
         String name;
+        String humidity;
+        String speed;
+        String deg;
+        String wind;
+        double temp;
 
         public String getHumidity() {
-            return humidity+"%";
+            return humidity + "%";
         }
 
         public void setHumidity(String humidity) {
             this.humidity = humidity;
         }
 
-        String humidity;
-
-
-        public double getTemp() {
-            return temp;
+        public String getTemp() {
+            String ch = 0 < temp ? "+" : "";
+            return ch + (int) temp;
         }
 
         public void setTemp(double temp) {
             this.temp = temp;
         }
-
-        double temp;
-
-
-        String speed;
 
         public String getSpeed() {
             return speed;
@@ -170,8 +170,6 @@ public class CurrentWeatherRest {
         public void setSpeed(String speed) {
             this.speed = speed;
         }
-
-        String deg;
 
         public String getDeg() {
             return deg;
@@ -186,10 +184,8 @@ public class CurrentWeatherRest {
         }
 
         public void setWind(String speed, String deg) {
-            this.wind = speed+"m/s "+ deg;
+            this.wind = speed + "m/s " + deg;
         }
-
-        String wind;
 
 
     }
@@ -212,6 +208,7 @@ public class CurrentWeatherRest {
         public Main getMain() {
             return main;
         }
+
         Wind wind;
 
         public Wind getWind() {
@@ -219,7 +216,7 @@ public class CurrentWeatherRest {
         }
     }
 
-    private class Wind{
+    private class Wind {
         public String getSpeed() {
             return speed;
         }
@@ -239,10 +236,13 @@ public class CurrentWeatherRest {
         public double getTemp() {
             return temp;
         }
+
         double temp;
+
         public String getHumidity() {
             return humidity;
         }
+
         String humidity;
     }
 

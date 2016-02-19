@@ -1,6 +1,7 @@
 package com.atlas.mars.weatherradar.loader;
 
 import android.app.Activity;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +19,7 @@ public class Loader {
     View view;
     AlphaAnimation fadeOutAnimation;
     AlphaAnimation fadeInAnimation;
+    Handler h;
 
     public Loader(Activity activity, View parent) {
         this.activity = activity;
@@ -78,6 +80,52 @@ public class Loader {
             }
         });
         view.startAnimation(fadeOutAnimation);
+    }
+
+
+    public void hide(final int ms) {
+        h = new Handler() {
+            public void handleMessage(android.os.Message msg){
+                fadeOutAnimation.setFillAfter(true);
+                fadeOutAnimation.setAnimationListener(new Animation.AnimationListener() {
+                    @Override
+                    public void onAnimationStart(Animation animation) {
+
+                    }
+
+                    @Override
+                    public void onAnimationEnd(Animation animation) {
+                        view.setVisibility(View.INVISIBLE);
+                    }
+
+                    @Override
+                    public void onAnimationRepeat(Animation animation) {
+
+                    }
+                });
+                view.startAnimation(fadeOutAnimation);
+            }
+
+        };
+
+
+        Thread t = new Thread(new Runnable() {
+            @Override
+            public void run() {
+
+                try {
+                    Thread.sleep(ms);
+                    h.sendEmptyMessage(0);
+
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        });
+        t.start();
+
+
 
     }
 

@@ -162,14 +162,14 @@ public class CurrentWeather extends Fragment implements OnLocation, CurrentWeath
         if(!param.isResult()) return;
 
         setIcon(imageCurrentWeather, param.getIcon());
-        textViewTemp.setText( String.valueOf(MathOperation.round(param.getTemp(), 1)));
+        textViewTemp.setText( param.getTemp());
         textViewHumidity.setText(param.getHumidity());
         textViewWind.setText(param.getWind());
         textViewTitle.setText(param.getName());
 
         db.mapSetting.put(db.CURRENT_WEATHER_HUMIDITY, param.getHumidity());
         db.mapSetting.put(db.CURRENT_WEATHER_ICON, param.getIcon());
-        db.mapSetting.put(db.CURRENT_WEATHER_TEMP, String.valueOf(MathOperation.round(param.getTemp(), 1)));
+        db.mapSetting.put(db.CURRENT_WEATHER_TEMP, param.getTemp());
         db.mapSetting.put(db.CURRENT_WEATHER_WIND, param.getWind());
         db.mapSetting.put(db.CURRENT_WEATHER_CITY, param.getName());
 
