@@ -68,9 +68,9 @@ public class Forecast implements OnLocation, ForecastFiveDay.OnAccept {
         if (isNetworkAvailable()) {
             if (myLocation != null && !myLocation.equals("0")) {
                 loader.show();
-                new LocationFromAsset(activity, this,  myLocation);
-            }else{
-                if(permitsLocation == null || permitsLocation.equals("0")){
+                new LocationFromAsset(activity, this, myLocation);
+            } else {
+                if (permitsLocation == null || permitsLocation.equals("0")) {
                     toast.show("Set agree licence first");
                     return;
                 }
@@ -79,7 +79,7 @@ public class Forecast implements OnLocation, ForecastFiveDay.OnAccept {
                     locationListenerNet = new MyLocationListenerNet(this);
                     loader.show();
                     locationManagerNet.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListenerNet);
-                }else {
+                } else {
                     /**
                      * Локация недоступна
                      */
@@ -87,7 +87,7 @@ public class Forecast implements OnLocation, ForecastFiveDay.OnAccept {
                     toast.show("Location is not available in setting");
                 }
             }
-        }else{
+        } else {
             toast.show("NetworkAvailable=false");
         }
     }
@@ -111,14 +111,14 @@ public class Forecast implements OnLocation, ForecastFiveDay.OnAccept {
 
     @Override
     public void accept(List<HashMap> list, String cityName, int statusCode) {
-          //  Log.d(TAG, "diid"+list);
-        if(statusCode!=200){
+        //  Log.d(TAG, "diid"+list);
+        if (statusCode != 200) {
             toast.show("Open weather map say Error!");
             return;
         }
         if (0 < list.size()) {
             infladeDay(list);
-            db.mapSetting.put(db.TIMESTAMP_FORECAST,  db.getTimeStamp());
+            db.mapSetting.put(db.TIMESTAMP_FORECAST, db.getTimeStamp());
             db.saveSetting();
         } else {
             toast.show("City not found");
@@ -184,7 +184,7 @@ public class Forecast implements OnLocation, ForecastFiveDay.OnAccept {
             }
 
 
-          //  browser.loadDataWithBaseURL("file:///android_asset/", web, "text/html", "UTF-8", null);
+            //  browser.loadDataWithBaseURL("file:///android_asset/", web, "text/html", "UTF-8", null);
             //Todo касание и отображение тоста
             /*browser.setOnTouchListener(new WebView.OnTouchListener() {
                 @Override
@@ -230,7 +230,7 @@ public class Forecast implements OnLocation, ForecastFiveDay.OnAccept {
 
     }
 
-    void onShowToast3h(View view, final String text){
+    void onShowToast3h(View view, final String text) {
         view.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -337,5 +337,22 @@ public class Forecast implements OnLocation, ForecastFiveDay.OnAccept {
                 = (ConnectivityManager) activity.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    }
+
+   /* public static Color hex2Rgb(String colorStr) {
+        return new Color(Integer.valueOf( colorStr.substring( 1, 3 ), 16 ),Integer.valueOf( colorStr.substring( 3, 5 ), 16 ),Integer.valueOf( colorStr.substring( 5, 7 ), 16 ) );
+    }*/
+
+    private class Rgb {
+        int r, g, b;
+        float a;
+
+        public Rgb(String hex) {
+            a = (float)Integer.parseInt(hex.substring(1, 3), 16) / 255;
+            r = Integer.parseInt(hex.substring(3, 5), 16);
+            g = Integer.parseInt(hex.substring(5, 7), 16);
+            b = Integer.parseInt(hex.substring(7, 9), 16);
+        }
+
     }
 }
