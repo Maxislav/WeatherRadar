@@ -88,7 +88,7 @@ public class Forecast implements OnLocation, ForecastFiveDay.OnAccept {
                 }
             }
         } else {
-            toast.show("NetworkAvailable=false");
+            toast.show("Network is not available");
         }
     }
 
