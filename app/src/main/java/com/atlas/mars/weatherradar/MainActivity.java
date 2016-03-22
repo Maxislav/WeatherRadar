@@ -102,20 +102,7 @@ public class MainActivity extends FragmentActivity implements Communicator, View
 
         _onStart();
 
-       /* if(mapSetting.get(db.LICENCE)!=null && mapSetting.get(db.LICENCE).equals("1")){
-            _onStart();
-        }else{
-            new Handler().postDelayed(new Runnable(){
 
-                public void run() {
-                    dialogLicence = new MyDialog(MainActivity.this, R.layout.license) ;
-                    View view  = new View(MainActivity.this);
-                    dialogLicence.show(view);
-                }
-
-            }, 100L);
-
-        }*/
 
     }
 
