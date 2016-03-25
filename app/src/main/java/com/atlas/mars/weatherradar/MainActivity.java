@@ -181,10 +181,7 @@ public class MainActivity extends FragmentActivity implements Communicator, View
         onCreateMyReceiver();
         //setMyTitle(pager.getCurrentItem());
         Bundle extras = getIntent().getExtras();
-        if(extras != null){
-            show(extras.getString("item_id"));
-            Log.d( TAG,"Extra:" + extras.getString("item_id") );
-        }
+
 
 
 
