@@ -20,6 +20,7 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
@@ -64,6 +65,8 @@ public class ActivitySetting extends AppCompatActivity implements TimePicker.OnT
     List<Model> cityCollection;
     CustomArrayAdapter adapter;
     MyDialog dialogLicence;
+    SeekBar sb;
+    TextView seekBarText;
 
 
     @Override
@@ -93,6 +96,11 @@ public class ActivitySetting extends AppCompatActivity implements TimePicker.OnT
         timeRepeat = (EditText) findViewById(R.id.timeRepeat);
         edTextRadius = (EditText) findViewById(R.id.edTextRadius);
         btnLoadSetting = (Button) findViewById(R.id.btnLoadSetting);
+        sb = (SeekBar) findViewById(R.id.seekBar);
+        seekBarText = (TextView) findViewById(R.id.seekBarText);
+
+        onSeekBarEvents();
+
         btnLoadSetting.setOnClickListener(this);
 
         isAlarm = (CheckBox) findViewById(R.id.isAlarm);
@@ -117,7 +125,7 @@ public class ActivitySetting extends AppCompatActivity implements TimePicker.OnT
 
         Cities cities = new Cities(this);
         String[] planets = cities.getCities();
-       // List<String> options = Arrays.asList(planets);
+        // List<String> options = Arrays.asList(planets);
 
 
         cityCollection = getCityCollection(planets);
@@ -147,9 +155,7 @@ public class ActivitySetting extends AppCompatActivity implements TimePicker.OnT
     }
 
 
-
     public class Model {
-
         String name;
         boolean select = false;
         int position;
@@ -241,6 +247,14 @@ public class ActivitySetting extends AppCompatActivity implements TimePicker.OnT
             edTextRadius.setText(mapSetting.get(DataBaseHelper.RADIUS_ALARM));
         }
 
+        if (mapSetting.get(DataBaseHelper.SEED_BARR_VALUE) != null) {
+            double z = Double.parseDouble(mapSetting.get(DataBaseHelper.SEED_BARR_VALUE));
+            z = z * 100 / 2;
+            int position = (int) z;
+            sb.setProgress(position);
+        }
+
+
         inflateUrlSetting(mapSetting);
 
 
@@ -306,6 +320,8 @@ public class ActivitySetting extends AppCompatActivity implements TimePicker.OnT
         mapSetting.put(DataBaseHelper.TIME_TO_MINUTE, "" + toMin);
         mapSetting.put(DataBaseHelper.TIME_REPEAT, timeRepeat.getText().toString());
 
+        mapSetting.put(DataBaseHelper.SEED_BARR_VALUE, seekBarText.getText().toString());
+
         if (isAlarm.isChecked()) {
             mapSetting.put(DataBaseHelper.IS_ALARM, "1");
         } else {
@@ -323,7 +339,7 @@ public class ActivitySetting extends AppCompatActivity implements TimePicker.OnT
         } else {
             mapSetting.put(DataBaseHelper.RADIUS_ALARM, "40");
         }
-        mapSetting.put(db.MY_LOCATION, citySpinner.getSelectedItemPosition()+"");
+        mapSetting.put(db.MY_LOCATION, citySpinner.getSelectedItemPosition() + "");
         db.saveSetting();
     }
 
@@ -388,23 +404,23 @@ public class ActivitySetting extends AppCompatActivity implements TimePicker.OnT
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
-        if(mapSetting.get(db.LICENCE)==null || !mapSetting.get(db.LICENCE).equals("1") && position==0){
+        if (mapSetting.get(db.LICENCE) == null || !mapSetting.get(db.LICENCE).equals("1") && position == 0) {
 
-            new Handler().postDelayed(new Runnable(){
+            new Handler().postDelayed(new Runnable() {
                 public void run() {
-                    dialogLicence = new MyDialog(ActivitySetting.this, R.layout.license) ;
-                    View view  = new View(ActivitySetting.this);
+                    dialogLicence = new MyDialog(ActivitySetting.this, R.layout.license);
+                    View view = new View(ActivitySetting.this);
                     dialogLicence.show(view);
                 }
             }, 100L);
-        }else{
+        } else {
             setSpinerSelection(cityCollection, position);
         }
     }
 
     @Override
     public void dialogOnOk() {
-       // setSpinerSelection(cityCollection, 0);
+        // setSpinerSelection(cityCollection, 0);
         mapSetting.put(db.LICENCE, "1");
         db.saveSetting();
         citySpinner.setSelection(0);
@@ -433,6 +449,32 @@ public class ActivitySetting extends AppCompatActivity implements TimePicker.OnT
 
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
+
+    }
+
+
+    public void onSeekBarEvents() {
+        sb.setOnSeekBarChangeListener(new onSeekBarListener());
+    }
+
+    private class onSeekBarListener implements SeekBar.OnSeekBarChangeListener {
+
+        public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+            // Log the progress
+
+            double z = (double) progress;
+            z = (z * 2 / 100);
+            seekBarText.setText(z + "");
+            Log.d(TAG, "Progress is: " + z);
+            //set textView's text
+            // yourTextView.setText(""+progress);
+        }
+
+        public void onStartTrackingTouch(SeekBar seekBar) {
+        }
+
+        public void onStopTrackingTouch(SeekBar seekBar) {
+        }
 
     }
 

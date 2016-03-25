@@ -62,6 +62,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     public static final String CURRENT_WEATHER_CITY = "currentWeatherCity";  //
     public static final String TIMESTAMP_FORECAST = "timestampForecast";  //
     public static final String MY_LOCATION = "myLocation";  // int  0, 1, 2 ...
+    public static final String SEED_BARR_VALUE = "seedBarrValue";  // чувствительность к дождю  0.1 ... 2.0
 
 
     Calendar fromNotSleep, toNotSleep;
