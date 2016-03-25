@@ -41,6 +41,7 @@
     <string name="city_kiev">Kiev</string>
     <string name="city_brovary">Brovary</string>
     <string name="city_borispol">Borispol</string>
+    <string name="rainfall">rainfall 3h</string>
 
     <string-array name="array_cities">
         <item>@string/by_network</item>

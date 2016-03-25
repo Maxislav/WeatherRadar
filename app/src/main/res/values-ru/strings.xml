@@ -32,5 +32,6 @@
     <string name="reload_all_img">Перезагрузить картинки</string>
     <string name="probability_rain">Возможен дождь в</string>
     <string name="hh">ч.</string>
+    <string name="rainfall">количество осадков 3h</string>
 
 </resources>
