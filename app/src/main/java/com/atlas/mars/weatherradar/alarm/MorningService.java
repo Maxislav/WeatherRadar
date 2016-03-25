@@ -11,7 +11,6 @@ import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.IBinder;
-import android.widget.RemoteViews;
 
 import com.atlas.mars.weatherradar.Cities;
 import com.atlas.mars.weatherradar.DataBaseHelper;
@@ -101,14 +100,25 @@ public class MorningService extends Service implements OnLocation, ForecastFiveD
         calendarCur.setTimeInMillis(System.currentTimeMillis());
 
        // int dateOfMonthCur = calendarCur.get(Calendar.DAY_OF_MONTH);
-
+        double seedBarrValue = 0, rainValue = 0;
         for (HashMap<String, String> map : list){
             dateOfMonth = map.get("dayOfMonth");
             if(dateOfMonthCur.equals(dateOfMonth)){
                 if(map.get("rain")!=null && !map.get("rain").isEmpty()){
-                    String hh = map.get("time");
-                    notificationCreate(hh, cityName);
-                    break;
+                    if(db.mapSetting.get(db.SEED_BARR_VALUE)!=null){
+                        rainValue = Double.parseDouble(map.get("rain"));
+                        seedBarrValue = Double.parseDouble(db.mapSetting.get(db.SEED_BARR_VALUE));
+                        if(seedBarrValue<rainValue){
+                            String hh = map.get("time");
+                            notificationCreate(hh, cityName);
+                            break;
+                        }
+                    }else {
+                        String hh = map.get("time");
+                        notificationCreate(hh, cityName);
+                        break;
+                    }
+
                 }
             }
         }
