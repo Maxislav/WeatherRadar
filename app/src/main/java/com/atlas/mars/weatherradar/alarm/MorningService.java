@@ -105,17 +105,19 @@ public class MorningService extends Service implements OnLocation, ForecastFiveD
             dateOfMonth = map.get("dayOfMonth");
             if(dateOfMonthCur.equals(dateOfMonth)){
                 if(map.get("rain")!=null && !map.get("rain").isEmpty()){
+                    int hh =Integer.parseInt(map.get("HH"));
+
                     if(db.mapSetting.get(db.SEED_BARR_VALUE)!=null){
                         rainValue = Double.parseDouble(map.get("rain"));
                         seedBarrValue = Double.parseDouble(db.mapSetting.get(db.SEED_BARR_VALUE));
-                        if(seedBarrValue<rainValue){
-                            String hh = map.get("time");
-                            notificationCreate(hh, cityName);
+                        if(seedBarrValue<rainValue &&  calendarCur.get(Calendar.HOUR_OF_DAY)<hh){
+                            String time = map.get("time");
+                            notificationCreate(time, cityName);
                             break;
                         }
                     }else {
-                        String hh = map.get("time");
-                        notificationCreate(hh, cityName);
+                        String time = map.get("time");
+                        notificationCreate(time, cityName);
                         break;
                     }
 
