@@ -48,6 +48,9 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </receiver>
+
+
+
         <receiver
             android:name=".alarm.MorningBroadCast"
             android:enabled="true"
@@ -56,6 +59,15 @@
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
                 <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </receiver>
+
+        <receiver
+            android:name=".alarm.RegenBorispolBroadCast"
+            android:exported="true" >
+            <intent-filter>
+                <action android:name="android.intent.action.ActionSetter" >
+                </action>
             </intent-filter>
         </receiver>
 

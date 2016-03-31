@@ -30,6 +30,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.atlas.mars.weatherradar.alarm.MorningBroadCast;
+import com.atlas.mars.weatherradar.alarm.RegenBorispolBroadCast;
 import com.atlas.mars.weatherradar.alarm.SampleBootReceiver;
 import com.atlas.mars.weatherradar.dialog.MyDialog;
 import com.atlas.mars.weatherradar.dialog.OnEvents;
@@ -62,13 +63,15 @@ public class MainActivity extends FragmentActivity implements Communicator, View
     DataBaseHelper db;
 
     NotificationManager nm;
-    AlarmManager am, alarmManagerMorning;
-    Intent intent1, morningIntent;
+    AlarmManager am, alarmManagerMorning, alarmRegenBorispol;
+    Intent intent1, morningIntent, borispolRegenIntent;
     Intent intent2;
     PendingIntent pIntent1;
     PendingIntent pIntent2;
+    PendingIntent pIntent3;
     long startAlarm;
     static MyReceiver myReceiver;
+    static RegenBorispolBroadCast regenBorispolBroadCast;
     HashMap<String, String> mapSetting;
 
    // ImageButton buttonReload;
@@ -182,17 +185,25 @@ public class MainActivity extends FragmentActivity implements Communicator, View
         //setMyTitle(pager.getCurrentItem());
         Bundle extras = getIntent().getExtras();
 
+        if(pager.getCurrentItem()==0){
+            alarmRegenBorispol =  (AlarmManager)getSystemService(Context.ALARM_SERVICE);
+            borispolRegenIntent = createIntent("borispolAction", "regetExtras", RegenBorispolBroadCast.class);
+            pIntent3 =  PendingIntent.getBroadcast(this, 0, borispolRegenIntent, PendingIntent.FLAG_CANCEL_CURRENT );
+            alarmRegenBorispol.cancel(pIntent3);
+            alarmRegenBorispol.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis()+1000, 6 * 1000, pIntent3);
+        }
+
+        Log.d(TAG, "Current page: "+pager.getCurrentItem());
+    }
 
 
 
-      /*  fragmentTransaction.replace(R.id.frLayoutCurrent, fragmentWeather);
-        fragmentTransaction.addToBackStack(null);
-        fragmentTransaction.commit();*/
-        // fragmentWeather.onResume();
-        //  fTrans.add(R.id.frgmCont, frag1);
-
-
-        // currentWeather.onResum();
+    @Override
+    protected void onPause() {
+        unregisterReceiver(myReceiver);
+        unregisterReceiver(regenBorispolBroadCast);
+        alarmRegenBorispol.cancel(pIntent3);
+        super.onPause();
     }
 
     /**
@@ -439,6 +450,11 @@ public class MainActivity extends FragmentActivity implements Communicator, View
 
     }
 
+
+   public void Ololo(){
+        //mapFragments.get(posinion).reloadImg();
+    }
+
     @Override
     public void onClick(View v) {
         final View _v = v;
@@ -546,14 +562,7 @@ public class MainActivity extends FragmentActivity implements Communicator, View
         return a;
     }
 
-    @Override
-    protected void onPause() {
-        unregisterReceiver(myReceiver);
-       /* if(isFromNotification){
-            finish();
-        }*/
-        super.onPause();
-    }
+
 
     private void onCreateMyReceiver(){
        /* if(myReceiver!=null){
@@ -563,12 +572,20 @@ public class MainActivity extends FragmentActivity implements Communicator, View
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(LOCATION);
         registerReceiver(myReceiver, intentFilter);
+
+        regenBorispolBroadCast = new RegenBorispolBroadCast();
+        IntentFilter intentFilter2 = new IntentFilter();
+        intentFilter.addAction("REDRAW");
+        registerReceiver(regenBorispolBroadCast, intentFilter2);
     }
 
     void setMyTitle(int pos){
         posinion = pos;
         String titleText = "";
         ((FragmentImageAction)fragmentImageAction).setTitle(posinion);
+
+        Log.d(TAG, "Position "+ pos);
+
       /*  if(mapSetting.get("title"+(pos+1))==null){
             title.setText(titleText);
         }else{

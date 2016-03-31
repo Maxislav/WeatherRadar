@@ -56,15 +56,7 @@ public abstract class MyFragment  implements View.OnClickListener, PopupMenu.OnM
         this.view = view;
         this.position = position;
         loadImage = new LoadImage();
-
-
-      //  loadingImageView = new ImageView(activity);
         containerImg = (FrameLayout)view.findViewById(R.id.containerImg);
-
-        // buttonReload = (ImageButton)view.findViewById(R.id.buttonReload);
-        //buttonMenu = (ImageButton)view.findViewById(R.id.buttonMenu);
-        //  buttonMenu.setOnClickListener(this);
-        //  buttonReload.setOnClickListener(this);
         mainLayout = (LinearLayout)view.findViewById(R.id.main);
         LinearLayout.LayoutParams parms = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,(int)(Density.widthPixels*1.34));
         containerImg.setLayoutParams(parms);
@@ -72,25 +64,11 @@ public abstract class MyFragment  implements View.OnClickListener, PopupMenu.OnM
         final double g= (float)Density.heightPixels - (float)Density.widthPixels * 1.34;
         // title = (TextView) view.findViewById(R.id.title);
         mapSetting = DataBaseHelper.mapSetting;
-
-
-
-        // setSisze();
         setImageUrl();
         setTitle();
-        //loadImg();
     }
 
-    private void setSisze(){
-      /*  ViewTreeObserver observer= ((FrameLayout)buttonReload.getParent()).getViewTreeObserver();
-        observer.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            @Override
-            public void onGlobalLayout() {
-                buttonReload.setLayoutParams(new  FrameLayout.LayoutParams (buttonReload.getHeight(),buttonReload.getHeight() ));
-               // buttonMenu.setLayoutParams(new  FrameLayout.LayoutParams ((int)(buttonMenu.getHeight()/2),buttonMenu.getHeight() ));
-            }
-        });*/
-    }
+
 
 
 
