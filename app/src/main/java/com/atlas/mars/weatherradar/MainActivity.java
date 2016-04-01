@@ -45,7 +45,7 @@ import java.util.Map;
 
 
 public class MainActivity extends FragmentActivity implements Communicator, ViewPager.OnPageChangeListener, View.OnClickListener, PopupMenu.OnMenuItemClickListener, ToastShow, OnEvents {
-    public  final static String LOCATION = "LOCATION";
+    public final static String LOCATION = "LOCATION";
     final String TAG = "MainActivityLogs";
     private int posinion;
 
@@ -74,7 +74,7 @@ public class MainActivity extends FragmentActivity implements Communicator, View
     static RegenBorispolBroadCast regenBorispolBroadCast;
     HashMap<String, String> mapSetting;
 
-   // ImageButton buttonReload;
+    // ImageButton buttonReload;
     ImageButton buttonMenu;
     TextView title;
     LinearLayout forecastLinearLayout;
@@ -106,10 +106,9 @@ public class MainActivity extends FragmentActivity implements Communicator, View
         _onStart();
 
 
-
     }
 
-    private void _onStart(){
+    private void _onStart() {
         //todo закоментировать
         //boolean isWork = db.isWorkTime();
 
@@ -117,9 +116,9 @@ public class MainActivity extends FragmentActivity implements Communicator, View
         // db.deleteValue(DataBaseHelper.TIME_NOTIFY);
 
         //  buttonReload = (ImageButton)findViewById(R.id.buttonReload);
-        buttonMenu = (ImageButton)findViewById(R.id.buttonMenu);
-        title = (TextView)findViewById(R.id.title);
-        forecastLinearLayout = (LinearLayout)findViewById(R.id.forecastLinearLayout);
+        buttonMenu = (ImageButton) findViewById(R.id.buttonMenu);
+        title = (TextView) findViewById(R.id.title);
+        forecastLinearLayout = (LinearLayout) findViewById(R.id.forecastLinearLayout);
 
 //        frLayoutCurrent = (FrameLayout)findViewById(R.id.frLayoutCurrent);
 //        forecast =  new Forecast(this, forecastLinearLayout);
@@ -135,17 +134,17 @@ public class MainActivity extends FragmentActivity implements Communicator, View
         pager.setOffscreenPageLimit(3);
         pager.setOnPageChangeListener(this);
 
-        LinearLayout.LayoutParams parms = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,(int)(Density.widthPixels*1.34));
+        LinearLayout.LayoutParams parms = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (int) (Density.widthPixels * 1.34));
         pager.setLayoutParams(parms);
-        scrollView = (ScrollView)findViewById(R.id.scrollView);
+        scrollView = (ScrollView) findViewById(R.id.scrollView);
 
         setSisze();
 
 
-        if(mapSetting.get(DataBaseHelper.IS_ALARM)!=null && mapSetting.get(DataBaseHelper.IS_ALARM).equals("1")){
+        if (mapSetting.get(DataBaseHelper.IS_ALARM) != null && mapSetting.get(DataBaseHelper.IS_ALARM).equals("1")) {
             alarmOn();
         }
-        if(mapSetting.get(DataBaseHelper.MORNING_ALARM)!=null && mapSetting.get(DataBaseHelper.MORNING_ALARM).equals("1")){
+        if (mapSetting.get(DataBaseHelper.MORNING_ALARM) != null && mapSetting.get(DataBaseHelper.MORNING_ALARM).equals("1")) {
             morningAlarm();
         }
 
@@ -156,7 +155,7 @@ public class MainActivity extends FragmentActivity implements Communicator, View
          * Текущая погода
          */
         fragmentWeather = new CurrentWeather();
-        fragmentImageAction  = new FragmentImageAction();
+        fragmentImageAction = new FragmentImageAction();
         fragmentTransaction = getFragmentManager().beginTransaction();
         fragmentTransaction.add(R.id.frLayoutCurrent, fragmentWeather);
         fragmentTransaction.commit();
@@ -164,20 +163,21 @@ public class MainActivity extends FragmentActivity implements Communicator, View
         //todo закоментировать
         // new MyRestTest();
     }
+
     @Override
     protected void onResume() {
         super.onResume();
-        if(updateForecastIsNeeded()){
-                if(forecast!=null){
-                    forecast.onRegen();
-                }else{
-                    frLayoutCurrent = (FrameLayout)findViewById(R.id.frLayoutCurrent);
-                    forecast =  new Forecast(this, forecastLinearLayout);
-                }
+        if (updateForecastIsNeeded()) {
+            if (forecast != null) {
+                forecast.onRegen();
+            } else {
+                frLayoutCurrent = (FrameLayout) findViewById(R.id.frLayoutCurrent);
+                forecast = new Forecast(this, forecastLinearLayout);
+            }
         }
-        if(forecast == null){
-            frLayoutCurrent = (FrameLayout)findViewById(R.id.frLayoutCurrent);
-            forecast =  new Forecast(this, forecastLinearLayout);
+        if (forecast == null) {
+            frLayoutCurrent = (FrameLayout) findViewById(R.id.frLayoutCurrent);
+            forecast = new Forecast(this, forecastLinearLayout);
         }
 
         //  startService(new Intent(this, MyService.class));
@@ -185,36 +185,35 @@ public class MainActivity extends FragmentActivity implements Communicator, View
         //setMyTitle(pager.getCurrentItem());
         Bundle extras = getIntent().getExtras();
 
-        if(pager.getCurrentItem()==0){
-            alarmRegenBorispol =  (AlarmManager)getSystemService(Context.ALARM_SERVICE);
+        if (pager.getCurrentItem() == 0) {
+            alarmRegenBorispol = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
             borispolRegenIntent = createIntent("borispolAction", "regetExtras", RegenBorispolBroadCast.class);
-            pIntent3 =  PendingIntent.getBroadcast(this, 0, borispolRegenIntent, PendingIntent.FLAG_CANCEL_CURRENT );
+            pIntent3 = PendingIntent.getBroadcast(this, 0, borispolRegenIntent, PendingIntent.FLAG_CANCEL_CURRENT);
             alarmRegenBorispol.cancel(pIntent3);
-            alarmRegenBorispol.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis()+1000, 6 * 1000, pIntent3);
+            alarmRegenBorispol.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 2 * 60 * 1000, 2 * 60 * 1000, pIntent3);
         }
 
-        Log.d(TAG, "Current page: "+pager.getCurrentItem());
+        Log.d(TAG, "Current page: " + pager.getCurrentItem());
     }
-
 
 
     @Override
     protected void onPause() {
         unregisterReceiver(myReceiver);
-        unregisterReceiver(regenBorispolBroadCast);
         alarmRegenBorispol.cancel(pIntent3);
         super.onPause();
     }
 
     /**
      * Смена лайаута текущей погоды
+     *
      * @param i
      */
-    public void changeFragmentBar(int i){
+    public void changeFragmentBar(int i) {
 
         fragmentTransaction = getFragmentManager().beginTransaction();
-        fragmentTransaction.setCustomAnimations( R.anim.fade_in ,R.anim.fade_out );
-        switch (i){
+        fragmentTransaction.setCustomAnimations(R.anim.fade_in, R.anim.fade_out);
+        switch (i) {
             case 0:
                 fragmentTransaction.replace(R.id.frLayoutCurrent, fragmentWeather);
                 fragmentTransaction.addToBackStack(null);
@@ -225,13 +224,13 @@ public class MainActivity extends FragmentActivity implements Communicator, View
                 fragmentTransaction.replace(R.id.frLayoutCurrent, fragmentImageAction);
                 fragmentTransaction.addToBackStack(null);
                 fragmentTransaction.commit();
-                ((FragmentImageAction)fragmentImageAction).setTitle(posinion);
+                ((FragmentImageAction) fragmentImageAction).setTitle(posinion);
                 break;
         }
 
     }
 
-    private void setSisze(){
+    private void setSisze() {
         final MainActivity mainActivity = this;
        /* ViewTreeObserver observer = ((LinearLayout)buttonReload.getParent()).getViewTreeObserver();
         observer.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
@@ -263,49 +262,49 @@ public class MainActivity extends FragmentActivity implements Communicator, View
         });
     }
 
-    void morningAlarm(){
+    void morningAlarm() {
 
         //todo закоментировать тестовый вызов утреннего срвиса
-      // startService(new Intent(this, MorningService.class));
+        // startService(new Intent(this, MorningService.class));
 
         long time = db.getMorningWakeUp();
-        alarmManagerMorning = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
-        morningIntent = createIntent("morningAction", "extraMorning",  MorningBroadCast.class);
+        alarmManagerMorning = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        morningIntent = createIntent("morningAction", "extraMorning", MorningBroadCast.class);
         startService(morningIntent);
-        pIntent2 =  PendingIntent.getBroadcast(this, 0, morningIntent, PendingIntent.FLAG_CANCEL_CURRENT );
+        pIntent2 = PendingIntent.getBroadcast(this, 0, morningIntent, PendingIntent.FLAG_CANCEL_CURRENT);
         alarmManagerMorning.cancel(pIntent2);
 
         alarmManagerMorning.set(AlarmManager.RTC_WAKEUP, time, pIntent2);
         //todo для отладки и старта будильника сейчас
         //alarmManagerMorning.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis()+1*1000, pIntent2);
     }
-    void morningAlarmCancel(){
-        if(pIntent2!=null && alarmManagerMorning!=null){
-            pIntent2 = PendingIntent.getBroadcast(this, 0, morningIntent, PendingIntent.FLAG_CANCEL_CURRENT );
+
+    void morningAlarmCancel() {
+        if (pIntent2 != null && alarmManagerMorning != null) {
+            pIntent2 = PendingIntent.getBroadcast(this, 0, morningIntent, PendingIntent.FLAG_CANCEL_CURRENT);
             alarmManagerMorning.cancel(pIntent1);
         }
     }
 
 
-    void alarmOn(){
+    void alarmOn() {
         am = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         intent1 = createIntent("action 1", "extra 1", SampleBootReceiver.class);
-        pIntent1 = PendingIntent.getBroadcast(this, 0, intent1, PendingIntent.FLAG_CANCEL_CURRENT );
+        pIntent1 = PendingIntent.getBroadcast(this, 0, intent1, PendingIntent.FLAG_CANCEL_CURRENT);
         am.cancel(pIntent1);
 
         //todo разобраться
         //am.set(AlarmManager.RTC_WAKEUP, startAlarm, pIntent1);
-        am.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis()+1*1000, pIntent1);
+        am.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 1 * 1000, pIntent1);
     }
 
-    void alarmCancel(){
-        if(pIntent1!=null && am!=null){
-            pIntent1 = PendingIntent.getBroadcast(this, 0, intent1, PendingIntent.FLAG_CANCEL_CURRENT );
+    void alarmCancel() {
+        if (pIntent1 != null && am != null) {
+            pIntent1 = PendingIntent.getBroadcast(this, 0, intent1, PendingIntent.FLAG_CANCEL_CURRENT);
             am.cancel(pIntent1);
         }
 
     }
-
 
 
     Intent createIntent(String action, String extra, Class c) {
@@ -315,6 +314,7 @@ public class MainActivity extends FragmentActivity implements Communicator, View
         intent.putExtra("extra", extra);
         return intent;
     }
+
     void compare() {
         Log.d(TAG, "intent1 = intent2: " + intent1.filterEquals(intent2));
         Log.d(TAG, "pIntent1 = pIntent2: " + pIntent1.equals(pIntent2));
@@ -328,12 +328,12 @@ public class MainActivity extends FragmentActivity implements Communicator, View
 
         return true;
     }
+
     @Override
     public boolean onMenuItemClick(MenuItem item) {
         onOptionsItemSelected(item);
         return false;
     }
-
 
 
     @Override
@@ -342,16 +342,16 @@ public class MainActivity extends FragmentActivity implements Communicator, View
         Intent intent;
         if (id == R.id.action_settings) {
             intent = new Intent(this, ActivitySetting.class);
-            startActivityForResult(intent,0);
+            startActivityForResult(intent, 0);
             return true;
         }
         if (id == R.id.action_reload) {
             reloadAll();
             return true;
         }
-        if(id == R.id.action_license){
-            MyDialog myDialog = new MyDialog(this, R.layout.license) ;
-            View view  = new View(this);
+        if (id == R.id.action_license) {
+            MyDialog myDialog = new MyDialog(this, R.layout.license);
+            View view = new View(this);
             myDialog.show(view);
             return true;
         }
@@ -359,10 +359,10 @@ public class MainActivity extends FragmentActivity implements Communicator, View
         return super.onOptionsItemSelected(item);
     }
 
-    private void reloadAll(){
+    private void reloadAll() {
 
         for (Map.Entry entry : mapFragments.entrySet()) {
-            ((BoridpolRadar)entry.getValue()).reloadImg();
+            ((BoridpolRadar) entry.getValue()).reloadImg();
 
             /*System.out.println("Key: " + entry.getKey() + " Value: "
                     + entry.getValue());*/
@@ -375,7 +375,7 @@ public class MainActivity extends FragmentActivity implements Communicator, View
     @Override
     public void initView(View v, int position) {
         mapFragments.put(position, new BoridpolRadar(v, this, position));
-        if(position == 0){
+        if (position == 0) {
             mapFragments.get(0).firstLoad();
         }
        /* switch (position){
@@ -415,20 +415,20 @@ public class MainActivity extends FragmentActivity implements Communicator, View
                 //Todo нажато сохранение
                 reloadAll();
                 Bundle extras = intent.getExtras();
-                if(extras.getBoolean(DataBaseHelper.IS_ALARM)){
+                if (extras.getBoolean(DataBaseHelper.IS_ALARM)) {
                     alarmOn();
-                }else {
+                } else {
                     alarmCancel();
                 }
-                if(extras.getBoolean(DataBaseHelper.MORNING_ALARM)){
+                if (extras.getBoolean(DataBaseHelper.MORNING_ALARM)) {
                     morningAlarm();
-                }else{
+                } else {
                     morningAlarmCancel();
                 }
             }
         }
-        if(requestCode==1){
-            Log.d(TAG, requestCode+"");
+        if (requestCode == 1) {
+            Log.d(TAG, requestCode + "");
         }
     }
 
@@ -439,8 +439,8 @@ public class MainActivity extends FragmentActivity implements Communicator, View
 
     @Override
     public void onPageSelected(int position) {
-       setMyTitle(position);
-       Log.d(TAG, "position: "+ position);
+        setMyTitle(position);
+        Log.d(TAG, "position: " + position);
         mapFragments.get(position).firstLoad();
 
     }
@@ -451,7 +451,7 @@ public class MainActivity extends FragmentActivity implements Communicator, View
     }
 
 
-   public void Ololo(){
+    public void Ololo() {
         //mapFragments.get(posinion).reloadImg();
     }
 
@@ -459,13 +459,13 @@ public class MainActivity extends FragmentActivity implements Communicator, View
     public void onClick(View v) {
         final View _v = v;
         final MainActivity mainActivity = this;
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.buttonReload:
 
                /* MyFragment myFragment = (MyFragment)fragmetMap.get(posinion);// (MyFragment)pager.getChildAt(posinion);
                 myFragment.reloadImg();*/
                 mapFragments.get(posinion).reloadImg();
-             //   reloadImg();
+                //   reloadImg();
                 break;
             case R.id.buttonMenu:
                 PopupMenu popupMenu = new PopupMenu(this, v);
@@ -481,8 +481,8 @@ public class MainActivity extends FragmentActivity implements Communicator, View
         mapSetting.put(db.LICENCE, "1");
         db.saveSetting();
         _onStart();
-        frLayoutCurrent = (FrameLayout)findViewById(R.id.frLayoutCurrent);
-        forecast =  new Forecast(this, forecastLinearLayout);
+        frLayoutCurrent = (FrameLayout) findViewById(R.id.frLayoutCurrent);
+        forecast = new Forecast(this, forecastLinearLayout);
     }
 
     @Override
@@ -493,8 +493,9 @@ public class MainActivity extends FragmentActivity implements Communicator, View
         db.saveSetting();
         finish();
     }
+
     @Override
-    public Activity getActivity(){
+    public Activity getActivity() {
         return this;
     }
 
@@ -508,20 +509,24 @@ public class MainActivity extends FragmentActivity implements Communicator, View
         public void onReceive(Context arg0, Intent arg1) {
 
             String distance = arg1.getExtras().getString("distance");
-
+            boolean regen = arg1.getExtras().getBoolean("regenBorispol");
+            if (regen) {
+                Log.d(TAG, "Regen " + regen);
+                mapFragments.get(pager.getCurrentItem()).reloadImg();
+            }
         }
     }
 
-    public void setCityName(String name){
+    public void setCityName(String name) {
         title.setText(name);
     }
 
     @Override
     public void onNewIntent(Intent intent) {
         Bundle extras = intent.getExtras();
-        if(extras != null){
+        if (extras != null) {
 
-            if(extras.containsKey("dist")){
+            if (extras.containsKey("dist")) {
                 mapFragments.get(0).reloadImg();
                 show(extras.getInt("dist") + " km");
                 isFromNotification = true;
@@ -529,13 +534,13 @@ public class MainActivity extends FragmentActivity implements Communicator, View
                 nm.cancel(1);
             }
 
-            if(extras.containsKey("time")){
-                if(forecast!=null){
+            if (extras.containsKey("time")) {
+                if (forecast != null) {
                     forecast.onRegen();
-                }else{
-                    forecast =  new Forecast(this, forecastLinearLayout);
+                } else {
+                    forecast = new Forecast(this, forecastLinearLayout);
                 }
-                show(Cities.getStringResourceByName("probability_rain", this)+" "+    extras.getString("time") + Cities.getStringResourceByName("hh", this) );
+                show(Cities.getStringResourceByName("probability_rain", this) + " " + extras.getString("time") + Cities.getStringResourceByName("hh", this));
                 isFromNotification = true;
 
 
@@ -544,27 +549,25 @@ public class MainActivity extends FragmentActivity implements Communicator, View
     }
 
 
-
-    boolean updateForecastIsNeeded(){
+    boolean updateForecastIsNeeded() {
         boolean a = true;
         String stringDateForecast = db.mapSetting.get(db.TIMESTAMP_FORECAST);
         Date dateForecast;
-        if(stringDateForecast!=null){
+        if (stringDateForecast != null) {
             dateForecast = db.stringToDate(db.mapSetting.get(db.TIMESTAMP_FORECAST));
-            if(dateForecast.getTime()+(60*60*1000)<System.currentTimeMillis()){
+            if (dateForecast.getTime() + (60 * 60 * 1000) < System.currentTimeMillis()) {
                 a = true;
-            }else {
+            } else {
                 a = false;
             }
-        }else {
+        } else {
             a = true;
         }
         return a;
     }
 
 
-
-    private void onCreateMyReceiver(){
+    private void onCreateMyReceiver() {
        /* if(myReceiver!=null){
             unregisterReceiver(myReceiver);
         }*/
@@ -573,18 +576,14 @@ public class MainActivity extends FragmentActivity implements Communicator, View
         intentFilter.addAction(LOCATION);
         registerReceiver(myReceiver, intentFilter);
 
-        regenBorispolBroadCast = new RegenBorispolBroadCast();
-        IntentFilter intentFilter2 = new IntentFilter();
-        intentFilter.addAction("REDRAW");
-        registerReceiver(regenBorispolBroadCast, intentFilter2);
     }
 
-    void setMyTitle(int pos){
+    void setMyTitle(int pos) {
         posinion = pos;
         String titleText = "";
-        ((FragmentImageAction)fragmentImageAction).setTitle(posinion);
+        ((FragmentImageAction) fragmentImageAction).setTitle(posinion);
 
-        Log.d(TAG, "Position "+ pos);
+        Log.d(TAG, "Position " + pos);
 
       /*  if(mapSetting.get("title"+(pos+1))==null){
             title.setText(titleText);
@@ -593,11 +592,6 @@ public class MainActivity extends FragmentActivity implements Communicator, View
         }
 */
     }
-
-
-
-
-
 
 
 }

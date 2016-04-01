@@ -14,8 +14,17 @@ public class RegenBorispolBroadCast  extends BroadcastReceiver {
     final String TAG = "RegenBorispolBroadCastLogs";
     @Override
     public void onReceive(Context context, Intent intent) {
-        Log.d(TAG, "oloewe");
         context.getPackageName();
+
+        Intent updIntent = new Intent();
+        updIntent.setAction(MainActivity.LOCATION);
+        updIntent.putExtra("regenBorispol", true);
+        context.sendBroadcast(updIntent);
+
+        //context.sendBroadcast(new Intent("INTERNET_LOST"));
+
+
+        Log.d(TAG, "INTERNET_LOST");
        // ((MainActivity)getActivity()).printSomething();
 
     }
