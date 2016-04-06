@@ -11,6 +11,7 @@ import android.net.NetworkInfo;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
@@ -164,6 +165,16 @@ public class Forecast implements OnLocation, ForecastFiveDay.OnAccept {
                 childView.setBackground(shape);
             }
         });
+
+        /*layoytDay.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                toast.show("uueuueuwe");
+                return false;
+            }
+        });*/
+
+
     }
 
     void inflateWebDrip(View view, final HashMap<String, String> map) {
@@ -225,21 +236,27 @@ public class Forecast implements OnLocation, ForecastFiveDay.OnAccept {
             if(snow3h!=null){
                 ts+= "Snow 3h: " + snow3h;
             }
-            onShowToast3h(view, ts);
+            onWebShowToast3h(browser, ts);
         }
-
     }
 
-    void onShowToast3h(View view, final String text) {
-        view.setOnClickListener(new View.OnClickListener() {
-
+    void onWebShowToast3h(WebView mWebView, final String text){
+        mWebView.setOnTouchListener(new View.OnTouchListener() {
             @Override
-            public void onClick(View v) {
-
-                toast.show(text, Gravity.TOP | Gravity.CLIP_HORIZONTAL);
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        toast.show(text, Gravity.TOP | Gravity.CLIP_HORIZONTAL);
+                        break;
+                    case MotionEvent.ACTION_UP:
+//ontouch
+                        break;
+                }
+                return false;
             }
         });
     }
+
 
 
     private void getIcon(ImageView imageView, String icon) {
