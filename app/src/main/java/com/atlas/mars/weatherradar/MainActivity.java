@@ -167,17 +167,17 @@ public class MainActivity extends FragmentActivity implements Communicator, View
     @Override
     protected void onResume() {
         super.onResume();
-        if (updateForecastIsNeeded()) {
+
+        if (forecast == null) {
+            frLayoutCurrent = (FrameLayout) findViewById(R.id.frLayoutCurrent);
+            forecast = new Forecast(this, forecastLinearLayout);
+        }else if (updateForecastIsNeeded()) {
             if (forecast != null) {
                 forecast.onRegen();
             } else {
                 frLayoutCurrent = (FrameLayout) findViewById(R.id.frLayoutCurrent);
                 forecast = new Forecast(this, forecastLinearLayout);
             }
-        }
-        if (forecast == null) {
-            frLayoutCurrent = (FrameLayout) findViewById(R.id.frLayoutCurrent);
-            forecast = new Forecast(this, forecastLinearLayout);
         }
 
         //  startService(new Intent(this, MyService.class));
