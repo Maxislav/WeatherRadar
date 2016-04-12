@@ -110,9 +110,12 @@ public class BorispolRest {
                 map.put("rainBorispol", intensity);
             }
             if (distance == null || customObject.getDist() < distance) {
-                distance = customObject.getDist();
-                map.put("dist", distance);
-                map.put("intensity", intensity);
+                //запрет срабатывания на слоистую облачность
+                if(intensity!=5){
+                    distance = customObject.getDist();
+                    map.put("dist", distance);
+                    map.put("intensity", intensity);
+                }
             }
             map.put("isIntensity", intensity);
         }
