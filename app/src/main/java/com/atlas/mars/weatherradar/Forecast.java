@@ -8,6 +8,7 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.AsyncTask;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -29,6 +30,7 @@ import com.atlas.mars.weatherradar.location.OnLocation;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by mars on 8/3/15.
@@ -241,15 +243,21 @@ public class Forecast implements OnLocation, ForecastFiveDay.OnAccept {
     }
 
     void onWebShowToast3h(WebView mWebView, final String text){
+
         mWebView.setOnTouchListener(new View.OnTouchListener() {
+            LongClick longClick;
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN:
                         toast.show(text, Gravity.TOP | Gravity.CLIP_HORIZONTAL);
+                        longClick = new LongClick(text);
+                        longClick.execute();
                         break;
                     case MotionEvent.ACTION_UP:
-//ontouch
+                        if(longClick!=null && longClick.getStatus() == AsyncTask.Status.RUNNING){
+                            longClick.setCancel();
+                        }
                         break;
                 }
                 return false;
@@ -257,6 +265,46 @@ public class Forecast implements OnLocation, ForecastFiveDay.OnAccept {
         });
     }
 
+
+
+    private class LongClick extends AsyncTask<Void, Void, Boolean>{
+
+        Boolean doShow;
+        String text;
+
+        LongClick(String text){
+            super();
+            this.text = text;
+        }
+
+        void setCancel(){
+           doShow = false;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            doShow = true;
+        }
+
+        @Override
+        protected Boolean doInBackground(Void... params) {
+            try {
+                TimeUnit.SECONDS.sleep(1);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            return doShow;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean result) {
+            super.onPostExecute(result);
+            if(doShow){
+                toast.show(text, Gravity.TOP | Gravity.CLIP_HORIZONTAL);
+            }
+        }
+    }
 
 
     private void getIcon(ImageView imageView, String icon) {
