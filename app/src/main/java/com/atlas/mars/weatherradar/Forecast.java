@@ -117,6 +117,7 @@ public class Forecast implements OnLocation, ForecastFiveDay.OnAccept {
         //  Log.d(TAG, "diid"+list);
         if (statusCode != 200) {
             toast.show("Open weather map say Error!");
+            loader.hide(100);
             return;
         }
         if (0 < list.size()) {

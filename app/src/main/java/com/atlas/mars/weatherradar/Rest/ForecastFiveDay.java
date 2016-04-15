@@ -119,8 +119,11 @@ public class ForecastFiveDay {
             @Override
             public void failure(RetrofitError error) {
                // Log.e(TAG, "RetrofitError error", error);
+
                 if(myService!=null) {
                     onResultForService(null);
+                }else {
+                    resultError(error);
                 }
             }
         });
@@ -180,10 +183,16 @@ public class ForecastFiveDay {
         myService.onForecastFiveDayResult(map);
     }
 
+    void resultError(RetrofitError error){
+        Log.d(TAG, "resultError", error);
+        onAccept.accept(list, null, 500);
+    }
+
     void Success(Result result) {
         list = new ArrayList<>();
         if(result == null){
             onAccept.accept(list, null, 500);
+            return;
         }
         int code = result.getCod();
 

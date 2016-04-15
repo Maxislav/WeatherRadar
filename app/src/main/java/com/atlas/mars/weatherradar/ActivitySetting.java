@@ -103,7 +103,7 @@ public class ActivitySetting extends AppCompatActivity implements TimePicker.OnT
         btnLoadSetting = (Button) findViewById(R.id.btnLoadSetting);
         sb = (SeekBar) findViewById(R.id.seekBar);
         //sbBorispol = (SeekBar) findViewById(R.id.seekBarBorispol);
-        //seekBarText = (TextView) findViewById(R.id.seekBarText);
+        seekBarText = (TextView) findViewById(R.id.seekBarText);
       //  seekBarBorispolText = (TextView) findViewById(R.id.seekBarBorispolText);
 
         onSeekBarEvents();
