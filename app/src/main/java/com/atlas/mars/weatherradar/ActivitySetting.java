@@ -1,6 +1,7 @@
 package com.atlas.mars.weatherradar;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -65,8 +66,9 @@ public class ActivitySetting extends AppCompatActivity implements TimePicker.OnT
     List<Model> cityCollection;
     CustomArrayAdapter adapter;
     MyDialog dialogLicence;
-    SeekBar sb;
-    TextView seekBarText;
+    SeekBar sb, sbBorispol;
+    TextView seekBarText, seekBarBorispolText;
+    static Context context;
 
 
     @Override
@@ -78,6 +80,9 @@ public class ActivitySetting extends AppCompatActivity implements TimePicker.OnT
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_setting);
+        context = getApplicationContext();
+
+
         db = new DataBaseHelper(this);
         try {
             pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
@@ -97,7 +102,9 @@ public class ActivitySetting extends AppCompatActivity implements TimePicker.OnT
         edTextRadius = (EditText) findViewById(R.id.edTextRadius);
         btnLoadSetting = (Button) findViewById(R.id.btnLoadSetting);
         sb = (SeekBar) findViewById(R.id.seekBar);
-        seekBarText = (TextView) findViewById(R.id.seekBarText);
+        //sbBorispol = (SeekBar) findViewById(R.id.seekBarBorispol);
+        //seekBarText = (TextView) findViewById(R.id.seekBarText);
+      //  seekBarBorispolText = (TextView) findViewById(R.id.seekBarBorispolText);
 
         onSeekBarEvents();
 
@@ -455,29 +462,45 @@ public class ActivitySetting extends AppCompatActivity implements TimePicker.OnT
 
     public void onSeekBarEvents() {
         sb.setOnSeekBarChangeListener(new onSeekBarListener());
+        //sbBorispol.setOnSeekBarChangeListener(new onSeekBarListener());
     }
+
+
+
 
     private class onSeekBarListener implements SeekBar.OnSeekBarChangeListener {
-
         public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-            // Log the progress
 
-            double z = (double) progress;
-            z = (z * 2 / 100);
-            seekBarText.setText(z + "");
-            Log.d(TAG, "Progress is: " + z);
-            //set textView's text
-            // yourTextView.setText(""+progress);
+            switch (seekBar.getId()){
+                case R.id.seekBar:
+                    double z = (double) progress;
+                    z = (z * 2 / 100);
+                    seekBarText.setText(z + "");
+                    Log.d(TAG, "Progress is: " + z);
+                    break;
+               /*   case R.id.seekBarBorispol:
+                  if(5<progress){
+                        String colorString =  getStringResourceByName("color", "intensity"+2);
+                        seekBarBorispolText.setBackgroundColor(Color.parseColor(colorString));
+                    }
+                     break;
+*/
+
+            }
+
+
         }
-
         public void onStartTrackingTouch(SeekBar seekBar) {
         }
-
         public void onStopTrackingTouch(SeekBar seekBar) {
         }
-
     }
 
+    public static String getStringResourceByName(String resName, String aString) {
+        String packageName = context.getPackageName();
+        int resId = context.getResources().getIdentifier(aString, resName, packageName);
+        return context.getString(resId);
+    }
 
     private class LoadTask extends AsyncTask<String, Void, HashMap<String, String>> {
         HttpURLConnection urlConnection;

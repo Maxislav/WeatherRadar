@@ -47,4 +47,9 @@
     <item name="menuPressStart" type="color">#ffdcdce7</item>
     <item name="menuPressEnd" type="color">#ffd0d0db</item>
 
+    <item name="intensity2" type="color">#9BEB8F</item>
+    <item name="intensity3" type="color">#58FF42</item>
+
+
+
 </resources>
