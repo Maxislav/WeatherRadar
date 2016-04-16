@@ -148,7 +148,10 @@ public class Forecast implements OnLocation, ForecastFiveDay.OnAccept {
                 LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(width, ViewGroup.LayoutParams.MATCH_PARENT);
                 View view = inflater.inflate(R.layout.forecast_container, null, false);
                 inflateWebDrip(view, map);
+                view.setPadding(2,2,2,2);
                 layoytDay.addView(view);
+
+               // view.setBackgroundColor(getColorHour(hashMap.get("HH")));
                 // ((TextView) view.findViewById(R.id.textDate)).setText( firstUpperCase(hashMap.get("dayWeek")) +" "+hashMap.get("date"));
 
                 ((TextView) view.findViewById(R.id.textTime)).setText(hashMap.get("time"));
@@ -163,7 +166,8 @@ public class Forecast implements OnLocation, ForecastFiveDay.OnAccept {
                 LinearLayout childView = (LinearLayout) viewGroup.getChildAt(0);
                 //childView.setBackgroundColor(activity.getResources().getColor(getColorHour(hashMap.get("HH"))));
                 GradientDrawable shape = new GradientDrawable();
-                shape.setCornerRadius(8);
+                shape.setCornerRadius(4);
+
                 shape.setColor(activity.getResources().getColor(getColorHour(hashMap.get("HH"))));
                 childView.setBackground(shape);
             }
