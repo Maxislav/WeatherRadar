@@ -47,6 +47,8 @@ public class Forecast implements OnLocation, ForecastFiveDay.OnAccept {
     private boolean isDoing = false;
     private static int onTaskResult = 0;
     DataBaseHelper db;
+    static Context context;
+
 
     Forecast(Activity activity, LinearLayout fr) {
         db = new DataBaseHelper(activity);
@@ -56,6 +58,8 @@ public class Forecast implements OnLocation, ForecastFiveDay.OnAccept {
         this.fr = fr;
         parent = (FrameLayout) fr.getParent().getParent();
         loader = new Loader(activity, parent);
+        context = activity.getApplicationContext();
+
 
         _onStart();
 
@@ -224,9 +228,23 @@ public class Forecast implements OnLocation, ForecastFiveDay.OnAccept {
         }
 
         if(isNeedCreate){
+
+          /*  String packageName = context.getPackageName();
+            int resId = context.getResources().getIdentifier("hh"+map.get("HH"), "color", packageName);
+            String color16 =    context.getString(resId);*/
+
+
+            String color16 = getStringResourceByName("color", "hh"+map.get("HH"));
+            color16 = color16.replaceAll("^#.{2}", "#");
+
+
+
             String web = "<html><head><meta name=\"viewport\" content=\"width=device-width, minimum-scale=0.1\"><title>drip.png (20×32)</title><style type=\"text/css\"></style></head><body style=\"margin: 0px;\">" +
-                    "<div style=\"border-bottom-right-radius: 60%; overflow: hidden; height: 65px; width: 100%; box-shadow: 2px 2px 10px rgba(0,0,0,0.2);\">" +
-                    drip +
+                    "<div style=\"position: relative; overflow: hidden; height: 65px; width: 100%; \">" +
+                        "<div>" +drip +"</div>"+
+                    "<div style=\"position: absolute; height: 65px; width: 100%; top: 0;left: 0; background:  linear-gradient(to bottom, rgba(0,0,0,0) 0%, "+color16+" 100%);\">"+
+
+                    "</div>"+
                     "</div>" +
                     "</body></html>";
             browser.loadDataWithBaseURL("file:///android_asset/", web, "text/html", "UTF-8", null);
@@ -424,5 +442,12 @@ public class Forecast implements OnLocation, ForecastFiveDay.OnAccept {
             b = Integer.parseInt(hex.substring(7, 9), 16);
         }
 
+    }
+
+
+    public static String getStringResourceByName(String resName, String aString) {
+        String packageName = context.getPackageName();
+        int resId = context.getResources().getIdentifier(aString, resName, packageName);
+        return context.getString(resId);
     }
 }
