@@ -38,6 +38,9 @@
         <activity
             android:name=".ActivitySetting"
             android:label="@string/app_name"/>
+        <activity
+            android:name=".WeatherPager.ActivityFullWeatherInfo"
+            android:label="@string/app_name"/>
         <receiver
             android:name=".alarm.SampleBootReceiver"
             android:enabled="true"

@@ -2,6 +2,7 @@ package com.atlas.mars.weatherradar;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.location.LocationListener;
@@ -17,11 +18,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.widget.FrameLayout;
+import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.atlas.mars.weatherradar.Rest.ForecastFiveDay;
+import com.atlas.mars.weatherradar.WeatherPager.ActivityFullWeatherInfo;
 import com.atlas.mars.weatherradar.alarm.LocationFromAsset;
 import com.atlas.mars.weatherradar.loader.Loader;
 import com.atlas.mars.weatherradar.location.MyLocationListenerNet;
@@ -39,6 +42,9 @@ public class Forecast implements OnLocation, ForecastFiveDay.OnAccept {
     final String TAG = "ForecastLogs";
     Activity activity;
     LinearLayout fr;
+
+    HorizontalScrollView horizontalScroll;
+
     FrameLayout parent;
     public LocationManager locationManagerNet;
     public LocationListener locationListenerNet;
@@ -174,6 +180,16 @@ public class Forecast implements OnLocation, ForecastFiveDay.OnAccept {
 
                 shape.setColor(activity.getResources().getColor(getColorHour(hashMap.get("HH"))));
                 childView.setBackground(shape);
+
+                view.setOnLongClickListener(new View.OnLongClickListener() {
+                    @Override
+                    public boolean onLongClick(View v) {
+                        Intent intent = new Intent(activity, ActivityFullWeatherInfo.class);
+                        activity.startActivityForResult(intent, 2);
+                        return false;
+                    }
+                });
+
             }
         });
 
@@ -261,26 +277,42 @@ public class Forecast implements OnLocation, ForecastFiveDay.OnAccept {
             if(snow3h!=null){
                 ts+= "Snow 3h: " + snow3h;
             }
-            onWebShowToast3h(browser, ts);
+            onWebShowToast3h(browser, ts, map);
         }
     }
 
-    void onWebShowToast3h(WebView mWebView, final String text){
+    void onWebShowToast3h(WebView mWebView, final String text, final HashMap<String, String> map){
 
         mWebView.setOnTouchListener(new View.OnTouchListener() {
             LongClick longClick;
+
+            float startX, dX;
+
             @Override
             public boolean onTouch(View v, MotionEvent event) {
+                //Log.d(TAG, event.getAction() + "" );
+
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN:
+                        startX = event.getRawX();
                         toast.show(text, Gravity.TOP | Gravity.CLIP_HORIZONTAL);
-                        longClick = new LongClick(text);
+                        longClick = new LongClick(text, map);
                         longClick.execute();
                         break;
                     case MotionEvent.ACTION_UP:
                         if(longClick!=null && longClick.getStatus() == AsyncTask.Status.RUNNING){
                             longClick.setCancel();
                         }
+                        break;
+                    case MotionEvent.ACTION_MOVE:
+                        dX = startX - event.getRawX();
+                        Log.d(TAG, "dx "+ dX + "");
+                        if(1<dX || dX<-1){
+                            if(longClick!=null && longClick.getStatus() == AsyncTask.Status.RUNNING){
+                                longClick.setCancel();
+                            }
+                        }
+
                         break;
                 }
                 return false;
@@ -294,10 +326,12 @@ public class Forecast implements OnLocation, ForecastFiveDay.OnAccept {
 
         Boolean doShow;
         String text;
+        HashMap<String, String> map;
 
-        LongClick(String text){
+        LongClick(String text, HashMap<String, String> map){
             super();
             this.text = text;
+            this.map = map;
         }
 
         void setCancel(){
@@ -324,7 +358,8 @@ public class Forecast implements OnLocation, ForecastFiveDay.OnAccept {
         protected void onPostExecute(Boolean result) {
             super.onPostExecute(result);
             if(doShow){
-                toast.show(text, Gravity.TOP | Gravity.CLIP_HORIZONTAL);
+                Intent intent = new Intent(activity, ActivityFullWeatherInfo.class);
+                activity.startActivityForResult(intent, 2);
             }
         }
     }

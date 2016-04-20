@@ -72,10 +72,9 @@
                     android:background="@drawable/tiles_repat">
 
                     <HorizontalScrollView
+                        android:id="@+id/horizontalScroll"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent">
-
-
                         <LinearLayout
                             android:id="@+id/forecastLinearLayout"
                             android:layout_width="match_parent"

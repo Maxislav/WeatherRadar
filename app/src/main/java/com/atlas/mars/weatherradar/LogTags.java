@@ -5,5 +5,6 @@ package com.atlas.mars.weatherradar;
  */
 public class LogTags {
     public static final  String TAG = "myLog";
+    public static final String TagFragmentPagerAdapter = "FragmentPagerAdapterLog";
 
 }

@@ -1,11 +1,15 @@
-package com.atlas.mars.weatherradar;
-
-import  android.support.v4.app.Fragment;;
+package com.atlas.mars.weatherradar.WeatherPager;
 
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.atlas.mars.weatherradar.Communicator;
+import com.atlas.mars.weatherradar.R;
+
+;
 
 /**
  * Created by mars on 7/8/15.
@@ -34,7 +38,7 @@ public class PageFragment extends Fragment {
         Communicator communicator;
         communicator = (Communicator)getActivity();
         view = inflater.inflate(R.layout.fragment_0, null);
-        switch (pageNumber) {
+        /*switch (pageNumber) {
             case 0:
                 view = inflater.inflate(R.layout.fragment_0, null);
 
@@ -50,7 +54,7 @@ public class PageFragment extends Fragment {
                 //communicator.initViewHome(view, inflater);
                 break;
 
-        }
+        }*/
         communicator.initView(view, pageNumber);
         return  view;
     }
