@@ -153,10 +153,16 @@ public class Forecast implements OnLocation, ForecastFiveDay.OnAccept {
 
             @Override
             public void run() {
+                /*try {
+                    Thread.sleep(5000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }*/
                 LayoutInflater inflater = (LayoutInflater) (activity.getLayoutInflater());
                 int width = (int) (80 * Density.density);
                 LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(width, ViewGroup.LayoutParams.MATCH_PARENT);
                 View view = inflater.inflate(R.layout.forecast_container, null, false);
+                //view.findViewById(R.id.overLayout).setOnLongClickListener(new  MyLongClick(map));
                 inflateWebDrip(view, map);
                 view.setPadding(2,2,2,2);
                 layoytDay.addView(view);
@@ -181,7 +187,7 @@ public class Forecast implements OnLocation, ForecastFiveDay.OnAccept {
                 shape.setColor(activity.getResources().getColor(getColorHour(hashMap.get("HH"))));
                 childView.setBackground(shape);
 
-                view.setOnLongClickListener(new View.OnLongClickListener() {
+                /*view.setOnLongClickListener(new View.OnLongClickListener() {
                     @Override
                     public boolean onLongClick(View v) {
                         Intent intent = new Intent(activity, ActivityFullWeatherInfo.class);
@@ -189,7 +195,7 @@ public class Forecast implements OnLocation, ForecastFiveDay.OnAccept {
                         return false;
                     }
                 });
-
+*/
             }
         });
 
@@ -202,6 +208,29 @@ public class Forecast implements OnLocation, ForecastFiveDay.OnAccept {
         });*/
 
 
+    }
+
+    private class MyLongClick implements View.OnLongClickListener {
+        HashMap<String, String> map;
+        MyLongClick(HashMap<String, String> map){
+            this.map = map;
+        }
+        @Override
+        public boolean onLongClick(View v) {
+            toast.show("onLongClick");
+            return false;
+        }
+    }
+
+    private class MyClick implements View.OnClickListener{
+        String ts;
+        MyClick(String ts){
+            this.ts = ts;
+        }
+        @Override
+        public void onClick(View v) {
+            toast.show(ts, Gravity.TOP | Gravity.CLIP_HORIZONTAL);
+        }
     }
 
     void inflateWebDrip(View view, final HashMap<String, String> map) {
@@ -277,8 +306,10 @@ public class Forecast implements OnLocation, ForecastFiveDay.OnAccept {
             if(snow3h!=null){
                 ts+= "Snow 3h: " + snow3h;
             }
-            onWebShowToast3h(browser, ts, map);
+           // onWebShowToast3h(browser, ts, map);
+            view.findViewById(R.id.overLayout).setOnClickListener(new MyClick(ts));
         }
+        view.findViewById(R.id.overLayout).setOnLongClickListener(new  MyLongClick(map));
     }
 
     void onWebShowToast3h(WebView mWebView, final String text, final HashMap<String, String> map){
@@ -359,7 +390,7 @@ public class Forecast implements OnLocation, ForecastFiveDay.OnAccept {
             super.onPostExecute(result);
             if(doShow){
                 Intent intent = new Intent(activity, ActivityFullWeatherInfo.class);
-                activity.startActivityForResult(intent, 2);
+                //activity.startActivityForResult(intent, 2);
             }
         }
     }

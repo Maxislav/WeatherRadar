@@ -1,30 +1,33 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="80dp"
-    android:background="@drawable/border"
-    android:layout_height="fill_parent">
+    android:id="@+id/r_laout"
+    android:layout_height="fill_parent"
+    android:background="@drawable/border">
 
     <LinearLayout
+
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
         android:gravity="center"
+        android:orientation="vertical"
         android:padding="1dp">
-       <!-- <TextView
-            style="@style/MyText"
-            android:layout_width="match_parent"
-            android:gravity="center"
-            android:id="@+id/textDate"
-            android:layout_height="wrap_content"
-            android:text="15:00"/>-->
+        <!-- <TextView
+             style="@style/MyText"
+             android:layout_width="match_parent"
+             android:gravity="center"
+             android:id="@+id/textDate"
+             android:layout_height="wrap_content"
+             android:text="15:00"/>-->
 
         <TextView
-            style="@style/MyText"
             android:id="@+id/textTime"
+            style="@style/MyText"
             android:layout_width="match_parent"
-            android:gravity="center"
             android:layout_height="wrap_content"
-            android:text="15:00"/>
+            android:gravity="center"
+            android:text="15:00" />
+
         <FrameLayout
             android:layout_width="62dp"
             android:layout_height="70dp">
@@ -33,46 +36,52 @@
                 android:id="@+id/webViewDrips"
                 android:layout_width="56dp"
                 android:layout_height="match_parent"
-                android:layout_gravity="center"
-                ></WebView>
+                android:layout_gravity="center"></WebView>
 
             <ImageView
                 android:id="@+id/image"
                 android:layout_width="62dp"
-                android:layout_gravity="center|top"
-                android:layout_height="62dp"/>
+                android:layout_height="62dp"
+                android:layout_gravity="center|top" />
         </FrameLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" android:orientation="horizontal"
-            android:gravity="center">
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal">
+
             <TextView
-                style="@style/MyText"
                 android:id="@+id/textTemp"
+                style="@style/MyText"
                 android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:gravity="center"
                 android:paddingRight="0dp"
-                android:layout_height="wrap_content"
-                android:text="ddd"/>
+                android:text="ddd" />
+
             <TextView
                 style="@style/MyText"
                 android:layout_width="wrap_content"
-                android:layout_marginLeft="-5dp"
-                android:paddingLeft="0dp"
-                android:gravity="center"
                 android:layout_height="wrap_content"
-                android:text="&#176;"/>
+                android:layout_marginLeft="-5dp"
+                android:gravity="center"
+                android:paddingLeft="0dp"
+                android:text="&#176;" />
+
             <TextView
                 style="@style/MyText"
                 android:layout_width="wrap_content"
-                android:layout_marginLeft="-5dp"
-                android:paddingLeft="0dp"
-                android:gravity="center"
                 android:layout_height="wrap_content"
-                android:text="C"/>
+                android:layout_marginLeft="-5dp"
+                android:gravity="center"
+                android:paddingLeft="0dp"
+                android:text="C" />
         </LinearLayout>
-
-
     </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/overLayout"
+        android:orientation="horizontal"></LinearLayout>
 </FrameLayout>

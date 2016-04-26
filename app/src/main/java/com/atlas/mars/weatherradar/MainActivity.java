@@ -265,7 +265,7 @@ public class MainActivity extends FragmentActivity implements Communicator, View
     void morningAlarm() {
 
         //todo закоментировать тестовый вызов утреннего срвиса
-        // startService(new Intent(this, MorningService.class));
+         //startService(new Intent(this, MorningService.class));
 
         long time = db.getMorningWakeUp();
         alarmManagerMorning = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
@@ -276,7 +276,7 @@ public class MainActivity extends FragmentActivity implements Communicator, View
 
         alarmManagerMorning.set(AlarmManager.RTC_WAKEUP, time, pIntent2);
         //todo для отладки и старта будильника сейчас
-        //alarmManagerMorning.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis()+1*1000, pIntent2);
+       // alarmManagerMorning.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis()+1*1000, pIntent2);
     }
 
     void morningAlarmCancel() {

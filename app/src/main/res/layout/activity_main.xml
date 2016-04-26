@@ -68,7 +68,7 @@
 
                 <FrameLayout
                     android:layout_width="match_parent"
-                    android:layout_height="155dp"
+                    android:layout_height="160dp"
                     android:background="@drawable/tiles_repat">
 
                     <HorizontalScrollView
