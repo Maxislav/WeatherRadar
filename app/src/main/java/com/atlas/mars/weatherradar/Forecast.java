@@ -235,7 +235,7 @@ public class Forecast implements OnLocation, ForecastFiveDay.OnAccept {
         }
         @Override
         public boolean onLongClick(View v) {
-            toast.show("onLongClick");
+           // toast.show("onLongClick");
 
             Intent intent = new Intent(activity, ActivityFullWeatherInfo.class);
             //intent.putExtra("list", list);
