@@ -30,6 +30,8 @@ public class PageFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         pageNumber = getArguments().getInt(ARGUMENT_PAGE_NUMBER);
+
+
     }
 
     @Override
@@ -37,7 +39,7 @@ public class PageFragment extends Fragment {
         View view = null;
         Communicator communicator;
         communicator = (Communicator)getActivity();
-        view = inflater.inflate(R.layout.fragment_0, null);
+        view = inflater.inflate(R.layout.fragment_forecast_pager, null);
         /*switch (pageNumber) {
             case 0:
                 view = inflater.inflate(R.layout.fragment_0, null);
@@ -58,4 +60,6 @@ public class PageFragment extends Fragment {
         communicator.initView(view, pageNumber);
         return  view;
     }
+
+
 }

@@ -18,7 +18,7 @@ public class IconForecast {
     public String imageUrl;
     ImageView imageView;
 
-    IconForecast(ImageView imageView, String icon){
+    public IconForecast(ImageView imageView, String icon){
         this.imageView = imageView;
 
 

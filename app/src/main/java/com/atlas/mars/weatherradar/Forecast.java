@@ -33,6 +33,8 @@ import com.atlas.mars.weatherradar.location.OnLocation;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -54,6 +56,7 @@ public class Forecast implements OnLocation, ForecastFiveDay.OnAccept {
     private static int onTaskResult = 0;
     DataBaseHelper db;
     static Context context;
+   public static List<HashMap> list;
 
 
     Forecast(Activity activity, LinearLayout fr) {
@@ -131,6 +134,8 @@ public class Forecast implements OnLocation, ForecastFiveDay.OnAccept {
             return;
         }
         if (0 < list.size()) {
+            this.list = list;
+
             infladeDay(list);
             db.mapSetting.put(db.TIMESTAMP_FORECAST, db.getTimeStamp());
             db.saveSetting();
@@ -147,45 +152,51 @@ public class Forecast implements OnLocation, ForecastFiveDay.OnAccept {
     }
 
 
-    void onInflate(final LinearLayout layoytDay, final HashMap<String, String> map) {
-        layoytDay.post(new Runnable() {
-            final HashMap<String, String> hashMap = map;
+    void onInflate(final LinearLayout layoytDay, final HashMap<String, String> map, final int iDay) {
+
+        Timer timing = new Timer();
+        timing.schedule(new TimerTask() {
 
             @Override
             public void run() {
+                layoytDay.post(new Runnable() {
+                    final HashMap<String, String> hashMap = map;
+
+                    @Override
+                    public void run() {
                 /*try {
                     Thread.sleep(5000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }*/
-                LayoutInflater inflater = (LayoutInflater) (activity.getLayoutInflater());
-                int width = (int) (80 * Density.density);
-                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(width, ViewGroup.LayoutParams.MATCH_PARENT);
-                View view = inflater.inflate(R.layout.forecast_container, null, false);
-                //view.findViewById(R.id.overLayout).setOnLongClickListener(new  MyLongClick(map));
-                inflateWebDrip(view, map);
-                view.setPadding(2,2,2,2);
-                layoytDay.addView(view);
+                        LayoutInflater inflater = (LayoutInflater) (activity.getLayoutInflater());
+                        int width = (int) (80 * Density.density);
+                        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(width, ViewGroup.LayoutParams.MATCH_PARENT);
+                        View view = inflater.inflate(R.layout.forecast_container, null, false);
+                        //view.findViewById(R.id.overLayout).setOnLongClickListener(new  MyLongClick(map));
+                        inflateWebDrip(view, map, iDay);
+                        view.setPadding(2,2,2,2);
+                        layoytDay.addView(view);
 
-               // view.setBackgroundColor(getColorHour(hashMap.get("HH")));
-                // ((TextView) view.findViewById(R.id.textDate)).setText( firstUpperCase(hashMap.get("dayWeek")) +" "+hashMap.get("date"));
+                        // view.setBackgroundColor(getColorHour(hashMap.get("HH")));
+                        // ((TextView) view.findViewById(R.id.textDate)).setText( firstUpperCase(hashMap.get("dayWeek")) +" "+hashMap.get("date"));
 
-                ((TextView) view.findViewById(R.id.textTime)).setText(hashMap.get("time"));
-                ((TextView) view.findViewById(R.id.textTemp)).setText(hashMap.get("temp"));
-                ImageView imageView = (ImageView) view.findViewById(R.id.image);
-                // new IconForecast(imageView,hashMap.get("icon") );
-                getIcon(imageView, hashMap.get("icon"));
+                        ((TextView) view.findViewById(R.id.textTime)).setText(hashMap.get("time"));
+                        ((TextView) view.findViewById(R.id.textTemp)).setText(hashMap.get("temp"));
+                        ImageView imageView = (ImageView) view.findViewById(R.id.image);
+                        // new IconForecast(imageView,hashMap.get("icon") );
+                        getIcon(imageView, hashMap.get("icon"));
 
-                layoutParams.setMargins(2, 0, 2, 0);
-                view.setLayoutParams(layoutParams);
-                ViewGroup viewGroup = (ViewGroup) view;
-                LinearLayout childView = (LinearLayout) viewGroup.getChildAt(0);
-                //childView.setBackgroundColor(activity.getResources().getColor(getColorHour(hashMap.get("HH"))));
-                GradientDrawable shape = new GradientDrawable();
-                shape.setCornerRadius(4);
+                        layoutParams.setMargins(2, 0, 2, 0);
+                        view.setLayoutParams(layoutParams);
+                        ViewGroup viewGroup = (ViewGroup) view;
+                        LinearLayout childView = (LinearLayout) viewGroup.getChildAt(0);
+                        //childView.setBackgroundColor(activity.getResources().getColor(getColorHour(hashMap.get("HH"))));
+                        GradientDrawable shape = new GradientDrawable();
+                        shape.setCornerRadius(4);
 
-                shape.setColor(activity.getResources().getColor(getColorHour(hashMap.get("HH"))));
-                childView.setBackground(shape);
+                        shape.setColor(activity.getResources().getColor(getColorHour(hashMap.get("HH"))));
+                        childView.setBackground(shape);
 
                 /*view.setOnLongClickListener(new View.OnLongClickListener() {
                     @Override
@@ -196,8 +207,13 @@ public class Forecast implements OnLocation, ForecastFiveDay.OnAccept {
                     }
                 });
 */
+                    }
+                });
             }
-        });
+        }, 50*iDay);
+
+
+
 
         /*layoytDay.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
@@ -212,12 +228,20 @@ public class Forecast implements OnLocation, ForecastFiveDay.OnAccept {
 
     private class MyLongClick implements View.OnLongClickListener {
         HashMap<String, String> map;
-        MyLongClick(HashMap<String, String> map){
+        int iDay;
+        MyLongClick(HashMap<String, String> map, int iDay){
             this.map = map;
+            this.iDay = iDay;
         }
         @Override
         public boolean onLongClick(View v) {
             toast.show("onLongClick");
+
+            Intent intent = new Intent(activity, ActivityFullWeatherInfo.class);
+            //intent.putExtra("list", list);
+            intent.putExtra("iDay", iDay);
+            activity.startActivityForResult(intent, 2);
+
             return false;
         }
     }
@@ -233,7 +257,7 @@ public class Forecast implements OnLocation, ForecastFiveDay.OnAccept {
         }
     }
 
-    void inflateWebDrip(View view, final HashMap<String, String> map) {
+    void inflateWebDrip(View view, final HashMap<String, String> map, final int iDay) {
         WebView browser = (WebView) view.findViewById(R.id.webViewDrips);
         browser.setBackgroundColor(Color.TRANSPARENT);
         String drip = "";
@@ -309,7 +333,7 @@ public class Forecast implements OnLocation, ForecastFiveDay.OnAccept {
            // onWebShowToast3h(browser, ts, map);
             view.findViewById(R.id.overLayout).setOnClickListener(new MyClick(ts));
         }
-        view.findViewById(R.id.overLayout).setOnLongClickListener(new  MyLongClick(map));
+        view.findViewById(R.id.overLayout).setOnLongClickListener(new  MyLongClick(map, iDay));
     }
 
     void onWebShowToast3h(WebView mWebView, final String text, final HashMap<String, String> map){
@@ -389,7 +413,7 @@ public class Forecast implements OnLocation, ForecastFiveDay.OnAccept {
         protected void onPostExecute(Boolean result) {
             super.onPostExecute(result);
             if(doShow){
-                Intent intent = new Intent(activity, ActivityFullWeatherInfo.class);
+                //Intent intent = new Intent(activity, ActivityFullWeatherInfo.class);
                 //activity.startActivityForResult(intent, 2);
             }
         }
@@ -408,7 +432,7 @@ public class Forecast implements OnLocation, ForecastFiveDay.OnAccept {
 
     }
 
-    private Integer getColorHour(final String HH) {
+    public static Integer getColorHour(final String HH) {
         switch (HH) {
             case "00":
                 return R.color.hh00;
@@ -435,6 +459,7 @@ public class Forecast implements OnLocation, ForecastFiveDay.OnAccept {
         String dayWeekNum = listMap.get(0).get("dayWeekNum").toString();
         dayWeekNum = listMap.get(0).get("dayWeekNum").toString();
         int i = 0, count = listMap.size();
+        int iDay = 0;
 
         HashMap<String, List> mapDays = new HashMap<>();
 
@@ -452,28 +477,22 @@ public class Forecast implements OnLocation, ForecastFiveDay.OnAccept {
         }
         final LinearLayout.LayoutParams layoutParamsFrorTitle = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         layoutParamsFrorTitle.setMargins(2, 2, 2, 2);
+
         for (List<HashMap> lm : listList) {
             LayoutInflater inflater = (LayoutInflater) (activity.getLayoutInflater());
             final View view = inflater.inflate(R.layout.coll_week, null, false);
             final LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT);
             final LinearLayout daySprite = (LinearLayout) view.findViewById(R.id.daySprite);
             final List<HashMap> _lm = lm;
-            fr.post(new Runnable() {
-                @Override
-                public void run() {
-                    fr.addView(view);
-                    view.setLayoutParams(layoutParams);
+            fr.addView(view);
+            view.setLayoutParams(layoutParams);
+            TextView dayTitle = (TextView) view.findViewById(R.id.dayTitle);
+            dayTitle.setLayoutParams(layoutParamsFrorTitle);
+            dayTitle.setText(firstUpperCase(_lm.get(0).get("dayWeek").toString()) + " " + _lm.get(0).get("date").toString());
 
-
-                    TextView dayTitle = (TextView) view.findViewById(R.id.dayTitle);
-                    dayTitle.setLayoutParams(layoutParamsFrorTitle);
-                    //firstUpperCase(hashMap.get("dayWeek")) +" "+hashMap.get("date")
-                    dayTitle.setText(firstUpperCase(_lm.get(0).get("dayWeek").toString()) + " " + _lm.get(0).get("date").toString());
-
-                }
-            });
             for (HashMap<String, String> map : lm) {
-                onInflate(daySprite, map);
+                onInflate(daySprite, map, iDay);
+                iDay++;
             }
         }
         Log.d(TAG, "od" + listList.toString());
