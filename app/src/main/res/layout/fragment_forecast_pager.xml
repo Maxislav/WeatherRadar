@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/main"
+    style="@style/forecastPager"
     android:layout_width="match_parent"
     android:layout_height="fill_parent"
     android:orientation="vertical"
@@ -65,11 +66,125 @@
                     android:layout_width="120dp"
                     android:layout_height="120dp"
                     android:layout_gravity="center|top" />
+
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_weight="0.5"
+                    android:layout_width="match_parent"
+
                     android:id="@+id/textViewTemp"
-                    android:textColor="@color/black"
+                    android:textSize="50dp"
+                    android:gravity="center"
+                    android:text="t"
                     android:layout_height="wrap_content" />
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+                    <TextView
+                        android:layout_weight="0.5"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="end"
+                        android:text="Max"/>
+                    <TextView
+                        android:layout_weight="0.5"
+                        android:layout_width="match_parent"
+                        android:id="@+id/textViewTempMax"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+                    <TextView
+                        android:layout_weight="0.5"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="end"
+                        android:text="Min"/>
+                    <TextView
+                        android:layout_weight="0.5"
+                        android:layout_width="match_parent"
+                        android:id="@+id/textViewTempMin"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+                    <TextView
+                        android:layout_weight="0.5"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="end"
+                        android:text="Влажность"/>
+                    <TextView
+                        android:layout_weight="0.5"
+                        android:layout_width="match_parent"
+                        android:id="@+id/textViewHumidity"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+                    <TextView
+                        android:layout_weight="0.5"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="end"
+                        android:text="Давление"/>
+                    <TextView
+                        android:layout_weight="0.5"
+                        android:layout_width="match_parent"
+                        android:id="@+id/textViewPressure"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+                    <TextView
+                        android:layout_weight="0.5"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="end"
+                        android:text="Облачность"/>
+                    <TextView
+                        android:layout_weight="0.5"
+                        android:layout_width="match_parent"
+                        android:id="@+id/textViewClouds"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+                    <TextView
+                        android:layout_weight="0.5"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="end"
+                        android:text="Осадки"/>
+                    <TextView
+                        android:layout_weight="0.5"
+                        android:layout_width="match_parent"
+                        android:id="@+id/textView3h"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+
+
             </LinearLayout>
         </FrameLayout>
 

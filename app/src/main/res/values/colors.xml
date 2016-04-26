@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <item name="black" type="color">#ff000000</item>
+    <item name="darkBlue" type="color">#181f3e</item>
     <item name="mask" type="color">#76000000</item>
     <item name="white" type="color">#ffffffff</item>
     <color name="color_preloader_start">#0072dfe7</color>

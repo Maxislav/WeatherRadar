@@ -7,6 +7,16 @@
         <item name="android:itemTextAppearance">@style/itemTextStyle.AppTheme</item>
     </style>
 
+    <style name="forecastPager" parent="AppTheme">
+        <item name="android:textColor">@color/darkBlue</item>
+        <item name="android:textViewStyle">@style/forecastPagerText</item>
+    </style>
+
+    <style name="forecastPagerText" parent="forecastPager">
+        <item name="android:padding">5dp</item>
+        <item name="android:textSize">25dp</item>
+    </style>
+
     <style name="date_picker" parent="Theme.AppCompat.Light.DarkActionBar">
         <item name="android:textColor">@color/color_edit_text</item>
         <item name="android:textColorPrimary">@color/color_edit_text</item>
@@ -28,6 +38,15 @@
         <item name="android:padding">2dp</item>
     </style>
 
+    <style name="TitleStyle" >
+        <item name="android:textColor">@color/color_text_title</item>
+        <item name="android:textSize">15dp</item>
+        <item name="android:textStyle">bold</item>
+
+        <item name="android:padding">3dp</item>
+        <item name="android:layout_margin">0dp</item>
+    </style>
+
     <style name="MyTextAppearance" parent="MyAppTheme">
         <item name="android:padding">5dp</item>
     </style>
@@ -39,6 +58,8 @@
         <item name="android:background">@color/background_edit_text</item>
         <item name="android:textColor">@color/color_edit_text</item>
     </style>
+
+
 
     <style name="itemTextStyle.AppTheme" parent="@android:style/TextAppearance.Widget.IconMenu.Item">
         <item name="android:textColor">@drawable/color_item_popup</item>

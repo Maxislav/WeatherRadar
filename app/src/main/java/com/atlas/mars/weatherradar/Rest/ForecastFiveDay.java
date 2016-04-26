@@ -208,6 +208,7 @@ public class ForecastFiveDay {
         SimpleDateFormat time = new SimpleDateFormat("HH:mm"); //2015-08-03 18:00:00
         SimpleDateFormat HH = new SimpleDateFormat("HH"); //2015-08-03 18:00:00
         SimpleDateFormat dayWeek = new SimpleDateFormat("EE");
+        SimpleDateFormat dayWeekFull = new SimpleDateFormat("EEEE");
         for (Item item : result.getList()) {
             HashMap<String, String> map = new HashMap<>();
             map.put("icon", item.getWeather().getIcon());
@@ -235,13 +236,18 @@ public class ForecastFiveDay {
                 map.put("time", time.format(date));
                 map.put("HH", HH.format(date));
                 map.put("dayWeek", dayWeek.format(date));
-
+                map.put("dayWeekFull", dayWeekFull.format(date));
                 map.put("dayWeekNum", Integer.toString(cal.get(Calendar.DAY_OF_WEEK)));
             } catch (ParseException e) {
                 Log.e(TAG, e.toString(), e);
             }
 
             map.put("dt_txt", item.getDt_txt());
+            map.put("humidity", item.getMain().getHumidity());
+            map.put("temp_min", item.getMain().getTemp_min());
+            map.put("temp_max", item.getMain().getTemp_max());
+            map.put("pressure", item.getMain().getPressure());
+            map.put("clouds", item.getClouds().getAll());
             list.add(map);
         }
         onAccept.accept(list, cityName, code);
@@ -296,9 +302,14 @@ public class ForecastFiveDay {
 
         public Main main;
         public List<Weather> weather;
+        public Clouds clouds;
 
         public Weather getWeather() {
             return weather.get(0);
+        }
+
+        public Clouds getClouds(){
+            return clouds;
         }
 
         public String getDt() {
@@ -311,14 +322,19 @@ public class ForecastFiveDay {
         public Rain getRain() {
             return rain;
         }
-
         Rain rain;
-
         public Snow getSnow() {
             return snow;
         }
-
         Snow snow;
+    }
+
+    private class Clouds{
+        String all;
+        public String getAll() {
+            return all;
+        }
+
     }
 
     private class Rain {
@@ -355,9 +371,34 @@ public class ForecastFiveDay {
         }
 
         double temp;
+        String pressure;
+
+        double temp_min, temp_max;
+
+        public String getPressure() {
+            return pressure;
+        }
+
+
+
+        public String getTemp_min(){
+            if(temp_min<0){
+                return "-"+temp_min;
+            }else {
+                return "+"+temp_min;
+            }
+        }
+
+        public String getTemp_max(){
+            if(temp_max<0){
+                return "-"+temp_max;
+            }else {
+                return "+"+temp_max;
+            }
+        }
 
         public String getHumidity() {
-            return humidity;
+            return humidity+"%";
         }
 
         String humidity;
