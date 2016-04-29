@@ -136,7 +136,7 @@ public class Forecast implements OnLocation, ForecastFiveDay.OnAccept {
         if (0 < list.size()) {
             this.list = list;
 
-            infladeDay(list);
+            inflateDay(list);
             db.mapSetting.put(db.TIMESTAMP_FORECAST, db.getTimeStamp());
             db.saveSetting();
         } else {
@@ -455,7 +455,7 @@ public class Forecast implements OnLocation, ForecastFiveDay.OnAccept {
         }
     }
 
-    void infladeDay(List<HashMap> listMap) {
+    void inflateDay(List<HashMap> listMap) {
         String dayWeekNum = listMap.get(0).get("dayWeekNum").toString();
         dayWeekNum = listMap.get(0).get("dayWeekNum").toString();
         int i = 0, count = listMap.size();
