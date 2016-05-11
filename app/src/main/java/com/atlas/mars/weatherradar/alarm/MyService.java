@@ -129,6 +129,8 @@ public class MyService extends Service implements OnLocation {
     @Override
     public void onLocationAccept(String cityId) {
         boolean startBorispol = db.getStartBorispol();
+        //todo для отладки запроса борисполя закоментировать
+        //startBorispol = true;
         boolean startForecast = db.getStartForecast();
         Log.d(ALARM, "Start Borispol after city Id: " +startBorispol + " ; Start Forecast " + startForecast);
         if (isNetworkAvailable()) {

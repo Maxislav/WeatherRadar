@@ -33,10 +33,10 @@ public class BorispolRest {
 
     private interface MyApiEndpointInterface {
         @GET("/")
-        void getDistanceById(@Query("id") String cityId, Callback<List<CustomObject>> cb);
+        void getDistanceById(@Query("id") String cityId,  Callback<Result> cb);
 
         @GET("/")
-        void getDistanceByLatLng(@Query("lat") String lat, @Query("lng") String lng, Callback<List<CustomObject>> cb);
+        void getDistanceByLatLng(@Query("lat") String lat, @Query("lng") String lng, Callback<Result> cb);
     }
 
     public BorispolRest(MyService myService, String cityId) {
@@ -65,10 +65,10 @@ public class BorispolRest {
         MyApiEndpointInterface apiService =
                 restAdapter.create(MyApiEndpointInterface.class);
 
-        apiService.getDistanceByLatLng(lat, lng, new Callback<List<CustomObject>>() {
+        apiService.getDistanceByLatLng(lat, lng, new Callback<Result>() {
             @Override
-            public void success(List<CustomObject> customObjects, Response response) {
-                Success(customObjects);
+            public void success(Result result, Response response) {
+                Success(result.getDist());
             }
 
             @Override
@@ -87,10 +87,10 @@ public class BorispolRest {
         MyApiEndpointInterface apiService =
                 restAdapter.create(MyApiEndpointInterface.class);
 
-        apiService.getDistanceById(cityId, new Callback<List<CustomObject>>() {
+        apiService.getDistanceById(cityId, new  Callback<Result>() {
             @Override
-            public void success(List<CustomObject> customObjects, Response response) {
-                Success(customObjects);
+            public void success(Result result, Response response) {
+                Success(result.getDist());
             }
 
             @Override
@@ -121,6 +121,18 @@ public class BorispolRest {
         }
         onCallback(map);
     }
+
+    private class Result{
+
+        public  List <CustomObject> dist;
+
+        public List<CustomObject> getDist() {
+            return dist;
+        }
+
+    }
+
+
 
 
     private class CustomObject {
