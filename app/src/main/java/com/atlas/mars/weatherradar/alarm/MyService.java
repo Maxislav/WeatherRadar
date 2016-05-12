@@ -62,6 +62,7 @@ public class MyService extends Service implements OnLocation {
     boolean rainGoogle = false;
     boolean rainBorispol = false;
 
+
     @Override
     public IBinder onBind(Intent intent) {
         return null;
@@ -94,6 +95,8 @@ public class MyService extends Service implements OnLocation {
         Log.d(TAG, "onDestroy");
         //locationManagerGps.removeUpdates(locationListenerGps);
     }
+
+
 
 
     /**

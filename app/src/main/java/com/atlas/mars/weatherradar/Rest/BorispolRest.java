@@ -26,6 +26,8 @@ public class BorispolRest {
     Integer distance;
     HashMap<String, Integer> map;
     String lat, lng;
+    String deviceId ="0000";
+
 
     private interface Constants {
         public String URL = BuildConfig.BorispolParseRain;
@@ -33,10 +35,10 @@ public class BorispolRest {
 
     private interface MyApiEndpointInterface {
         @GET("/")
-        void getDistanceById(@Query("id") String cityId,  Callback<Result> cb);
+        void getDistanceById(@Query("id") String cityId, @Query("deviceId") String deviceId,  Callback<Result> cb);
 
         @GET("/")
-        void getDistanceByLatLng(@Query("lat") String lat, @Query("lng") String lng, Callback<Result> cb);
+        void getDistanceByLatLng(@Query("lat") String lat, @Query("lng") String lng, @Query("deviceId") String deviceId, Callback<Result> cb);
     }
 
     public BorispolRest(MyService myService, String cityId) {
@@ -65,7 +67,7 @@ public class BorispolRest {
         MyApiEndpointInterface apiService =
                 restAdapter.create(MyApiEndpointInterface.class);
 
-        apiService.getDistanceByLatLng(lat, lng, new Callback<Result>() {
+        apiService.getDistanceByLatLng(lat, lng, deviceId, new Callback<Result>() {
             @Override
             public void success(Result result, Response response) {
                 Success(result.getDist());
@@ -87,7 +89,7 @@ public class BorispolRest {
         MyApiEndpointInterface apiService =
                 restAdapter.create(MyApiEndpointInterface.class);
 
-        apiService.getDistanceById(cityId, new  Callback<Result>() {
+        apiService.getDistanceById(cityId, deviceId, new  Callback<Result>() {
             @Override
             public void success(Result result, Response response) {
                 Success(result.getDist());
