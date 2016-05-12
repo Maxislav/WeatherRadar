@@ -339,7 +339,7 @@ public class ForecastFiveDay {
 
     private class Wind{
         String speed;
-        String deg;
+        double deg;
 
 
         public String getSpeed() {
@@ -347,7 +347,8 @@ public class ForecastFiveDay {
         }
 
         public String getDeg() {
-            return deg;
+            Double d = MathOperation.round(deg, 0);
+            return Integer.toString(d.intValue());
         }
     }
 
