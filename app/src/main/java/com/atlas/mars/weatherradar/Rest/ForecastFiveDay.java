@@ -248,6 +248,8 @@ public class ForecastFiveDay {
             map.put("temp_max", item.getMain().getTemp_max());
             map.put("pressure", item.getMain().getPressure());
             map.put("clouds", item.getClouds().getAll());
+            map.put("wind_speed", item.getWind().getSpeed());
+            map.put("wind_deg", item.getWind().getDeg());
             list.add(map);
         }
         onAccept.accept(list, cityName, code);
@@ -295,6 +297,11 @@ public class ForecastFiveDay {
     private class Item {
        public String dt;
         public String dt_txt;
+        public Wind wind;
+
+        public Wind getWind() {
+            return wind;
+        }
 
         public String getDt_txt() {
             return dt_txt;
@@ -303,6 +310,7 @@ public class ForecastFiveDay {
         public Main main;
         public List<Weather> weather;
         public Clouds clouds;
+
 
         public Weather getWeather() {
             return weather.get(0);
@@ -327,6 +335,20 @@ public class ForecastFiveDay {
             return snow;
         }
         Snow snow;
+    }
+
+    private class Wind{
+        String speed;
+        String deg;
+
+
+        public String getSpeed() {
+            return speed;
+        }
+
+        public String getDeg() {
+            return deg;
+        }
     }
 
     private class Clouds{

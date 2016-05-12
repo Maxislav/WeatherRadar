@@ -4,191 +4,242 @@
     style="@style/forecastPager"
     android:layout_width="match_parent"
     android:layout_height="fill_parent"
-    android:orientation="vertical"
-    >
+    android:orientation="vertical">
 
-   <!-- <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="horizontal"
-        android:background="@drawable/border"
-        android:layout_weight="1">
-        <TextView
-            android:id="@+id/title"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="center_vertical"
-            android:padding="5dp"
-            android:text="Title"
-            android:textColor="@color/color_text_title"
-            android:textSize="22dp" />
-        <FrameLayout
-            android:layout_width="wrap_content"
-            android:layout_gravity="end"
-            android:layout_height="match_parent">
-            <ImageButton
-                android:layout_gravity="end"
-                android:id="@+id/buttonMenu"
-                android:layout_width="50dp"
-                android:background="@drawable/button_menu"
-                android:layout_height="match_parent" />
-        </FrameLayout>
-        <FrameLayout
-            android:layout_width="wrap_content"
-            android:layout_gravity="end"
-            android:layout_height="match_parent">
-            <ImageButton
-                android:layout_gravity="end"
-                android:id="@+id/buttonReload"
-                android:layout_width="50dp"
-                android:background="@drawable/button_reload"
-                android:layout_height="match_parent" />
-            </FrameLayout>
-    </LinearLayout>-->
+    <!-- <LinearLayout
+         android:layout_width="match_parent"
+         android:layout_height="match_parent"
+         android:orientation="horizontal"
+         android:background="@drawable/border"
+         android:layout_weight="1">
+         <TextView
+             android:id="@+id/title"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+             android:layout_weight="1"
+             android:gravity="center_vertical"
+             android:padding="5dp"
+             android:text="Title"
+             android:textColor="@color/color_text_title"
+             android:textSize="22dp" />
+         <FrameLayout
+             android:layout_width="wrap_content"
+             android:layout_gravity="end"
+             android:layout_height="match_parent">
+             <ImageButton
+                 android:layout_gravity="end"
+                 android:id="@+id/buttonMenu"
+                 android:layout_width="50dp"
+                 android:background="@drawable/button_menu"
+                 android:layout_height="match_parent" />
+         </FrameLayout>
+         <FrameLayout
+             android:layout_width="wrap_content"
+             android:layout_gravity="end"
+             android:layout_height="match_parent">
+             <ImageButton
+                 android:layout_gravity="end"
+                 android:id="@+id/buttonReload"
+                 android:layout_width="50dp"
+                 android:background="@drawable/button_reload"
+                 android:layout_height="match_parent" />
+             </FrameLayout>
+     </LinearLayout>-->
 
 
     <FrameLayout
         android:id="@+id/containerImg"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/tiles_repat"
-        android:layout_weight="1">
+        android:layout_weight="1"
+        android:background="@drawable/tiles_repat">
+
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
-            <LinearLayout
+
+            <ScrollView
+                android:id="@+id/scrollView"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-                <ImageView
-                    android:id="@+id/image"
-                    android:layout_width="120dp"
-                    android:layout_height="120dp"
-                    android:layout_gravity="center|top" />
-
-                <TextView
-                    android:layout_weight="0.5"
-                    android:layout_width="match_parent"
-
-                    android:id="@+id/textViewTemp"
-                    android:textSize="50dp"
-                    android:gravity="center"
-                    android:text="t"
-                    android:layout_height="wrap_content" />
-
+                android:layout_height="match_parent">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:id="@+id/image"
+                        android:layout_width="120dp"
+                        android:layout_height="120dp"
+                        android:layout_gravity="center|top" />
+
                     <TextView
+                        android:id="@+id/textViewTemp"
+                        android:layout_width="match_parent"
+
+                        android:layout_height="wrap_content"
                         android:layout_weight="0.5"
+                        android:gravity="center"
+                        android:text="t"
+                        android:textSize="50dp" />
+
+
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:gravity="end"
-                        android:text="Max"/>
-                    <TextView
-                        android:layout_weight="0.5"
-                        android:layout_width="match_parent"
-                        android:id="@+id/textViewTempMax"
-                        android:layout_height="wrap_content" />
-                </LinearLayout>
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="0.5"
+                            android:gravity="end"
+                            android:text="Max" />
+
+                        <TextView
+                            android:id="@+id/textViewTempMax"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="0.5" />
+                    </LinearLayout>
 
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-                    <TextView
-                        android:layout_weight="0.5"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="end"
-                        android:text="Min"/>
-                    <TextView
-                        android:layout_weight="0.5"
-                        android:layout_width="match_parent"
-                        android:id="@+id/textViewTempMin"
-                        android:layout_height="wrap_content" />
-                </LinearLayout>
-
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-                    <TextView
-                        android:layout_weight="0.5"
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:gravity="end"
-                        android:text="Влажность"/>
-                    <TextView
-                        android:layout_weight="0.5"
-                        android:layout_width="match_parent"
-                        android:id="@+id/textViewHumidity"
-                        android:layout_height="wrap_content" />
-                </LinearLayout>
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="0.5"
+                            android:gravity="end"
+                            android:text="Min" />
+
+                        <TextView
+                            android:id="@+id/textViewTempMin"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="0.5" />
+                    </LinearLayout>
 
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-                    <TextView
-                        android:layout_weight="0.5"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="end"
-                        android:text="Давление"/>
-                    <TextView
-                        android:layout_weight="0.5"
-                        android:layout_width="match_parent"
-                        android:id="@+id/textViewPressure"
-                        android:layout_height="wrap_content" />
-                </LinearLayout>
-
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-                    <TextView
-                        android:layout_weight="0.5"
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:gravity="end"
-                        android:text="Облачность"/>
-                    <TextView
-                        android:layout_weight="0.5"
-                        android:layout_width="match_parent"
-                        android:id="@+id/textViewClouds"
-                        android:layout_height="wrap_content" />
-                </LinearLayout>
+                        android:orientation="horizontal">
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-                    <TextView
-                        android:layout_weight="0.5"
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="0.5"
+                            android:gravity="end"
+                            android:text="Влажность" />
+
+                        <TextView
+                            android:id="@+id/textViewHumidity"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="0.5" />
+                    </LinearLayout>
+
+
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:gravity="end"
-                        android:text="Осадки"/>
-                    <TextView
-                        android:layout_weight="0.5"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="0.5"
+                            android:gravity="end"
+                            android:text="Давление" />
+
+                        <TextView
+                            android:id="@+id/textViewPressure"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="0.5" />
+                    </LinearLayout>
+
+
+                    <LinearLayout
                         android:layout_width="match_parent"
-                        android:id="@+id/textView3h"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="0.5"
+                            android:gravity="end"
+                            android:text="Облачность" />
+
+                        <TextView
+                            android:id="@+id/textViewClouds"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="0.5" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="0.5"
+                            android:gravity="end"
+                            android:text="Осадки" />
+
+                        <TextView
+                            android:id="@+id/textView3h"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="0.5" />
+                    </LinearLayout>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="0.5"
+                            android:gravity="end"
+                            android:text="Ветер" />
+
+                        <TextView
+                            android:id="@+id/textViewWindSpeed"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="0.5" />
+                    </LinearLayout>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="0.5"
+                            android:gravity="end"
+                            android:text="Направление" />
+
+                        <TextView
+                            android:id="@+id/textViewWindDeg"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="0.5" />
+                    </LinearLayout>
                 </LinearLayout>
-
-
-            </LinearLayout>
+            </ScrollView>
         </FrameLayout>
-
-
     </FrameLayout>
-
 </LinearLayout>

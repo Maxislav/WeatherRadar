@@ -82,6 +82,11 @@ public class ActivityFullWeatherInfo extends FragmentActivity implements Communi
         ((TextView)v.findViewById(R.id.textViewPressure)).setText(map.get("pressure"));
         ((TextView)v.findViewById(R.id.textViewClouds)).setText(map.get("clouds")+(char)0x0025);
         ((TextView)v.findViewById(R.id.textView3h)).setText( map.get("rain")!=null? (map.get("rain")+"mm") : "нет");
+
+        ((TextView)v.findViewById(R.id.textViewWindSpeed)).setText( map.get("wind_speed")!=null? (map.get("wind_speed")+"m/s") : "нет");
+        ((TextView)v.findViewById(R.id.textViewWindDeg)).setText( map.get("wind_deg")!=null? (map.get("wind_speed")+(char)0x00B0) : "");
+
+
         if(position == iDay){
             _setTitle(map) ;
         }

@@ -14,7 +14,7 @@
 
     <style name="forecastPagerText" parent="forecastPager">
         <item name="android:padding">5dp</item>
-        <item name="android:textSize">25dp</item>
+        <item name="android:textSize">20dp</item>
     </style>
 
     <style name="date_picker" parent="Theme.AppCompat.Light.DarkActionBar">
