@@ -76,6 +76,7 @@ public class BorispolRest {
             @Override
             public void failure(RetrofitError error) {
                 map.put("isIntensity", 5);
+                map.put("error", 1);
                 onCallback(map);
                 Log.e(TAG, "RetrofitError error", error);
             }
