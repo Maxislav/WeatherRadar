@@ -70,12 +70,13 @@ public class BorispolRest {
         apiService.getDistanceByLatLng(lat, lng, deviceId, new Callback<Result>() {
             @Override
             public void success(Result result, Response response) {
-                Success(result.getDist());
+                Success(result);
             }
 
             @Override
             public void failure(RetrofitError error) {
                 map.put("isIntensity", 5);
+                map.put("isRainy",1);
                 map.put("error", 1);
                 onCallback(map);
                 Log.e(TAG, "RetrofitError error", error);
@@ -93,19 +94,26 @@ public class BorispolRest {
         apiService.getDistanceById(cityId, deviceId, new  Callback<Result>() {
             @Override
             public void success(Result result, Response response) {
-                Success(result.getDist());
+                Success(result);
             }
 
             @Override
             public void failure(RetrofitError error) {
+                map.put("isRainy",1);
                 map.put("isIntensity", 5);
+                map.put("error", 1);
                 onCallback(map);
                 Log.e(TAG, "RetrofitError error", error);
             }
         });
     }
 
-    void Success(List<CustomObject> customObjects){
+    void Success(Result result){
+
+
+        List<CustomObject> customObjects = result.getDist();
+
+
         distance = MyService.alarmMinDist;
         for (CustomObject customObject : customObjects) {
             intensity = customObject.getIntensity();
@@ -122,21 +130,22 @@ public class BorispolRest {
             }
             map.put("isIntensity", intensity);
         }
+        map.put("isRainy", result.getIsRainy() ? 1:0);
         onCallback(map);
     }
 
     private class Result{
-
         public  List <CustomObject> dist;
+        public  boolean isRainy;
+
+        public boolean getIsRainy() {
+            return isRainy;
+        }
 
         public List<CustomObject> getDist() {
             return dist;
         }
-
     }
-
-
-
 
     private class CustomObject {
         public String color;

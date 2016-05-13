@@ -133,7 +133,7 @@ public class MyService extends Service implements OnLocation {
     public void onLocationAccept(String cityId) {
         boolean startBorispol = db.getStartBorispol();
         //todo для отладки запроса борисполя закоментировать
-        //startBorispol = true;
+       // startBorispol = true;
         boolean startForecast = db.getStartForecast();
         Log.d(ALARM, "Start Borispol after city Id: " +startBorispol + " ; Start Forecast " + startForecast);
         if (isNetworkAvailable()) {
@@ -179,13 +179,10 @@ public class MyService extends Service implements OnLocation {
             onNotification(map);
         }
 
-        if(map.get("rainBorispol")!=null && 0 <map.get("rainBorispol")){
+        if(map.get("isRainy") == 1){
             rainBorispol = true;
         }
 
-        if(map.get("error")!=null && map.get("error")==1){
-            rainBorispol = true;
-        }
         mapSetting.put(DataBaseHelper.BORISPOL_TIME, getTimeStamp());
         db.saveSetting();
 
