@@ -2,6 +2,7 @@ package com.atlas.mars.weatherradar.fragments;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
@@ -26,8 +27,10 @@ import com.atlas.mars.weatherradar.Density;
 import com.atlas.mars.weatherradar.LogTags;
 import com.atlas.mars.weatherradar.MainActivity;
 import com.atlas.mars.weatherradar.R;
+import com.atlas.mars.weatherradar.Zoom.ActivityZoom;
 import com.atlas.mars.weatherradar.loader.Loader;
 
+import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.util.HashMap;
 
@@ -38,6 +41,7 @@ public abstract class MyFragment  implements View.OnClickListener, PopupMenu.OnM
 
     private View view;
     private ImageView loadingImageView, imageView;
+    MainActivity mainActivity;
     private LinearLayout mainLayout;
     private static Activity activity;
     public String imageUrl;
@@ -53,6 +57,7 @@ public abstract class MyFragment  implements View.OnClickListener, PopupMenu.OnM
 
     public MyFragment(View view, Activity activity, int position){
         this.activity = activity;
+        mainActivity = (MainActivity)activity;
         this.view = view;
         this.position = position;
         loadImage = new LoadImage();
@@ -120,8 +125,6 @@ public abstract class MyFragment  implements View.OnClickListener, PopupMenu.OnM
         }
     }
 
-
-
     private void imageShow(final ImageView imageView){
         final Context context = activity;
         AlphaAnimation fadeInAnimation = new AlphaAnimation(0.0f, 1.0f);
@@ -156,6 +159,23 @@ public abstract class MyFragment  implements View.OnClickListener, PopupMenu.OnM
         containerImg.addView(imageView);
         imageView.setImageBitmap(((BitmapDrawable)loadingImageView.getDrawable()).getBitmap());
         containerImg.removeView(loadingImageView);
+
+        imageView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+               // activity.show("dsd");
+               // mainActivity.show("" + position);
+                Intent intent = new Intent(activity, ActivityZoom.class);
+
+                ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+                byte[] byteArray = stream.toByteArray();
+
+                intent.putExtra("bitmap", byteArray);
+                activity.startActivityForResult(intent, 3);
+                return false;
+            }
+        });
 
     }
 

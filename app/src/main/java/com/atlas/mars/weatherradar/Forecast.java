@@ -13,7 +13,6 @@ import android.os.AsyncTask;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
@@ -336,44 +335,6 @@ public class Forecast implements OnLocation, ForecastFiveDay.OnAccept {
         view.findViewById(R.id.overLayout).setOnLongClickListener(new  MyLongClick(map, iDay));
     }
 
-    void onWebShowToast3h(WebView mWebView, final String text, final HashMap<String, String> map){
-
-        mWebView.setOnTouchListener(new View.OnTouchListener() {
-            LongClick longClick;
-
-            float startX, dX;
-
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                //Log.d(TAG, event.getAction() + "" );
-
-                switch (event.getAction()) {
-                    case MotionEvent.ACTION_DOWN:
-                        startX = event.getRawX();
-                        toast.show(text, Gravity.TOP | Gravity.CLIP_HORIZONTAL);
-                        longClick = new LongClick(text, map);
-                        longClick.execute();
-                        break;
-                    case MotionEvent.ACTION_UP:
-                        if(longClick!=null && longClick.getStatus() == AsyncTask.Status.RUNNING){
-                            longClick.setCancel();
-                        }
-                        break;
-                    case MotionEvent.ACTION_MOVE:
-                        dX = startX - event.getRawX();
-                        Log.d(TAG, "dx "+ dX + "");
-                        if(1<dX || dX<-1){
-                            if(longClick!=null && longClick.getStatus() == AsyncTask.Status.RUNNING){
-                                longClick.setCancel();
-                            }
-                        }
-
-                        break;
-                }
-                return false;
-            }
-        });
-    }
 
 
 
