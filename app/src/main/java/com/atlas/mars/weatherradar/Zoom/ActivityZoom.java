@@ -22,7 +22,9 @@ public class ActivityZoom extends Activity {
         byte[] b =  getIntent().getByteArrayExtra("bitmap");
         Bitmap bitmap = BitmapFactory.decodeByteArray(b, 0 , b.length);
         Matrix matrix = new Matrix();
-        matrix.postRotate(-90);
+        if(!getIntent().getExtras().getBoolean("isLandscapeMode")){
+            matrix.postRotate(-90);
+        }
         bitmap = Bitmap.createBitmap(bitmap , 0, 0, bitmap .getWidth(), bitmap .getHeight(), matrix, true);
         SubsamplingScaleImageView imageView = (SubsamplingScaleImageView)findViewById(R.id.imageView);
         imageView.setMaxScale(4);

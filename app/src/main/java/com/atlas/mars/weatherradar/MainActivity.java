@@ -10,6 +10,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
@@ -134,7 +135,14 @@ public class MainActivity extends FragmentActivity implements Communicator, View
         pager.setOffscreenPageLimit(3);
         pager.setOnPageChangeListener(this);
 
-        LinearLayout.LayoutParams parms = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (int) (Density.widthPixels * 1.34));
+        LinearLayout.LayoutParams parms;
+
+        if(isLandscapeMode()){
+            parms = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (int) (Density.widthPixels / 1.34));
+        }else{
+            parms = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (int) (Density.widthPixels * 1.34));
+        }
+
         pager.setLayoutParams(parms);
         scrollView = (ScrollView) findViewById(R.id.scrollView);
 
@@ -220,7 +228,6 @@ public class MainActivity extends FragmentActivity implements Communicator, View
                 fragmentTransaction.commit();
                 break;
             case 1:
-
                 fragmentTransaction.replace(R.id.frLayoutCurrent, fragmentImageAction);
                 fragmentTransaction.addToBackStack(null);
                 fragmentTransaction.commit();
@@ -591,6 +598,14 @@ public class MainActivity extends FragmentActivity implements Communicator, View
             title.setText(mapSetting.get("title"+(pos+1)));
         }
 */
+    }
+
+    private boolean isLandscapeMode(){
+        if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT){
+            return false;
+        }else {
+            return true;
+        }
     }
 
 

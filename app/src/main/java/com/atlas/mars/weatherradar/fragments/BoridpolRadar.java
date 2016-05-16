@@ -8,7 +8,12 @@ import android.view.View;
  */
 public class BoridpolRadar extends MyFragment {
 
+
     public BoridpolRadar(View view, Activity activity, int position) {
         super(view, activity, position);
     }
+
+
+
+
 }

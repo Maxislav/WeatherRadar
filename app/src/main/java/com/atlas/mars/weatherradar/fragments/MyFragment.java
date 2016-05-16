@@ -3,6 +3,8 @@ package com.atlas.mars.weatherradar.fragments;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
@@ -53,20 +55,33 @@ public abstract class MyFragment  implements View.OnClickListener, PopupMenu.OnM
     static HashMap<String, String> mapSetting;
     int position;
     Bitmap bitmap;
+    static Resources resources;
 
 
     public MyFragment(View view, Activity activity, int position){
         this.activity = activity;
         mainActivity = (MainActivity)activity;
+        resources = mainActivity.getResources();
+
         this.view = view;
         this.position = position;
         loadImage = new LoadImage();
         containerImg = (FrameLayout)view.findViewById(R.id.containerImg);
         mainLayout = (LinearLayout)view.findViewById(R.id.main);
-        LinearLayout.LayoutParams parms = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,(int)(Density.widthPixels*1.34));
+
+        LinearLayout.LayoutParams parms;
+
+        if(isLandscapeMode()){
+            parms = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,(int)(Density.widthPixels/1.34));
+        }else{
+            parms = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,(int)(Density.widthPixels*1.34));
+        }
+
         containerImg.setLayoutParams(parms);
         final int heightButton = (int)(Density.heightPixels - (Density.widthPixels*1.34));
-        final double g= (float)Density.heightPixels - (float)Density.widthPixels * 1.34;
+
+
+        final double g = (float)Density.heightPixels - (float)Density.widthPixels * 1.34;
         // title = (TextView) view.findViewById(R.id.title);
         mapSetting = DataBaseHelper.mapSetting;
         setImageUrl();
@@ -170,8 +185,8 @@ public abstract class MyFragment  implements View.OnClickListener, PopupMenu.OnM
                 ByteArrayOutputStream stream = new ByteArrayOutputStream();
                 bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
                 byte[] byteArray = stream.toByteArray();
-
                 intent.putExtra("bitmap", byteArray);
+                intent.putExtra("isLandscapeMode", isLandscapeMode());
                 activity.startActivityForResult(intent, 3);
                 return false;
             }
@@ -232,24 +247,28 @@ public abstract class MyFragment  implements View.OnClickListener, PopupMenu.OnM
             Bitmap mIcon11 = null;
             Bitmap modyfy = null;
             try {
-                Matrix matrix = new Matrix();
 
-                matrix.postRotate(90);
                 InputStream in = new java.net.URL(imageUrl).openStream();
                 mIcon11 = BitmapFactory.decodeStream(in);
-                if(mIcon11!=null)
-                    modyfy = Bitmap.createBitmap(mIcon11, 0, 0,  mIcon11.getWidth(),  mIcon11.getHeight(), matrix, true);
+
             } catch (Exception e) {
                 Log.e(LogTags.TAG, e.getMessage());
                 e.printStackTrace();
             }
-            return modyfy;
+            return mIcon11;
         }
 
         @Override
 
         protected void onPostExecute(Bitmap result) {
             loader.hide();
+            Matrix matrix = new Matrix();
+            matrix.postRotate(0);
+            if(!isLandscapeMode()){
+                matrix.postRotate(90);
+                result = Bitmap.createBitmap(result, 0, 0,  result.getWidth(),  result.getHeight(), matrix, true);
+            }
+
             loadImage = new LoadImage();
             setBitmap(result);
         }
@@ -264,5 +283,14 @@ public abstract class MyFragment  implements View.OnClickListener, PopupMenu.OnM
                 = (ConnectivityManager) activity.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    }
+
+
+    private boolean isLandscapeMode(){
+        if(resources.getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT){
+            return false;
+        }else {
+            return true;
+        }
     }
 }
