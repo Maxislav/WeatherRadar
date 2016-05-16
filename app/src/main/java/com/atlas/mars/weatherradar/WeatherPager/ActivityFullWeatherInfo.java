@@ -27,7 +27,7 @@ public class ActivityFullWeatherInfo extends FragmentActivity implements Communi
 
     ViewPager pager;
     PagerAdapter pagerAdapter;
-    static List<HashMap> list = Forecast.list;
+    static List<HashMap> list;
     int iDay;
 
 
@@ -36,6 +36,7 @@ public class ActivityFullWeatherInfo extends FragmentActivity implements Communi
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        list = Forecast.list;
         iDay = getIntent().getExtras().getInt("iDay");
 
 
@@ -68,6 +69,9 @@ public class ActivityFullWeatherInfo extends FragmentActivity implements Communi
     @Override
     public void initView(View v, int position) {
         Log.d(TAG, "initView: " + position);
+
+
+
         TextView textViewTemp = (TextView)v.findViewById(R.id.textViewTemp);
         HashMap<String, String> map = list.get(position);
         textViewTemp.setText(list.get(position).get("temp").toString()+(char)0x00B0+"C");

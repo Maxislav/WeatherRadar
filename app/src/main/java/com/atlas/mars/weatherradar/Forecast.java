@@ -55,7 +55,7 @@ public class Forecast implements OnLocation, ForecastFiveDay.OnAccept {
     private static int onTaskResult = 0;
     DataBaseHelper db;
     static Context context;
-   public static List<HashMap> list;
+    public static List<HashMap> list;
 
 
     Forecast(Activity activity, LinearLayout fr) {
@@ -174,7 +174,7 @@ public class Forecast implements OnLocation, ForecastFiveDay.OnAccept {
                         View view = inflater.inflate(R.layout.forecast_container, null, false);
                         //view.findViewById(R.id.overLayout).setOnLongClickListener(new  MyLongClick(map));
                         inflateWebDrip(view, map, iDay);
-                        view.setPadding(2,2,2,2);
+                        view.setPadding(2, 2, 2, 2);
                         layoytDay.addView(view);
 
                         // view.setBackgroundColor(getColorHour(hashMap.get("HH")));
@@ -209,7 +209,7 @@ public class Forecast implements OnLocation, ForecastFiveDay.OnAccept {
                     }
                 });
             }
-        }, 50*iDay);
+        }, 50 * iDay);
 
 
 
@@ -228,13 +228,15 @@ public class Forecast implements OnLocation, ForecastFiveDay.OnAccept {
     private class MyLongClick implements View.OnLongClickListener {
         HashMap<String, String> map;
         int iDay;
-        MyLongClick(HashMap<String, String> map, int iDay){
+
+        MyLongClick(HashMap<String, String> map, int iDay) {
             this.map = map;
             this.iDay = iDay;
         }
+
         @Override
         public boolean onLongClick(View v) {
-           // toast.show("onLongClick");
+            // toast.show("onLongClick");
 
             Intent intent = new Intent(activity, ActivityFullWeatherInfo.class);
             //intent.putExtra("list", list);
@@ -245,11 +247,13 @@ public class Forecast implements OnLocation, ForecastFiveDay.OnAccept {
         }
     }
 
-    private class MyClick implements View.OnClickListener{
+    private class MyClick implements View.OnClickListener {
         String ts;
-        MyClick(String ts){
+
+        MyClick(String ts) {
             this.ts = ts;
         }
+
         @Override
         public void onClick(View v) {
             toast.show(ts, Gravity.TOP | Gravity.CLIP_HORIZONTAL);
@@ -295,63 +299,60 @@ public class Forecast implements OnLocation, ForecastFiveDay.OnAccept {
             }
         }
 
-        if(isNeedCreate){
+        if (isNeedCreate) {
 
           /*  String packageName = context.getPackageName();
             int resId = context.getResources().getIdentifier("hh"+map.get("HH"), "color", packageName);
             String color16 =    context.getString(resId);*/
 
 
-            String color16 = getStringResourceByName("color", "hh"+map.get("HH"));
+            String color16 = getStringResourceByName("color", "hh" + map.get("HH"));
             color16 = color16.replaceAll("^#.{2}", "#");
-
 
 
             String web = "<html><head><meta name=\"viewport\" content=\"width=device-width, minimum-scale=0.1\"><title>drip.png (20×32)</title><style type=\"text/css\"></style></head><body style=\"margin: 0px;\">" +
                     "<div style=\"position: relative; overflow: hidden; height: 65px; width: 100%; \">" +
-                        "<div>" +drip +"</div>"+
-                    "<div style=\"position: absolute; height: 65px; width: 100%; top: 0;left: 0; background:  linear-gradient(to bottom, rgba(0,0,0,0) 0%, "+color16+" 100%);\">"+
+                    "<div>" + drip + "</div>" +
+                    "<div style=\"position: absolute; height: 65px; width: 100%; top: 0;left: 0; background:  linear-gradient(to bottom, rgba(0,0,0,0) 0%, " + color16 + " 100%);\">" +
 
-                    "</div>"+
+                    "</div>" +
                     "</div>" +
                     "</body></html>";
             browser.loadDataWithBaseURL("file:///android_asset/", web, "text/html", "UTF-8", null);
 
             String ts = "";
 
-            if(rain3h!=null){
-                ts+= "Rain 3h: " + rain3h;
+            if (rain3h != null) {
+                ts += "Rain 3h: " + rain3h;
             }
-            if(!ts.isEmpty()){
-                ts+=" ";
+            if (!ts.isEmpty()) {
+                ts += " ";
             }
 
-            if(snow3h!=null){
-                ts+= "Snow 3h: " + snow3h;
+            if (snow3h != null) {
+                ts += "Snow 3h: " + snow3h;
             }
-           // onWebShowToast3h(browser, ts, map);
+            // onWebShowToast3h(browser, ts, map);
             view.findViewById(R.id.overLayout).setOnClickListener(new MyClick(ts));
         }
-        view.findViewById(R.id.overLayout).setOnLongClickListener(new  MyLongClick(map, iDay));
+        view.findViewById(R.id.overLayout).setOnLongClickListener(new MyLongClick(map, iDay));
     }
 
 
-
-
-    private class LongClick extends AsyncTask<Void, Void, Boolean>{
+    private class LongClick extends AsyncTask<Void, Void, Boolean> {
 
         Boolean doShow;
         String text;
         HashMap<String, String> map;
 
-        LongClick(String text, HashMap<String, String> map){
+        LongClick(String text, HashMap<String, String> map) {
             super();
             this.text = text;
             this.map = map;
         }
 
-        void setCancel(){
-           doShow = false;
+        void setCancel() {
+            doShow = false;
         }
 
         @Override
@@ -373,7 +374,7 @@ public class Forecast implements OnLocation, ForecastFiveDay.OnAccept {
         @Override
         protected void onPostExecute(Boolean result) {
             super.onPostExecute(result);
-            if(doShow){
+            if (doShow) {
                 //Intent intent = new Intent(activity, ActivityFullWeatherInfo.class);
                 //activity.startActivityForResult(intent, 2);
             }
@@ -482,7 +483,7 @@ public class Forecast implements OnLocation, ForecastFiveDay.OnAccept {
         float a;
 
         public Rgb(String hex) {
-            a = (float)Integer.parseInt(hex.substring(1, 3), 16) / 255;
+            a = (float) Integer.parseInt(hex.substring(1, 3), 16) / 255;
             r = Integer.parseInt(hex.substring(3, 5), 16);
             g = Integer.parseInt(hex.substring(5, 7), 16);
             b = Integer.parseInt(hex.substring(7, 9), 16);
