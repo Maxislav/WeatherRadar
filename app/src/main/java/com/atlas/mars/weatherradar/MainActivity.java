@@ -208,7 +208,10 @@ public class MainActivity extends FragmentActivity implements Communicator, View
     @Override
     protected void onPause() {
         unregisterReceiver(myReceiver);
-        alarmRegenBorispol.cancel(pIntent3);
+
+        if(pIntent3!=null)
+            alarmRegenBorispol.cancel(pIntent3);
+
         super.onPause();
     }
 
