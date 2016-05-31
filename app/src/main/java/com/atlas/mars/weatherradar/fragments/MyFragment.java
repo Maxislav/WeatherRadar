@@ -32,7 +32,6 @@ import com.atlas.mars.weatherradar.R;
 import com.atlas.mars.weatherradar.Zoom.ActivityZoom;
 import com.atlas.mars.weatherradar.loader.Loader;
 
-import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.util.HashMap;
 
@@ -56,13 +55,14 @@ public abstract class MyFragment  implements View.OnClickListener, PopupMenu.OnM
     int position;
     Bitmap bitmap;
     static Resources resources;
+    BitmapTransfer bitmapTransfer;
 
 
     public MyFragment(View view, Activity activity, int position){
         this.activity = activity;
         mainActivity = (MainActivity)activity;
         resources = mainActivity.getResources();
-
+        bitmapTransfer = new BitmapTransfer();
         this.view = view;
         this.position = position;
         loadImage = new LoadImage();
@@ -180,12 +180,19 @@ public abstract class MyFragment  implements View.OnClickListener, PopupMenu.OnM
             public boolean onLongClick(View v) {
                // activity.show("dsd");
                // mainActivity.show("" + position);
+
+
+                bitmapTransfer.setBitmap(bitmap);
+
+               // ByteArrayOutputStream stream = new ByteArrayOutputStream();
+               // bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+               // byte[] byteArray = stream.toByteArray();
+
                 Intent intent = new Intent(activity, ActivityZoom.class);
 
-                ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
-                byte[] byteArray = stream.toByteArray();
-                intent.putExtra("bitmap", byteArray);
+
+
+               // intent.putExtra("bitmap", byteArray);
                 intent.putExtra("isLandscapeMode", isLandscapeMode());
                 activity.startActivityForResult(intent, 3);
                 return false;

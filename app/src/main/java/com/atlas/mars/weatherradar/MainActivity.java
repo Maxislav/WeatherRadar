@@ -224,7 +224,6 @@ public class MainActivity extends FragmentActivity implements Communicator, View
 
         Log.d(TAG, "Current page: " + pager.getCurrentItem());
 
-
         fragmentWeather = new CurrentWeather();
         fragmentImageAction = new FragmentImageAction();
         fragmentManager = getFragmentManager();
@@ -638,10 +637,15 @@ public class MainActivity extends FragmentActivity implements Communicator, View
 
     }
 
-    void setMyTitle(int pos) {
+    private void setMyTitle(int pos) {
         posinion = pos;
         String titleText = "";
-        ((FragmentImageAction) fragmentImageAction).setTitle(posinion);
+
+        if(fragmentImageAction!=null &&   fragmentImageAction.isAdded()){
+            Log.d(TAG, " isAdded " );
+            ((FragmentImageAction) fragmentImageAction).setTitle(posinion);
+        };
+       // ((FragmentImageAction) fragmentImageAction).setTitle(posinion);
 
         Log.d(TAG, "Position " + pos);
 
