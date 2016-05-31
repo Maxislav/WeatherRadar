@@ -3,6 +3,7 @@ package com.atlas.mars.weatherradar;
 import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.Fragment;
+import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -14,6 +15,7 @@ import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.ListFragment;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
@@ -57,7 +59,7 @@ public class MainActivity extends FragmentActivity implements Communicator, View
     BoridpolRadar boridpolRadar;
     InfraRed infraRed;
     Visible visible;
-
+    FragmentManager fragmentManager;
 
     HashMap<Integer, MyFragment> mapFragments;
 
@@ -92,6 +94,8 @@ public class MainActivity extends FragmentActivity implements Communicator, View
     Forecast forecast;
 
     MyDialog dialogLicence;
+
+    boolean isActivityLeave = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -162,28 +166,45 @@ public class MainActivity extends FragmentActivity implements Communicator, View
         /**
          * Текущая погода
          */
-        fragmentWeather = new CurrentWeather();
-        fragmentImageAction = new FragmentImageAction();
-        fragmentTransaction = getFragmentManager().beginTransaction();
-        fragmentTransaction.add(R.id.frLayoutCurrent, fragmentWeather);
-        fragmentTransaction.commit();
+
+        //frLayoutCurrent = (FrameLayout)findViewById(R.id.frLayoutCurrent);
+
+
+
+
+
 
         //todo закоментировать
         // new MyRestTest();
     }
 
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        isActivityLeave = true;
+        outState.putBoolean("isActivityLeave", isActivityLeave);
+        super.onSaveInstanceState(outState);
+
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        isActivityLeave = savedInstanceState.getBoolean("isActivityLeave");
+        Log.d("isActivityLeave", savedInstanceState.getBoolean("isActivityLeave")+"");
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
-
         if (forecast == null) {
-            frLayoutCurrent = (FrameLayout) findViewById(R.id.frLayoutCurrent);
+            //frLayoutCurrent = (FrameLayout) findViewById(R.id.frLayoutCurrent);
             forecast = new Forecast(this, forecastLinearLayout);
         }else if (updateForecastIsNeeded()) {
             if (forecast != null) {
                 forecast.onRegen();
             } else {
-                frLayoutCurrent = (FrameLayout) findViewById(R.id.frLayoutCurrent);
+               // frLayoutCurrent = (FrameLayout) findViewById(R.id.frLayoutCurrent);
                 forecast = new Forecast(this, forecastLinearLayout);
             }
         }
@@ -202,6 +223,17 @@ public class MainActivity extends FragmentActivity implements Communicator, View
         }
 
         Log.d(TAG, "Current page: " + pager.getCurrentItem());
+
+
+        fragmentWeather = new CurrentWeather();
+        fragmentImageAction = new FragmentImageAction();
+        fragmentManager = getFragmentManager();
+
+        if(!isActivityLeave){
+            fragmentTransaction = fragmentManager.beginTransaction();
+            fragmentTransaction.add(R.id.frLayoutCurrent, fragmentWeather);
+            fragmentTransaction.commit();
+        };
     }
 
 
@@ -211,8 +243,13 @@ public class MainActivity extends FragmentActivity implements Communicator, View
 
         if(pIntent3!=null)
             alarmRegenBorispol.cancel(pIntent3);
-
         super.onPause();
+
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
     }
 
     /**
@@ -222,23 +259,36 @@ public class MainActivity extends FragmentActivity implements Communicator, View
      */
     public void changeFragmentBar(int i) {
 
-        fragmentTransaction = getFragmentManager().beginTransaction();
+        fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.setCustomAnimations(R.anim.fade_in, R.anim.fade_out);
+
+
+
         switch (i) {
             case 0:
-                fragmentTransaction.replace(R.id.frLayoutCurrent, fragmentWeather);
-                fragmentTransaction.addToBackStack(null);
-                fragmentTransaction.commit();
+                    fragmentTransaction.replace(R.id.frLayoutCurrent, fragmentWeather);
+                    fragmentTransaction.addToBackStack(null);
+                    fragmentTransaction.commit();
                 break;
             case 1:
-                fragmentTransaction.replace(R.id.frLayoutCurrent, fragmentImageAction);
-                fragmentTransaction.addToBackStack(null);
-                fragmentTransaction.commit();
+                    fragmentTransaction.replace(R.id.frLayoutCurrent, fragmentImageAction);
+                    fragmentTransaction.addToBackStack(null);
+                    fragmentTransaction.commit();
+
                 ((FragmentImageAction) fragmentImageAction).setTitle(posinion);
                 break;
         }
 
     }
+
+    private ListFragment getListFragment() {
+        ListFragment listFragment = (ListFragment) this.getSupportFragmentManager().findFragmentById(R.id.frLayoutCurrent);
+        if (listFragment == null) {
+            listFragment = new ListFragment();
+        }
+        return listFragment ;
+    }
+
 
     private void setSisze() {
         final MainActivity mainActivity = this;
@@ -491,7 +541,7 @@ public class MainActivity extends FragmentActivity implements Communicator, View
         mapSetting.put(db.LICENCE, "1");
         db.saveSetting();
         _onStart();
-        frLayoutCurrent = (FrameLayout) findViewById(R.id.frLayoutCurrent);
+       // frLayoutCurrent = (FrameLayout) findViewById(R.id.frLayoutCurrent);
         forecast = new Forecast(this, forecastLinearLayout);
     }
 
