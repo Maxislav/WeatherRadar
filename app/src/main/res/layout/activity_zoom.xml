@@ -11,7 +11,20 @@
         android:layout_height="120dp"
         android:layout_weight="1"
         android:background="@drawable/border"
+        android:gravity="end"
         android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center">
+            <ImageButton
+                android:id="@+id/buttonPlay"
+                android:layout_width="70dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:background="@drawable/button_play" />
+        </LinearLayout>
 
     </LinearLayout>
 

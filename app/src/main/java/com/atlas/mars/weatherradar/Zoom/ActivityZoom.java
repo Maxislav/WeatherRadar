@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.ImageButton;
 
 import com.atlas.mars.weatherradar.R;
 import com.atlas.mars.weatherradar.fragments.BitmapTransfer;
@@ -13,7 +15,9 @@ import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView;
 /**
  * Created by mars on 5/14/16.
  */
-public class ActivityZoom extends Activity {
+public class ActivityZoom extends Activity implements View.OnClickListener{
+    ImageButton buttonPlay;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -29,5 +33,19 @@ public class ActivityZoom extends Activity {
         SubsamplingScaleImageView imageView = (SubsamplingScaleImageView)findViewById(R.id.imageView);
         imageView.setMaxScale(4);
         imageView.setImage(ImageSource.bitmap(bitmap));
+
+        buttonPlay = (ImageButton)findViewById(R.id.buttonPlay);
+        buttonPlay.setOnClickListener(this);
+
     }
+
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.buttonPlay:
+                break;
+        }
+    }
+
 }
