@@ -273,11 +273,15 @@ public abstract class MyFragment  implements View.OnClickListener, PopupMenu.OnM
             matrix.postRotate(0);
             if(!isLandscapeMode()){
                 matrix.postRotate(90);
-                result = Bitmap.createBitmap(result, 0, 0,  result.getWidth(),  result.getHeight(), matrix, true);
-            }
+                if(result!=null){
+                    result = Bitmap.createBitmap(result, 0, 0,  result.getWidth(),  result.getHeight(), matrix, true);
+                }
 
+            }
             loadImage = new LoadImage();
-            setBitmap(result);
+            if(result!=null){
+                setBitmap(result);
+            }
         }
     }
 
