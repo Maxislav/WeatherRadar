@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.ImageButton;
 
 import com.atlas.mars.weatherradar.R;
+import com.atlas.mars.weatherradar.Rest.MeteoInfoBy;
 import com.atlas.mars.weatherradar.fragments.BitmapTransfer;
 import com.davemorrissey.labs.subscaleview.ImageSource;
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView;
@@ -44,6 +45,9 @@ public class ActivityZoom extends Activity implements View.OnClickListener{
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.buttonPlay:
+
+               MeteoInfoBy meteoInfoBy = new MeteoInfoBy();
+                meteoInfoBy.onGet(10);
                 break;
         }
     }
