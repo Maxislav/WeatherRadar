@@ -189,11 +189,8 @@ public abstract class MyFragment  implements View.OnClickListener, PopupMenu.OnM
                // byte[] byteArray = stream.toByteArray();
 
                 Intent intent = new Intent(activity, ActivityZoom.class);
-
-
-
-               // intent.putExtra("bitmap", byteArray);
                 intent.putExtra("isLandscapeMode", isLandscapeMode());
+                intent.putExtra("position", position);
                 activity.startActivityForResult(intent, 3);
                 return false;
             }
