@@ -7,6 +7,7 @@ import com.atlas.mars.weatherradar.BuildConfig;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -32,7 +33,7 @@ public class MeteoInfoBy {
     }
 
 
-    public void onGet(Integer t){
+    public void onGetHash(Integer t){
         RestAdapter restAdapter = new RestAdapter.Builder()
                 .setEndpoint(URL)
                 .build();
@@ -61,14 +62,7 @@ public class MeteoInfoBy {
                 }
 
                 Result result1 = new Result(sb.toString());
-                String src = result1.getUrl();
-                 src = result.getUrl();
-
-                //String bodyStr = sb.toString();
-               // Log.d(TAG, result);
-
-
-
+                String src = result1.getHash();
             }
 
             @Override
@@ -81,20 +75,33 @@ public class MeteoInfoBy {
 
     private class  Result{
         String bodyText;
-
+        ArrayList<String> arrayList;
         public Result(String bodyText) {
             this.bodyText = bodyText;
+            arrayList = new ArrayList<>();
         }
 
-        public String getUrl(){
-            Pattern p = Pattern.compile("(src=\"./UKBB.+\\.png)");
+        public String getHash(){
+            Pattern p = Pattern.compile("\\.\\/UKBB.+?\"" );
             Matcher m = p.matcher(bodyText);
-
             while (m.find()) {
+                String strNum = getNum(m.group());
+                arrayList.add(strNum);
+            }
+            if(0<arrayList.size()){
+                return arrayList.get(0);
+            }
+            return null;
+        }
+        private String getNum(String s){
+            Pattern p = Pattern.compile("\\d+");
+            Matcher m = p.matcher(s);
+            while (m.find()){
                 return m.group();
             }
-
-            return bodyText;
+            return null;
         }
     }
+
+
 }

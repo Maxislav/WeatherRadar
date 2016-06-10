@@ -47,7 +47,7 @@ public class ActivityZoom extends Activity implements View.OnClickListener{
             case R.id.buttonPlay:
 
                MeteoInfoBy meteoInfoBy = new MeteoInfoBy();
-                meteoInfoBy.onGet(10);
+                meteoInfoBy.onGetHash(10);
                 break;
         }
     }
