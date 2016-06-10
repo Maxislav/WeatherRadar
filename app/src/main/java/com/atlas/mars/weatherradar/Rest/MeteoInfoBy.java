@@ -1,5 +1,7 @@
 package com.atlas.mars.weatherradar.Rest;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.util.Log;
 
 import com.atlas.mars.weatherradar.BuildConfig;
@@ -16,6 +18,7 @@ import retrofit.RestAdapter;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 import retrofit.http.GET;
+import retrofit.http.Path;
 import retrofit.http.Query;
 
 /**
@@ -25,23 +28,72 @@ public class MeteoInfoBy {
     private static final String URL = BuildConfig.URL_METEO_INFO_BY;
     private static final String TAG = "MeteoInfoByLogs";
     private String q = "UKBB";
+    private Integer t;
+    private int count;
+    private String nashNum;
+    MyEndCallback myEndCallback;
+    Bitmap bitmap;
+
+    public MeteoInfoBy(MyEndCallback myEndCallback, Integer t) {
+        this.t = t*10;
+        this.count = t;
+        this.myEndCallback = myEndCallback;
+        onGetHash();
+    }
 
 
     private interface MyApiEndpointInterface{
         @GET("/radar/")
-        void getBodyText(@Query("q") String q, @Query("t") Integer t, Callback<Response> cb);
+        void getHashNum(@Query("q") String q, @Query("t") Integer t, Callback<Response> cb);
+
+        @GET("/radar/UKBB/{img}")
+        void getBitmap(@Path("img")String img, Callback<Response> cb);
+
+    }
+    public interface MyEndCallback{
+        void onSuccess(Bitmap bitmap, int i);
     }
 
 
-    public void onGetHash(Integer t){
+    private void onGetBitmap(){
         RestAdapter restAdapter = new RestAdapter.Builder()
                 .setEndpoint(URL)
                 .build();
+        MyApiEndpointInterface apiService =
+                restAdapter.create(MyApiEndpointInterface.class);
+        apiService.getBitmap("UKBB_" + nashNum + ".png", new Callback<Response>() {
+            @Override
+            public void success(Response response, Response response2) {
+                try {
+                    bitmap = BitmapFactory.decodeStream(response2.getBody().in());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                if(bitmap!=null){
+                    myEndCallback.onSuccess(bitmap,count);
+                }
+            }
 
+            @Override
+            public void failure(RetrofitError error) {
+                Log.d(TAG,"olol");
+            }
+        });
+
+
+
+
+    }
+
+
+    private void onGetHash(){
+        RestAdapter restAdapter = new RestAdapter.Builder()
+                .setEndpoint(URL)
+                .build();
         MyApiEndpointInterface apiService =
                 restAdapter.create(MyApiEndpointInterface.class);
 
-        apiService.getBodyText(q, t, new Callback<Response>() {
+        apiService.getHashNum(q, t, new Callback<Response>() {
             @Override
             public void success(Response result, Response response) {
                 BufferedReader reader = null;
@@ -60,9 +112,9 @@ public class MeteoInfoBy {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-
                 Result result1 = new Result(sb.toString());
-                String src = result1.getHash();
+                nashNum = result1.getHash();
+                onGetBitmap();
             }
 
             @Override
@@ -71,6 +123,7 @@ public class MeteoInfoBy {
             }
         });
     }
+
 
 
     private class  Result{
@@ -102,6 +155,4 @@ public class MeteoInfoBy {
             return null;
         }
     }
-
-
 }
