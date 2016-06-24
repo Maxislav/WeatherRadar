@@ -248,8 +248,13 @@ public class ForecastFiveDay {
             map.put("temp_max", item.getMain().getTemp_max());
             map.put("pressure", item.getMain().getPressure());
             map.put("clouds", item.getClouds().getAll());
-            map.put("wind_speed", item.getWind().getSpeed());
-            map.put("wind_deg", item.getWind().getDeg());
+
+            Wind wind = item.getWind();
+            if(wind!=null){
+                map.put("wind_speed", wind.getSpeed());
+                map.put("wind_deg", wind.getDeg());
+            }
+
             list.add(map);
         }
         onAccept.accept(list, cityName, code);
@@ -340,6 +345,7 @@ public class ForecastFiveDay {
     private class Wind{
         String speed;
         double deg;
+        String strDeg;
 
 
         public String getSpeed() {
@@ -347,8 +353,12 @@ public class ForecastFiveDay {
         }
 
         public String getDeg() {
+           // Log.d(TAG, "Degree :  "+ deg);
+
             Double d = MathOperation.round(deg, 0);
-            return Integer.toString(d.intValue());
+            strDeg = Integer.toString(d.intValue());
+
+            return  strDeg;
         }
     }
 
