@@ -144,7 +144,7 @@ public class MainActivity extends FragmentActivity implements Communicator, View
         if(isLandscapeMode()){
             parms = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (int) (Density.widthPixels / 1.34));
         }else{
-            parms = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (int) (Density.widthPixels * 1.34));
+            parms = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (int) (Density.widthPixels));
         }
 
         pager.setLayoutParams(parms);

@@ -38,7 +38,7 @@ import java.util.HashMap;
 /**
  * Created by mars on 8/3/15.
  */
-public abstract class MyFragment  implements View.OnClickListener, PopupMenu.OnMenuItemClickListener  {
+public abstract class MyFragment implements View.OnClickListener, PopupMenu.OnMenuItemClickListener {
 
     private View view;
     private ImageView loadingImageView, imageView;
@@ -58,41 +58,35 @@ public abstract class MyFragment  implements View.OnClickListener, PopupMenu.OnM
     BitmapTransfer bitmapTransfer;
 
 
-    public MyFragment(View view, Activity activity, int position){
+    public MyFragment(View view, Activity activity, int position) {
         this.activity = activity;
-        mainActivity = (MainActivity)activity;
+        mainActivity = (MainActivity) activity;
         resources = mainActivity.getResources();
         bitmapTransfer = new BitmapTransfer();
         this.view = view;
         this.position = position;
         loadImage = new LoadImage();
-        containerImg = (FrameLayout)view.findViewById(R.id.containerImg);
-        mainLayout = (LinearLayout)view.findViewById(R.id.main);
+        containerImg = (FrameLayout) view.findViewById(R.id.containerImg);
+        mainLayout = (LinearLayout) view.findViewById(R.id.main);
 
         LinearLayout.LayoutParams parms;
 
-        if(isLandscapeMode()){
-            parms = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,(int)(Density.widthPixels/1.34));
-        }else{
-            parms = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,(int)(Density.widthPixels*1.34));
+        if (isLandscapeMode()) {
+            //  parms = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,(int)(Density.widthPixels/1.34));
+        } else {
+            //  parms = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,(int)(Density.widthPixels));
         }
 
-        containerImg.setLayoutParams(parms);
-        final int heightButton = (int)(Density.heightPixels - (Density.widthPixels*1.34));
-
-
-        final double g = (float)Density.heightPixels - (float)Density.widthPixels * 1.34;
-        // title = (TextView) view.findViewById(R.id.title);
+        //  containerImg.setLayoutParams(parms);
+        final int heightButton = (int) (Density.heightPixels - (Density.widthPixels * 1.34));
+        final double g = (float) Density.heightPixels - (float) Density.widthPixels * 1.34;
         mapSetting = DataBaseHelper.mapSetting;
         setImageUrl();
         setTitle();
     }
 
 
-
-
-
-    public void setTitle(){
+    public void setTitle() {
       /*  if(mapSetting.get("title1")==null){
             title.setText("Title1");
         }else{
@@ -100,47 +94,48 @@ public abstract class MyFragment  implements View.OnClickListener, PopupMenu.OnM
         }*/
     }
 
-    public void setImageUrl(){
-        String key = "url"+(position+1);
-        if(mapSetting.get(key)==null){
+    public void setImageUrl() {
+        String key = "url" + (position + 1);
+        if (mapSetting.get(key) == null) {
             imageUrl = null;
-        }else{
+        } else {
             imageUrl = mapSetting.get(key);
         }
     }
 
-    private void loadImg(){
-        if(imageUrl == null || imageUrl.isEmpty()){
-            toastShow("No url detect. Set url" + (position+1));
-        }else if(isNetworkAvailable()){
-            if(loadImage.getStatus() != AsyncTask.Status.RUNNING){
+    private void loadImg() {
+        if (imageUrl == null || imageUrl.isEmpty()) {
+            toastShow("No url detect. Set url" + (position + 1));
+        } else if (isNetworkAvailable()) {
+            if (loadImage.getStatus() != AsyncTask.Status.RUNNING) {
                 loadImage.execute();
             }
         }
     }
-    public void firstLoad(){
-        if(bitmap == null){
+
+    public void firstLoad() {
+        if (bitmap == null) {
             loadImg();
         }
     }
 
-    public void reloadImg(){
+    public void reloadImg() {
         setImageUrl();
         loadImg();
     }
 
-    private void setBitmap(Bitmap bitmap){
-        if(bitmap!=null){
+    private void setBitmap(Bitmap bitmap) {
+        if (bitmap != null) {
             this.bitmap = bitmap;
             loadingImageView.setImageBitmap(bitmap);
             imageShow(loadingImageView);
 
-        }else{
-            toastShow("Error load IMG on page№ " +(position+1));
+        } else {
+            toastShow("Error load IMG on page№ " + (position + 1));
         }
     }
 
-    private void imageShow(final ImageView imageView){
+    private void imageShow(final ImageView imageView) {
         final Context context = activity;
         AlphaAnimation fadeInAnimation = new AlphaAnimation(0.0f, 1.0f);
         fadeInAnimation.setDuration(500);
@@ -149,6 +144,7 @@ public abstract class MyFragment  implements View.OnClickListener, PopupMenu.OnM
             public void onAnimationStart(Animation animation) {
                 imageView.setVisibility(View.VISIBLE);
             }
+
             @Override
             public void onAnimationEnd(Animation animation) {
                 replaceImage();
@@ -162,31 +158,25 @@ public abstract class MyFragment  implements View.OnClickListener, PopupMenu.OnM
         imageView.startAnimation(fadeInAnimation);
     }
 
-    private void imageHide(){
+    private void imageHide() {
 
     }
-    void replaceImage(){
-        if(imageView!=null){
+
+    void replaceImage() {
+        if (imageView != null) {
             containerImg.removeView(imageView);
         }
         imageView = new ImageView(activity);
         setLayoutParams(imageView);
         containerImg.addView(imageView);
-        imageView.setImageBitmap(((BitmapDrawable)loadingImageView.getDrawable()).getBitmap());
+        imageView.setImageBitmap(((BitmapDrawable) loadingImageView.getDrawable()).getBitmap());
         containerImg.removeView(loadingImageView);
 
         imageView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-               // activity.show("dsd");
-               // mainActivity.show("" + position);
-
 
                 bitmapTransfer.setBitmap(bitmap);
-
-               // ByteArrayOutputStream stream = new ByteArrayOutputStream();
-               // bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
-               // byte[] byteArray = stream.toByteArray();
 
                 Intent intent = new Intent(activity, ActivityZoom.class);
                 intent.putExtra("isLandscapeMode", isLandscapeMode());
@@ -200,7 +190,7 @@ public abstract class MyFragment  implements View.OnClickListener, PopupMenu.OnM
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.buttonReload:
                 reloadImg();
                 break;
@@ -214,14 +204,13 @@ public abstract class MyFragment  implements View.OnClickListener, PopupMenu.OnM
     }
 
 
-
     @Override
     public boolean onMenuItemClick(MenuItem item) {
         activity.onOptionsItemSelected(item);
         return false;
     }
 
-    private void setLayoutParams(ImageView imageView){
+    private void setLayoutParams(ImageView imageView) {
         FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         imageView.setLayoutParams(layoutParams);
         imageView.setScaleType(ImageView.ScaleType.FIT_XY);
@@ -238,9 +227,6 @@ public abstract class MyFragment  implements View.OnClickListener, PopupMenu.OnM
             containerImg.addView(loadingImageView);
             loadingImageView.setVisibility(View.INVISIBLE);
             setLayoutParams(loadingImageView);
-           /* FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-            loadingImageView.setLayoutParams(layoutParams);
-            loadingImageView.setScaleType(ImageView.ScaleType.FIT_XY);*/
             loader = new Loader(activity, containerImg);
             loader.show();
         }
@@ -266,24 +252,37 @@ public abstract class MyFragment  implements View.OnClickListener, PopupMenu.OnM
 
         protected void onPostExecute(Bitmap result) {
             loader.hide();
+
             Matrix matrix = new Matrix();
+            // matrix.postScale(0.5f, 0.5f);
+            // Bitmap croppedBitmap = Bitmap.createBitmap(result, 0, 0, result.getHeight(), result.getHeight(), matrix, true);
+
             matrix.postRotate(0);
-            if(!isLandscapeMode()){
-                matrix.postRotate(90);
-                if(result!=null){
-                    result = Bitmap.createBitmap(result, 0, 0,  result.getWidth(),  result.getHeight(), matrix, true);
+            if (!isLandscapeMode()) {
+
+                if (result != null) {
+                    switch (position) {
+                        case 0:
+                            result = Bitmap.createBitmap(result, 0, 0, result.getHeight(), result.getHeight(), matrix, true);
+                            break;
+                        default:
+                            result = Bitmap.createBitmap(result, result.getWidth() - result.getHeight(), 0, result.getHeight(), result.getHeight(), matrix, true);
+
+
+                    }
+
                 }
 
             }
             loadImage = new LoadImage();
-            if(result!=null){
+            if (result != null) {
                 setBitmap(result);
             }
         }
     }
 
-    private void toastShow(String txt){
-        ((MainActivity)activity).show(txt);
+    private void toastShow(String txt) {
+        ((MainActivity) activity).show(txt);
     }
 
     private boolean isNetworkAvailable() {
@@ -294,10 +293,10 @@ public abstract class MyFragment  implements View.OnClickListener, PopupMenu.OnM
     }
 
 
-    private boolean isLandscapeMode(){
-        if(resources.getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT){
+    private boolean isLandscapeMode() {
+        if (resources.getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
             return false;
-        }else {
+        } else {
             return true;
         }
     }

@@ -44,9 +44,9 @@ public class ActivityZoom extends Activity implements View.OnClickListener, Mete
         BitmapTransfer bitmapTransfer = new BitmapTransfer();
         Bitmap bitmap = bitmapTransfer.getBitmap();
         Matrix matrix = new Matrix();
-        if(!getIntent().getExtras().getBoolean("isLandscapeMode")){
+      /*  if(!getIntent().getExtras().getBoolean("isLandscapeMode")){
             matrix.postRotate(-90);
-        }
+        }*/
 
         position = getIntent().getIntExtra("position",0);
 
