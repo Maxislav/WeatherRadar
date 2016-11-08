@@ -1,8 +1,10 @@
 package com.atlas.mars.weatherradar;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.location.LocationListener;
@@ -10,6 +12,7 @@ import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
+import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -93,6 +96,16 @@ public class Forecast implements OnLocation, ForecastFiveDay.OnAccept {
                 if (locationManagerNet.getAllProviders().contains(LocationManager.NETWORK_PROVIDER) && locationManagerNet.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
                     locationListenerNet = new MyLocationListenerNet(this);
                     loader.show();
+                    if (ActivityCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                        // TODO: Consider calling
+                        //    ActivityCompat#requestPermissions
+                        // here to request the missing permissions, and then overriding
+                        //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                        //                                          int[] grantResults)
+                        // to handle the case where the user grants the permission. See the documentation
+                        // for ActivityCompat#requestPermissions for more details.
+                        return;
+                    }
                     locationManagerNet.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListenerNet);
                 } else {
                     /**
@@ -117,6 +130,16 @@ public class Forecast implements OnLocation, ForecastFiveDay.OnAccept {
         Log.d(TAG, "onLocationAccept lat lng: " + lat + " : " + lng);
 
         if (locationManagerNet != null) {
+            if (ActivityCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                // TODO: Consider calling
+                //    ActivityCompat#requestPermissions
+                // here to request the missing permissions, and then overriding
+                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                //                                          int[] grantResults)
+                // to handle the case where the user grants the permission. See the documentation
+                // for ActivityCompat#requestPermissions for more details.
+                return;
+            }
             locationManagerNet.removeUpdates(locationListenerNet);
             locationManagerNet = null;
         }
@@ -182,6 +205,25 @@ public class Forecast implements OnLocation, ForecastFiveDay.OnAccept {
 
                         ((TextView) view.findViewById(R.id.textTime)).setText(hashMap.get("time"));
                         ((TextView) view.findViewById(R.id.textTemp)).setText(hashMap.get("temp"));
+
+                        if(hashMap.get("wind_speed")!=null){
+                            double degText = Double.parseDouble(hashMap.get("wind_speed"));
+
+                            degText = MathOperation.round(degText, 1);
+                            ((TextView)view.findViewById(R.id.textViewWindSpeed)).setText( ""+degText+"m/s");
+                        }
+
+
+                       // ((TextView) view.findViewById(R.id.textViewWindSpeed)).setText(hashMap.get("wind_speed"));
+
+
+
+                        if(hashMap.get("wind_deg")!=null){
+                            ((TextView)view.findViewById(R.id.textViewWindArrow)).setText(""+ (char)0x2191);
+                            ((TextView)view.findViewById(R.id.textViewWindArrow)).setRotation(Float.parseFloat(hashMap.get("wind_deg")));
+                        }
+
+
                         ImageView imageView = (ImageView) view.findViewById(R.id.image);
                         // new IconForecast(imageView,hashMap.get("icon") );
                         getIcon(imageView, hashMap.get("icon"));

@@ -19,8 +19,8 @@
         android:layout_weight="1"
         android:layout_height="match_parent">
         <ImageView
-            android:id="@+id/imageCurrentWeather"
-            android:layout_width="60dp"
+            android:id="@+id/imageCurrentWeather____"
+            android:layout_width="70dp"
             android:gravity="start|center"
             android:layout_height="match_parent"
             />

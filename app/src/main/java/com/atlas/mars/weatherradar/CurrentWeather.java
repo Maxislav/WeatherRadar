@@ -1,11 +1,14 @@
 package com.atlas.mars.weatherradar;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -53,7 +56,7 @@ public class CurrentWeather extends Fragment implements OnLocation, CurrentWeath
         textViewWind = (TextView) weatherView.findViewById(R.id.textViewWind);
         textViewHumidity = (TextView) weatherView.findViewById(R.id.textViewHumidity);
         textViewTitle = (TextView) weatherView.findViewById(R.id.textViewTitle);
-        imageCurrentWeather = (ImageView) weatherView.findViewById(R.id.imageCurrentWeather);
+        imageCurrentWeather = (ImageView) weatherView.findViewById(R.id.imageCurrentWeather____);
         return weatherView;
     }
 
@@ -73,7 +76,17 @@ public class CurrentWeather extends Fragment implements OnLocation, CurrentWeath
 
     @Override
     public void onPause() {
-        if (locationManagerNet != null && locationListenerNet!=null) {
+        if (locationManagerNet != null && locationListenerNet != null) {
+            if (ActivityCompat.checkSelfPermission(this.activity, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this.activity, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                // TODO: Consider calling
+                //    ActivityCompat#requestPermissions
+                // here to request the missing permissions, and then overriding
+                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                //                                          int[] grantResults)
+                // to handle the case where the user grants the permission. See the documentation
+                // for ActivityCompat#requestPermissions for more details.
+                return;
+            }
             locationManagerNet.removeUpdates(locationListenerNet);
             locationManagerNet = null;
         }
@@ -97,7 +110,7 @@ public class CurrentWeather extends Fragment implements OnLocation, CurrentWeath
             if (myLocation != null && !myLocation.equals("0")) {
                 new LocationFromAsset(activity, this, myLocation);
             } else {
-                if(permitsLocation == null || permitsLocation.equals("0")){
+                if (permitsLocation == null || permitsLocation.equals("0")) {
                     ((ToastShow) activity).show("Set agree licence first");
                     return;
                 }
@@ -105,8 +118,18 @@ public class CurrentWeather extends Fragment implements OnLocation, CurrentWeath
                 locationManagerNet = (LocationManager) activity.getSystemService(Context.LOCATION_SERVICE);
                 if (locationManagerNet.getAllProviders().contains(LocationManager.NETWORK_PROVIDER) && locationManagerNet.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
                     locationListenerNet = new MyLocationListenerNet(this);
+                    if (ActivityCompat.checkSelfPermission(this.activity, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this.activity, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                        // TODO: Consider calling
+                        //    ActivityCompat#requestPermissions
+                        // here to request the missing permissions, and then overriding
+                        //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                        //                                          int[] grantResults)
+                        // to handle the case where the user grants the permission. See the documentation
+                        // for ActivityCompat#requestPermissions for more details.
+                        return;
+                    }
                     locationManagerNet.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListenerNet);
-                }else {
+                } else {
                     ((ToastShow) activity).show("Location is not available in setting");
                     //activity.show
                     ///toast.show("Location not available in setting");
@@ -145,7 +168,17 @@ public class CurrentWeather extends Fragment implements OnLocation, CurrentWeath
 
     @Override
     public void onLocationAccept(double lat, double lng) {
-        if (locationManagerNet != null && locationListenerNet!=null) {
+        if (locationManagerNet != null && locationListenerNet != null) {
+            if (ActivityCompat.checkSelfPermission(this.activity, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this.activity, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                // TODO: Consider calling
+                //    ActivityCompat#requestPermissions
+                // here to request the missing permissions, and then overriding
+                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                //                                          int[] grantResults)
+                // to handle the case where the user grants the permission. See the documentation
+                // for ActivityCompat#requestPermissions for more details.
+                return;
+            }
             locationManagerNet.removeUpdates(locationListenerNet);
             locationManagerNet = null;
         }

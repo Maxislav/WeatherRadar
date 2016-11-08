@@ -44,6 +44,29 @@
                 android:layout_height="62dp"
                 android:layout_gravity="center|top" />
         </FrameLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="1"
+            android:gravity="center">
+            <TextView
+                style="@style/MyText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/textViewWindArrow"
+                android:gravity="center"
+                android:layout_weight="0.8"
+                android:text="" />
+            <TextView
+                android:layout_weight="0.2"
+                style="@style/MyText"
+                android:id="@+id/textViewWindSpeed"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:gravity="center"
+                android:text="00" />
+        </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"

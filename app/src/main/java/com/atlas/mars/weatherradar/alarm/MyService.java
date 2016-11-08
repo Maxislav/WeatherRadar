@@ -1,5 +1,6 @@
 package com.atlas.mars.weatherradar.alarm;
 
+import android.Manifest;
 import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -7,6 +8,7 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.content.res.AssetFileDescriptor;
 import android.content.res.AssetManager;
 import android.location.LocationListener;
@@ -19,6 +21,7 @@ import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.IBinder;
 import android.os.Vibrator;
+import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 
 import com.atlas.mars.weatherradar.DataBaseHelper;
@@ -97,8 +100,6 @@ public class MyService extends Service implements OnLocation {
     }
 
 
-
-
     /**
      * Старт всего
      */
@@ -114,14 +115,24 @@ public class MyService extends Service implements OnLocation {
         updIntent.setAction(MainActivity.LOCATION);
         updIntent.putExtra("distance", "Wake Up");
         sendBroadcast(updIntent);
-        if(db.mapSetting.get(db.MY_LOCATION)!=null && !db.mapSetting.get(db.MY_LOCATION).equals("0")){
+        if (db.mapSetting.get(db.MY_LOCATION) != null && !db.mapSetting.get(db.MY_LOCATION).equals("0")) {
             /**
              * условие запроса по имени населенного пункта
              */
             LocationFromAsset la = new LocationFromAsset(this, db.mapSetting.get(db.MY_LOCATION));
-        }else if (isNetworkAvailable() && db.isWorkTime()) {
+        } else if (isNetworkAvailable() && db.isWorkTime()) {
             locationManagerNet = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
             locationListenerNet = new MyLocationListenerNet(this);
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                // TODO: Consider calling
+                //    ActivityCompat#requestPermissions
+                // here to request the missing permissions, and then overriding
+                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                //                                          int[] grantResults)
+                // to handle the case where the user grants the permission. See the documentation
+                // for ActivityCompat#requestPermissions for more details.
+                return;
+            }
             locationManagerNet.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListenerNet);
         } else {
             onStop();
@@ -129,19 +140,20 @@ public class MyService extends Service implements OnLocation {
 
 
     }
+
     @Override
     public void onLocationAccept(String cityId) {
         boolean startBorispol = db.getStartBorispol();
         //todo для отладки запроса борисполя закоментировать
-       // startBorispol = true;
+        // startBorispol = true;
         boolean startForecast = db.getStartForecast();
-        Log.d(ALARM, "Start Borispol after city Id: " +startBorispol + " ; Start Forecast " + startForecast);
+        Log.d(ALARM, "Start Borispol after city Id: " + startBorispol + " ; Start Forecast " + startForecast);
         if (isNetworkAvailable()) {
-            if(startBorispol){
+            if (startBorispol) {
                 taskNeeded++;
                 new BorispolRest(this, cityId);
             }
-            if(startForecast){
+            if (startForecast) {
                 taskNeeded++;
                 new ForecastFiveDay(this, cityId, 3);
             }
@@ -152,8 +164,18 @@ public class MyService extends Service implements OnLocation {
     public void onLocationAccept(double lat, double lng) {
         boolean startBorispol = db.getStartBorispol();
         boolean startForecast = db.getStartForecast();
-        Log.d(ALARM, "Start Borispol after lat lng: " +startBorispol + " ; Start Forecast " + startForecast);
+        Log.d(ALARM, "Start Borispol after lat lng: " + startBorispol + " ; Start Forecast " + startForecast);
         if (locationManagerNet != null) {
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                // TODO: Consider calling
+                //    ActivityCompat#requestPermissions
+                // here to request the missing permissions, and then overriding
+                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                //                                          int[] grantResults)
+                // to handle the case where the user grants the permission. See the documentation
+                // for ActivityCompat#requestPermissions for more details.
+                return;
+            }
             locationManagerNet.removeUpdates(locationListenerNet);
         }
         if (isNetworkAvailable()) {
