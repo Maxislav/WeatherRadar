@@ -256,7 +256,7 @@ public class MyService extends Service implements OnLocation {
         if (!db.permitNotify()) {
             Log.d(TAG, "Blocked notify");
             //todo раскоментировать
-            return;
+           return;
         }
         // Log.d(TAG, db.getTimeNotify().toString());
         playSound();
