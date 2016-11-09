@@ -55,12 +55,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/textViewWindArrow"
-                android:gravity="center"
+                android:gravity="end|center"
+                android:textSize="12dp"
                 android:layout_weight="0.8"
                 android:text="" />
             <TextView
                 android:layout_weight="0.2"
                 style="@style/MyText"
+                android:textSize="12dp"
                 android:id="@+id/textViewWindSpeed"
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
