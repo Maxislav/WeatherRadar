@@ -339,7 +339,7 @@ public class MyService extends Service implements OnLocation {
                 sp.play(sampleId, 1, 1, 0, 0, 1);
             }
         });
-        loadSound("bul_bul.ogg");
+        loadSound("bul.ogg");
     }
 
     private SoundPool buildSoundPool() {

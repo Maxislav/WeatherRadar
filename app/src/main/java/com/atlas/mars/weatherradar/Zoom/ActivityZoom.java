@@ -105,7 +105,12 @@ public class ActivityZoom extends Activity implements View.OnClickListener, Mete
                     hashMapBitmap.get(msg.what).recycle();
                 }
                 Bitmap bitmap = hashMapBitmap.get(msg.what).copy(Bitmap.Config.ARGB_8888, false);
-                imageView.setImage(ImageSource.bitmap(bitmap));
+                Matrix matrix = new Matrix();
+                Bitmap result = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getHeight(), bitmap.getHeight(), matrix, true);
+
+                //result = Bitmap.createBitmap(result, 0, 0, result.getHeight(), result.getHeight(), matrix, true);
+
+                imageView.setImage(ImageSource.bitmap(result));
                 if(msg.what == 0){
                     isPlaing = false;
                 }
