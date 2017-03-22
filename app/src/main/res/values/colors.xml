@@ -21,13 +21,17 @@
 
 
     <item name="hh00" type="color">#99BCFF</item>
+    <item name="hh100" type="color">#99BCFF</item>
     <item name="hh03" type="color">#c0d3fa</item>
+
     <item name="hh06" type="color">#CDF</item>
     <item name="hh09" type="color">#E6EEFF</item>
     <item name="hh12" type="color">#E6EEFF</item>
     <item name="hh15" type="color">#E6EEFF</item>
     <item name="hh18" type="color">#CADBFD</item>
     <item name="hh21" type="color">#B3CDFF</item>
+
+    <item name="hh04" type="color">#c0d3fa</item>
 
 
     <item name="grayText" type="color">#ff48494e</item>

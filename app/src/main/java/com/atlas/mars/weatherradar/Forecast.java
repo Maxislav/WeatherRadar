@@ -59,6 +59,7 @@ public class Forecast implements OnLocation, ForecastFiveDay.OnAccept {
     DataBaseHelper db;
     static Context context;
     public static List<HashMap> list;
+    private static String packageName;
 
 
     Forecast(Activity activity, LinearLayout fr) {
@@ -70,6 +71,7 @@ public class Forecast implements OnLocation, ForecastFiveDay.OnAccept {
         parent = (FrameLayout) fr.getParent().getParent();
         loader = new Loader(activity, parent);
         context = activity.getApplicationContext();
+        packageName = context.getPackageName();
 
 
         _onStart();
@@ -440,6 +442,8 @@ public class Forecast implements OnLocation, ForecastFiveDay.OnAccept {
         switch (HH) {
             case "00":
                 return R.color.hh00;
+            case "04":
+                return R.color.hh04;
             case "03":
                 return R.color.hh03;
             case "06":
@@ -535,8 +539,14 @@ public class Forecast implements OnLocation, ForecastFiveDay.OnAccept {
 
 
     public static String getStringResourceByName(String resName, String aString) {
-        String packageName = context.getPackageName();
-        int resId = context.getResources().getIdentifier(aString, resName, packageName);
-        return context.getString(resId);
+        //String packageName = context.getPackageName();
+        int resId = context.getResources().getIdentifier(aString, resName, context.getPackageName());
+        String result = "";
+        try {
+            result =context.getString(resId);
+        }catch (Exception e){
+            result = "#c0d3fa";
+        }
+        return result;
     }
 }
