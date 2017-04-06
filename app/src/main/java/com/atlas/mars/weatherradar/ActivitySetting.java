@@ -528,7 +528,7 @@ public class ActivitySetting extends AppCompatActivity implements TimePicker.OnT
             InputStream in = null;
             StringBuilder sb = new StringBuilder();
             try {
-                url = new URL("http://178.62.44.54/php/settingborispolradar.php");
+                url = new URL(BuildConfig.UrlSetting);
 
                 urlConnection = (HttpURLConnection) url.openConnection();
                 urlConnection.setDoOutput(true);
