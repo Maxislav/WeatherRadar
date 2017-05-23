@@ -32,17 +32,16 @@
             android:layout_width="62dp"
             android:layout_height="70dp">
 
-            <WebView
-                android:id="@+id/webViewDrips"
-                android:layout_width="56dp"
-                android:layout_height="match_parent"
-                android:layout_gravity="center"></WebView>
-
             <ImageView
                 android:id="@+id/image"
                 android:layout_width="62dp"
                 android:layout_height="62dp"
                 android:layout_gravity="center|top" />
+            <WebView
+                android:id="@+id/webViewDrips"
+                android:layout_width="56dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="center|top"></WebView>
         </FrameLayout>
         <LinearLayout
             android:layout_width="match_parent"

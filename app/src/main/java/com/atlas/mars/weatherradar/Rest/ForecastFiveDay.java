@@ -441,7 +441,7 @@ public class ForecastFiveDay {
         String icon;
 
         public String getIcon() {
-            return icon;
+            return icon.replaceAll("^\\d+", "01");
         }
     }
 }

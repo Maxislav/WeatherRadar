@@ -188,11 +188,6 @@ public class Forecast implements OnLocation, ForecastFiveDay.OnAccept {
 
                     @Override
                     public void run() {
-                /*try {
-                    Thread.sleep(5000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }*/
                         LayoutInflater inflater = (LayoutInflater) (activity.getLayoutInflater());
                         int width = (int) (80 * Density.density);
                         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(width, ViewGroup.LayoutParams.MATCH_PARENT);
