@@ -355,7 +355,7 @@ public class ForecastFiveDay {
         public String getDeg() {
            // Log.d(TAG, "Degree :  "+ deg);
 
-            Double d = MathOperation.round(deg, 0);
+            Double d = MathOperation.round(deg+180, 0);
             strDeg = Integer.toString(d.intValue());
 
             return  strDeg;
@@ -439,7 +439,6 @@ public class ForecastFiveDay {
 
     private class Weather {
         String icon;
-
         public String getIcon() {
             return icon.replaceAll("^\\d+", "01");
         }
