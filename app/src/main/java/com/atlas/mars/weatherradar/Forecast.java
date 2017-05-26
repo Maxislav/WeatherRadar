@@ -359,9 +359,6 @@ public class Forecast implements OnLocation, ForecastFiveDay.OnAccept {
                     "<div style=\"position: relative; overflow: hidden; height: 65px; width: 100%; \">" +
                     "<div class=\"drip-container\">" + drip + "</div>" +
                     "<img src=\"clouds.png\" style='position:absolute; left:0; bottom: 0; width:100%; height:100%; transform: scale(0."+clouds+"); transform-origin: 10% 60%'>"+
-                    //"<div style=\"position: absolute; height: 65px; width: 100%; top: 0;left: 0; background:  linear-gradient(to bottom, rgba(0,0,0,0) 0%, " + "#FF0000" + " 100%);\">" +
-
-                    //"</div>" +
                     "</div>" +
                     "</body></html>";
             browser.loadDataWithBaseURL("file:///android_asset/", web, "text/html", "UTF-8", null);

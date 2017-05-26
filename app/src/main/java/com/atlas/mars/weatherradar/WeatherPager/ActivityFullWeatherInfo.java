@@ -157,14 +157,17 @@ public class ActivityFullWeatherInfo extends FragmentActivity implements Communi
 
             String color16 = Forecast.getStringResourceByName("color", "hh" + map.get("HH"));
             color16 = color16.replaceAll("^#.{2}", "#");
+            String clouds = map.get("clouds");
+            String style ="<style type=\"text/css\">" +
+                    ".drip-container{position: absolute; top: calc(100% - 26px); left:0}"+
+                    "html, body{height: 100%}"+
+                    "</style>";
 
 
-            String web = "<html><head><meta name=\"viewport\" content=\"width=device-width, minimum-scale=0.1\"><title>drip.png (20×32)</title><style type=\"text/css\"></style></head><body style=\"margin: 0px;\">" +
-                    "<div style=\"position: relative; overflow: hidden; height: 120px; width: 100%; \">" +
-                    "<div>" + drip + "</div>" +
-                    "<div style=\"position: absolute; height: 120px; width: 100%; top: 0;left: 0; background:  linear-gradient(to bottom, rgba(0,0,0,0) 0%, " + color16 + " 100%);\">" +
-
-                    "</div>" +
+            String web = "<html><head><meta name=\"viewport\" content=\"width=device-width, minimum-scale=0.1\"><title>drip.png (20×32)</title>"+style+"</head><body style=\"margin: 0px;\">" +
+                    "<div style=\"position: relative; overflow: hidden; height: 100%; width: 100%; \">" +
+                    "<div class=\"drip-container\">" + drip + "</div>" +
+                    "<img src=\"clouds.png\" style='position:absolute; left:0; bottom: 0; width:100%; height:100%; transform: scale(0."+clouds+"); transform-origin: 10% 60%'>"+
                     "</div>" +
                     "</body></html>";
             browser.loadDataWithBaseURL("file:///android_asset/", web, "text/html", "UTF-8", null);

@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 import com.atlas.mars.weatherradar.Communicator;
 import com.atlas.mars.weatherradar.R;
 
-;
+
 
 /**
  * Created by mars on 7/8/15.
