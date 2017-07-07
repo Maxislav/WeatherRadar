@@ -41,13 +41,6 @@
       <sourceFolder url="file://$MODULE_DIR$/src/productionDebug/java" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/productionDebug/rs" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/productionDebug/shaders" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/build/generated/source/r/androidTest/production/debug" isTestSource="true" generated="true" />
-      <sourceFolder url="file://$MODULE_DIR$/build/generated/source/aidl/androidTest/production/debug" isTestSource="true" generated="true" />
-      <sourceFolder url="file://$MODULE_DIR$/build/generated/source/buildConfig/androidTest/production/debug" isTestSource="true" generated="true" />
-      <sourceFolder url="file://$MODULE_DIR$/build/generated/source/rs/androidTest/production/debug" isTestSource="true" generated="true" />
-      <sourceFolder url="file://$MODULE_DIR$/build/generated/source/apt/androidTest/production/debug" isTestSource="true" generated="true" />
-      <sourceFolder url="file://$MODULE_DIR$/build/generated/res/rs/androidTest/production/debug" type="java-test-resource" />
-      <sourceFolder url="file://$MODULE_DIR$/build/generated/res/resValues/androidTest/production/debug" type="java-test-resource" />
       <sourceFolder url="file://$MODULE_DIR$/src/testProductionDebug/res" type="java-test-resource" />
       <sourceFolder url="file://$MODULE_DIR$/src/testProductionDebug/resources" type="java-test-resource" />
       <sourceFolder url="file://$MODULE_DIR$/src/testProductionDebug/assets" type="java-test-resource" />
@@ -55,6 +48,13 @@
       <sourceFolder url="file://$MODULE_DIR$/src/testProductionDebug/java" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/src/testProductionDebug/rs" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/src/testProductionDebug/shaders" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/build/generated/source/r/androidTest/production/debug" isTestSource="true" generated="true" />
+      <sourceFolder url="file://$MODULE_DIR$/build/generated/source/aidl/androidTest/production/debug" isTestSource="true" generated="true" />
+      <sourceFolder url="file://$MODULE_DIR$/build/generated/source/buildConfig/androidTest/production/debug" isTestSource="true" generated="true" />
+      <sourceFolder url="file://$MODULE_DIR$/build/generated/source/rs/androidTest/production/debug" isTestSource="true" generated="true" />
+      <sourceFolder url="file://$MODULE_DIR$/build/generated/source/apt/androidTest/production/debug" isTestSource="true" generated="true" />
+      <sourceFolder url="file://$MODULE_DIR$/build/generated/res/rs/androidTest/production/debug" type="java-test-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/build/generated/res/resValues/androidTest/production/debug" type="java-test-resource" />
       <sourceFolder url="file://$MODULE_DIR$/src/production/res" type="java-resource" />
       <sourceFolder url="file://$MODULE_DIR$/src/production/resources" type="java-resource" />
       <sourceFolder url="file://$MODULE_DIR$/src/production/assets" type="java-resource" />
@@ -62,13 +62,6 @@
       <sourceFolder url="file://$MODULE_DIR$/src/production/java" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/production/rs" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/production/shaders" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/androidTestProduction/res" type="java-test-resource" />
-      <sourceFolder url="file://$MODULE_DIR$/src/androidTestProduction/resources" type="java-test-resource" />
-      <sourceFolder url="file://$MODULE_DIR$/src/androidTestProduction/assets" type="java-test-resource" />
-      <sourceFolder url="file://$MODULE_DIR$/src/androidTestProduction/aidl" isTestSource="true" />
-      <sourceFolder url="file://$MODULE_DIR$/src/androidTestProduction/java" isTestSource="true" />
-      <sourceFolder url="file://$MODULE_DIR$/src/androidTestProduction/rs" isTestSource="true" />
-      <sourceFolder url="file://$MODULE_DIR$/src/androidTestProduction/shaders" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/src/testProduction/res" type="java-test-resource" />
       <sourceFolder url="file://$MODULE_DIR$/src/testProduction/resources" type="java-test-resource" />
       <sourceFolder url="file://$MODULE_DIR$/src/testProduction/assets" type="java-test-resource" />
@@ -76,6 +69,13 @@
       <sourceFolder url="file://$MODULE_DIR$/src/testProduction/java" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/src/testProduction/rs" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/src/testProduction/shaders" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/src/androidTestProduction/res" type="java-test-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/src/androidTestProduction/resources" type="java-test-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/src/androidTestProduction/assets" type="java-test-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/src/androidTestProduction/aidl" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/src/androidTestProduction/java" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/src/androidTestProduction/rs" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/src/androidTestProduction/shaders" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/src/debug/res" type="java-resource" />
       <sourceFolder url="file://$MODULE_DIR$/src/debug/resources" type="java-resource" />
       <sourceFolder url="file://$MODULE_DIR$/src/debug/assets" type="java-resource" />
@@ -113,10 +113,7 @@
       <sourceFolder url="file://$MODULE_DIR$/src/androidTest/shaders" isTestSource="true" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/assets" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/blame" />
-      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/builds" />
-      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/bundles" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/classes" />
-      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/dependency-cache" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/incremental" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/incremental-classes" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/incremental-runtime-classes" />
@@ -136,6 +133,7 @@
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/symbols" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/transforms" />
       <excludeFolder url="file://$MODULE_DIR$/build/outputs" />
+      <excludeFolder url="file://$MODULE_DIR$/build/reports" />
       <excludeFolder url="file://$MODULE_DIR$/build/tmp" />
     </content>
     <orderEntry type="jdk" jdkName="Android API 23 Platform" jdkType="Android SDK" />
