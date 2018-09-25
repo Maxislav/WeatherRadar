@@ -12,6 +12,7 @@ import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 import android.view.Gravity;
@@ -42,7 +43,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * Created by mars on 8/3/15.
  */
-public class Forecast implements OnLocation, ForecastFiveDay.OnAccept {
+public class Forecast implements OnLocation, ForecastFiveDay.OnAccept, ActivityCompat.OnRequestPermissionsResultCallback {
     final String TAG = "ForecastLogs";
     Activity activity;
     LinearLayout fr;
@@ -106,6 +107,14 @@ public class Forecast implements OnLocation, ForecastFiveDay.OnAccept {
                         //                                          int[] grantResults)
                         // to handle the case where the user grants the permission. See the documentation
                         // for ActivityCompat#requestPermissions for more details.
+
+                        ActivityCompat.requestPermissions(this.activity,
+                                new String[]{
+                                        Manifest.permission.ACCESS_FINE_LOCATION,
+                                },
+                                1);
+
+
                         return;
                     }
                     locationManagerNet.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListenerNet);
@@ -140,12 +149,17 @@ public class Forecast implements OnLocation, ForecastFiveDay.OnAccept {
                 //                                          int[] grantResults)
                 // to handle the case where the user grants the permission. See the documentation
                 // for ActivityCompat#requestPermissions for more details.
+
+
+
+
+
                 return;
             }
             locationManagerNet.removeUpdates(locationListenerNet);
             locationManagerNet = null;
         }
-        new ForecastFiveDay(this, lat, lng, null);
+        new ForecastFiveDay(this, lat, lng);
 
     }
 
@@ -262,6 +276,11 @@ public class Forecast implements OnLocation, ForecastFiveDay.OnAccept {
         });*/
 
 
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+            Log.d(TAG, "olol");
     }
 
     private class MyLongClick implements View.OnLongClickListener {
@@ -548,4 +567,6 @@ public class Forecast implements OnLocation, ForecastFiveDay.OnAccept {
         }
         return result;
     }
+
+
 }

@@ -1,16 +1,19 @@
 package com.atlas.mars.weatherradar.alarm;
 
+import android.Manifest;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.IBinder;
+import android.support.v4.app.ActivityCompat;
 
 import com.atlas.mars.weatherradar.Cities;
 import com.atlas.mars.weatherradar.DataBaseHelper;
@@ -45,23 +48,35 @@ public class MorningService extends Service implements OnLocation, ForecastFiveD
         db = new DataBaseHelper(this);
         super.onCreate();
     }
+
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         someTask();
         return super.onStartCommand(intent, flags, startId);
     }
+
     public void onDestroy() {
         super.onDestroy();
     }
 
-    private void   someTask(){
-        if (isNetworkAvailable()){
-            if(db.mapSetting.get(db.MY_LOCATION)!=null && !db.mapSetting.get(db.MY_LOCATION).equals("0")){
+    private void someTask() {
+        if (isNetworkAvailable()) {
+            if (db.mapSetting.get(db.MY_LOCATION) != null && !db.mapSetting.get(db.MY_LOCATION).equals("0")) {
                 new LocationFromAsset(this, db.mapSetting.get(db.MY_LOCATION));
-            }else {
-                locationManagerNet = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
-                if(locationManagerNet.getAllProviders().contains(LocationManager.NETWORK_PROVIDER) && locationManagerNet.isProviderEnabled(LocationManager.NETWORK_PROVIDER)){
+            } else {
+                locationManagerNet = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+                if (locationManagerNet.getAllProviders().contains(LocationManager.NETWORK_PROVIDER) && locationManagerNet.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
                     locationListenerNet = new MyLocationListenerNet(this);
+                    if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                        // TODO: Consider calling
+                        //    ActivityCompat#requestPermissions
+                        // here to request the missing permissions, and then overriding
+                        //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                        //                                          int[] grantResults)
+                        // to handle the case where the user grants the permission. See the documentation
+                        // for ActivityCompat#requestPermissions for more details.
+                        return;
+                    }
                     locationManagerNet.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListenerNet);
                 }else{
                     // new DayForecastRain(this);
@@ -78,7 +93,7 @@ public class MorningService extends Service implements OnLocation, ForecastFiveD
             locationManagerNet = null;
         }
        // new DayForecastRain(this, lat, lng);
-        new  ForecastFiveDay(this, lat, lng, 8);
+        new  ForecastFiveDay(this, lat, lng);
     }
 
     @Override

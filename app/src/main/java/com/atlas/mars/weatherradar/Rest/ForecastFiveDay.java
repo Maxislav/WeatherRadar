@@ -47,9 +47,8 @@ public class ForecastFiveDay {
         restByCityId();
     }
 
-    public ForecastFiveDay(OnAccept onAccept, double lat, double lng, Integer cnt) {
+    public ForecastFiveDay(OnAccept onAccept, double lat, double lng) {
         this.onAccept = onAccept;
-        this.cnt = cnt;
         this.lat = String.valueOf(MathOperation.round(lat, 4));
         this.lng = String.valueOf(MathOperation.round(lng, 4));
         restByLatLng();
@@ -95,7 +94,7 @@ public class ForecastFiveDay {
         void getForecastById(@Query("id") String cityId,@Query("cnt") Integer cnt, @Query("APPID") String appid, @Query("units") String units, Callback<Result> cb);
 
         @GET("/forecast")
-        void getForecastByLatLng(@Query("lat") String lat, @Query("lon") String lon, @Query("cnt") Integer cnt, @Query("APPID") String appid, @Query("units") String units, Callback<Result> cb);
+        void getForecastByLatLng(@Query("lat") String lat, @Query("lon") String lon, @Query("APPID") String appid, @Query("units") String units, Callback<Result> cb);
     }
 
     void restByCityId() {
@@ -136,7 +135,7 @@ public class ForecastFiveDay {
                 .build();
         MyApiEndpointInterface apiService =
                 restAdapter.create(MyApiEndpointInterface.class);
-        apiService.getForecastByLatLng(lat, lng, cnt, BuildConfig.APPID, "metric", new Callback<Result>() {
+        apiService.getForecastByLatLng(lat, lng, BuildConfig.APPID, "metric", new Callback<Result>() {
 
             @Override
             public void success(Result result, Response response) {

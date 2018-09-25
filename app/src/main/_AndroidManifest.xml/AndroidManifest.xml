@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.atlas.mars.weatherradar">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+
+    <application
+        android:name=".WeatherCheater"
+        android:allowBackup="true"
+        android:icon="@drawable/logo"
+        android:label="@string/app_name"
+        android:theme="@style/MyAppTheme">
+        <service
+            android:name=".alarm.MyService"
+            android:enabled="true">
+
+        </service>
+        <service
+            android:name=".alarm.MorningService"
+            android:enabled="true">
+
+            </service>
+
+        <activity
+            android:name=".MainActivity"
+            android:label="@string/app_name"
+            android:launchMode= "singleTask"
+          >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".ActivitySetting"
+            android:label="@string/app_name"/>
+        <activity
+            android:name=".WeatherPager.ActivityFullWeatherInfo"
+            android:theme="@style/forecastPager"
+            android:label="@string/app_name"/>
+        <activity
+            android:name=".Zoom.ActivityZoom"
+            android:theme="@style/forecastPager"
+            android:label="@string/app_name"/>
+        <receiver
+            android:name=".alarm.SampleBootReceiver"
+            android:enabled="true"
+            android:exported="false"
+            android:permission="android.permission.RECEIVE_BOOT_COMPLETED">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </receiver>
+
+
+
+        <receiver
+            android:name=".alarm.MorningBroadCast"
+            android:enabled="true"
+            android:exported="false"
+            android:permission="android.permission.RECEIVE_BOOT_COMPLETED">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </receiver>
+
+        <receiver
+            android:name=".alarm.RegenBorispolBroadCast"
+            android:exported="true" >
+            <intent-filter>
+                <action android:name="android.intent.action.ActionSetter" >
+                </action>
+            </intent-filter>
+        </receiver>
+
+    </application>
+
+
+</manifest>
